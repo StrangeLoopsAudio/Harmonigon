@@ -397,6 +397,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\HexGrid.cpp">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Tracer.cpp">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Hexagon.cpp">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>Harmonigon_2\Source</Filter>
     </ClCompile>
@@ -2247,6 +2256,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\HexGrid.h">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Tracer.h">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Hexagon.h">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\MainComponent.h">
       <Filter>Harmonigon_2\Source</Filter>
     </ClInclude>

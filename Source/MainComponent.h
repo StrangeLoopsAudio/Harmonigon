@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "HexGrid.h"
 
 //==============================================================================
 /*
@@ -27,8 +28,7 @@ public:
     void resized() override;
 
 private:
-    //==============================================================================
-    // Your private member variables go here...
+    HexGrid m_grid;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
