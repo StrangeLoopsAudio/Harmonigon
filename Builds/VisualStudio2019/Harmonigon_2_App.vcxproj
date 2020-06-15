@@ -1861,6 +1861,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\NoteUtils.h"/>
     <ClInclude Include="..\..\Source\HexGrid.h"/>
     <ClInclude Include="..\..\Source\Tracer.h"/>
     <ClInclude Include="..\..\Source\Hexagon.h"/>

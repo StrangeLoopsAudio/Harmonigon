@@ -3,6 +3,7 @@
 <JUCERPROJECT id="jF4Yi3" name="Harmonigon_2" projectType="guiapp" jucerVersion="5.4.7">
   <MAINGROUP id="zHqA2B" name="Harmonigon_2">
     <GROUP id="{CEB3094D-40B6-4C97-FA58-E37DE2CD777F}" name="Source">
+      <FILE id="W5oEGI" name="NoteUtils.h" compile="0" resource="0" file="Source/NoteUtils.h"/>
       <FILE id="TSPnIL" name="HexGrid.cpp" compile="1" resource="0" file="Source/HexGrid.cpp"/>
       <FILE id="GoYsL0" name="HexGrid.h" compile="0" resource="0" file="Source/HexGrid.h"/>
       <FILE id="hqm1fP" name="Tracer.cpp" compile="1" resource="0" file="Source/Tracer.cpp"/>

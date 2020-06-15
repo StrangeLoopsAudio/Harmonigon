@@ -13,11 +13,10 @@
 #include <JuceHeader.h>
 #include "Hexagon.h"
 #include "Tracer.h"
+#include "NoteUtils.h"
 
 //==============================================================================
 
-#define NUM_ROWS 8
-#define NUM_COLS 15
 #define HEX_W_TO_H_RATIO 1.1547005
 
 class HexGrid : public Component

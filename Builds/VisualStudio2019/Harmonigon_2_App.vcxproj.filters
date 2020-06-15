@@ -2256,6 +2256,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\NoteUtils.h">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\HexGrid.h">
       <Filter>Harmonigon_2\Source</Filter>
     </ClInclude>
