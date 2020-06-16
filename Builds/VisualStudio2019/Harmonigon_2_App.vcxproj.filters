@@ -397,6 +397,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\NoteUtils.cpp">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\HexGrid.cpp">
       <Filter>Harmonigon_2\Source</Filter>
     </ClCompile>

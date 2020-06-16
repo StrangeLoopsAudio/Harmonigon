@@ -13,7 +13,6 @@
 #include <JuceHeader.h>
 #include "Hexagon.h"
 #include "Tracer.h"
-#include "NoteUtils.h"
 
 //==============================================================================
 

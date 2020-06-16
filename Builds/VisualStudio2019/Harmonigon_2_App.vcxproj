@@ -138,6 +138,7 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\NoteUtils.cpp"/>
     <ClCompile Include="..\..\Source\HexGrid.cpp"/>
     <ClCompile Include="..\..\Source\Tracer.cpp"/>
     <ClCompile Include="..\..\Source\Hexagon.cpp"/>

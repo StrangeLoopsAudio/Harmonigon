@@ -15,6 +15,17 @@
 HexGrid::HexGrid()
 {
     setSize(200, 300);
+    for (int i = 0; i < NUM_COLS; i++)
+    {
+        int numRows = (i % 2 == 0) ? (NUM_ROWS - 1) : NUM_ROWS;
+
+        for (int j = 0; j < numRows; j++)
+        {
+            /* Yes this is bad for locality, but it's the easiest to traverse with flat hexagons */
+            m_hexArray[i][j].setTile(NoteUtils::hexagons[j][i]);
+            addAndMakeVisible(m_hexArray[i][j]);
+        }
+    }
 }
 
 HexGrid::~HexGrid()
@@ -59,7 +70,6 @@ void HexGrid::resized()
         {
             /* Yes this is bad for locality, but it's the easiest to traverse with flat hexagons */
             m_hexArray[i][j].setBounds(curX, curY, hexWidth, hexHeight);
-            addAndMakeVisible(m_hexArray[i][j]);
             curY += hexHeight;
         }
     }

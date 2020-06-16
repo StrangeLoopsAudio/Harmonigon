@@ -15,6 +15,7 @@
 Hexagon::Hexagon()
 {
     m_noteNum = 0;
+    m_sideLength = 0;
 }
 
 Hexagon::~Hexagon()
@@ -44,13 +45,14 @@ void Hexagon::paint (Graphics& g)
         hexPath.lineTo(getLocalPoint(getParentComponent(), getVertex(i)));
     }
     hexPath.closeSubPath();
-    //hexPath.addPolygon(Point<float>(getWidth() / 2, getHeight() / 2), 6, getWidth() / 2, 30);
+
     g.strokePath(hexPath, PathStrokeType(1.0f));
 
     g.setColour (Colours::white);
-    g.setFont (14.0f);
-    g.drawText ("Hex", getLocalBounds(),
-                Justification::centred, true);   // draw some placeholder text
+    g.setFont (20.0f);
+    g.drawText (NoteUtils::keyToString(m_tile.key), getLocalBounds(),
+            Justification::centred, true);   // draw some placeholder text
+
 }
 
 /* Returns vertex coordinates relative to parent */
@@ -84,6 +86,12 @@ Point<float> Hexagon::getVertex(int index) {
 void Hexagon::setNote(int noteNum)
 {
     m_noteNum = noteNum;
+}
+
+void Hexagon::setTile(NoteUtils::HexTile tile)
+{
+    m_tile = tile;
+    DBG(NoteUtils::keyToString(tile.key));
 }
 
 void Hexagon::resized()

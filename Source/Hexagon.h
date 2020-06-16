@@ -11,6 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "NoteUtils.h"
 
 //==============================================================================
 /*
@@ -27,12 +28,13 @@ public:
     // Vertex index is 0 at top right, goes clockwise
     Point<float> getVertex(int index);
     void setNote(int noteNum);
+    void setTile(NoteUtils::HexTile tile);
 
 private:
     int m_noteNum; // MIDI note number
     float m_sideLength;
     Point<float> m_center;
-
+    NoteUtils::HexTile m_tile;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Hexagon)
 };
