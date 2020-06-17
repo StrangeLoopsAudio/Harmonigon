@@ -37,7 +37,6 @@ void Hexagon::paint (Graphics& g)
 
     g.fillAll (Colours::transparentBlack);   // clear the background
 
-    g.setColour(Colours::purple);
     Path hexPath;
     hexPath.startNewSubPath(getLocalPoint(getParentComponent(), getVertex(0)));
     for (int i = 1; i < 6; i++)
@@ -46,6 +45,7 @@ void Hexagon::paint (Graphics& g)
     }
     hexPath.closeSubPath();
 
+    g.setColour(Colours::purple);
     g.strokePath(hexPath, PathStrokeType(1.0f));
 
     g.setColour (Colours::white);

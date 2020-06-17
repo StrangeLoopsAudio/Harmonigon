@@ -30,8 +30,27 @@ public:
 
 private:
 
-    Array<Tracer::TracerPoint> getAdjacentVertices(Tracer::TracerPoint point);
-    Point<float> getTracerPosition(Tracer::TracerPoint point);
+    enum IntersectionType {
+        LEFT_T,
+        RIGHT_T,
+        UP_DOWN,
+        LEFT_RIGHT
+    };
+
+    /* Tracer owning rules */
+    /*
+    - All hexagons own vertices 0, 1
+    - Bottom row of odd columns also own vertices 2, 3, 4
+    - Top row of odd columns also own vertex 5
+    - First column also owns vertices 3, 4
+    - Top left hex also owns vertex 5
+    - Bottom right hex also owns vertex 2
+    */
+
+    TracerPoint getNextVertex(TracerPoint point);
+    Array<TracerPoint> getAdjacentVertices(TracerPoint point);
+    Point<float> getTracerPosition(TracerPoint point);
+    IntersectionType getIntersectionType(TracerPoint point);
 
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;

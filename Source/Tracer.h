@@ -23,6 +23,29 @@
 //==============================================================================
 /*
 */
+struct TracerPoint
+{
+    TracerPoint() {}
+    TracerPoint(int hexRow, int hexCol, int vertex) : hexPos(hexRow, hexCol), vertex(vertex) {
+        initLinePos();
+    }
+
+    typedef struct _coord
+    {
+        _coord() {}
+        _coord(int pRow, int pCol) : row(pRow), col(pCol) {}
+        int row;
+        int col;
+    } coord;
+    
+    void initLinePos();
+    void refreshHexPos();
+
+    coord hexPos;
+    coord pos;
+    int vertex;
+};
+
 class Tracer : public Component
 {
 public:
@@ -31,15 +54,6 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
-
-    typedef struct _tracerPoint
-    {
-        _tracerPoint() {}
-        _tracerPoint(int pRow, int pCol, int pVertex) : row(pRow), col(pCol), vertex(pVertex) {}
-        int row;
-        int col;
-        int vertex;
-    } TracerPoint;
     
     TracerPoint position;
 
