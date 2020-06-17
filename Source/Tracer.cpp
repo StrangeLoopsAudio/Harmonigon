@@ -34,13 +34,8 @@ void Tracer::paint (Graphics& g)
 
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
 
-    g.setColour (Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
-    g.setColour (Colours::white);
-    g.setFont (14.0f);
-    g.drawText ("Tracer", getLocalBounds(),
-                Justification::centred, true);   // draw some placeholder text
+    g.setColour (Colours::deeppink);
+    g.drawEllipse(getLocalBounds().toFloat(), 2);
 }
 
 void Tracer::resized()
@@ -49,3 +44,4 @@ void Tracer::resized()
     // components that your component contains..
 
 }
+

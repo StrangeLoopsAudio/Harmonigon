@@ -91,7 +91,6 @@ void Hexagon::setNote(int noteNum)
 void Hexagon::setTile(NoteUtils::HexTile tile)
 {
     m_tile = tile;
-    DBG(NoteUtils::keyToString(tile.key));
 }
 
 void Hexagon::resized()

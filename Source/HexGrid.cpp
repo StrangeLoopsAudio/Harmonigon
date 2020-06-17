@@ -26,10 +26,29 @@ HexGrid::HexGrid()
             addAndMakeVisible(m_hexArray[i][j]);
         }
     }
+    // Add a tracerboi
+    m_tracers.add(new Tracer());
+    m_tracers[0]->setSize(10, 10);
+    m_tracers[0]->position = Tracer::TracerPoint(3, 3, 0);
+    addAndMakeVisible(m_tracers[0]);
+
+    startTimer(1000);
 }
 
 HexGrid::~HexGrid()
 {
+}
+
+void HexGrid::timerCallback()
+{
+    if (!m_animator.isAnimating())
+    {
+        Rectangle<int> center = m_tracers[0]->getBounds();
+        Tracer::TracerPoint newPoint = m_tracers[0]->position;
+        newPoint.row++;
+        center.setCentre(getTracerPosition(newPoint).toInt());
+        m_animator.animateComponent(m_tracers[0], center, 1, 900, false, 0.3, 0.3);
+    }   
 }
 
 void HexGrid::paint (Graphics& g)
@@ -49,6 +68,7 @@ void HexGrid::paint (Graphics& g)
 
 void HexGrid::resized()
 {
+    /* Position hexagons */
     float hexHeight = getHeight() / NUM_ROWS;
     float hexWidth = hexHeight * HEX_W_TO_H_RATIO;
 
@@ -73,4 +93,15 @@ void HexGrid::resized()
             curY += hexHeight;
         }
     }
+
+    for (int i = 0; i < m_tracers.size(); i++)
+    {
+        Point<float> tracerPos = getTracerPosition(m_tracers[i]->position);
+        m_tracers[i]->setCentrePosition(tracerPos.toInt());
+    }
+}
+
+Point<float> HexGrid::getTracerPosition(Tracer::TracerPoint point)
+{
+    return m_hexArray[point.col][point.row].getVertex(point.vertex);
 }
