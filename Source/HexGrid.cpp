@@ -127,14 +127,3 @@ Array<TracerPoint> HexGrid::getAdjacentVertices(TracerPoint point)
     }
     return points;
 }
-
-/* Returns */
-HexGrid::IntersectionType HexGrid::getIntersectionType(TracerPoint point)
-{
-    if (point.pos.col > 0 && point.pos.row > 0)
-    {
-        /* Middle vertexes, will be either LEFT_T or RIGHT_T */
-        return LEFT_T;
-    }
-    return UP_DOWN;
-}

@@ -82,8 +82,11 @@ void TracerPoint::initLinePos()
     }
 }
 
-void TracerPoint::refreshHexPos()
+void TracerPoint::positionChanged()
 {
+    /* Reset intersection type */
+    intType = INVALID;
+
     /* Assuming new line pos has been set, need to update hexPos to match */
     /* Refresh column */
     if (vertex > 2)
@@ -97,6 +100,18 @@ void TracerPoint::refreshHexPos()
         else
         {
             hexPos.row = (pos.row - vertex) / 2;
+        }
+
+        /* Set intersection type with a clever xor */
+        if (pos.row % 2 != pos.col % 2)
+        {
+            /* Odd row, odd col or even row, even col */
+            intType = LEFT_T;
+        }
+        else
+        {
+            /* Odd row, even col or even row, odd col */
+            intType = RIGHT_T;
         }
     }
     else
@@ -115,11 +130,20 @@ void TracerPoint::refreshHexPos()
         {
             /* Odd column top row */
             hexPos.row = 0;
+            intType = LEFT_RIGHT;
         }
         else if (pos.row == (NUM_ROWS * 2) || (pos.row == ((NUM_ROWS * 2) - 1) && vertex == 4))
         {
             /* Odd column bottom row */
             hexPos.row = NUM_ROWS - 1;
+            if (vertex == 4)
+            {
+                intType = LEFT_T;
+            }
+            else
+            {
+                intType = LEFT_RIGHT;
+            }
         }
         else if (pos.col == 0)
         {
@@ -127,17 +151,39 @@ void TracerPoint::refreshHexPos()
             {
                 /* Top left tile */
                 hexPos.row = 0;
+                intType = LEFT_RIGHT;
             }
             else
             {
                 /* First column */
                 hexPos.row = (pos.row - 1 - (5 - vertex)) / 2;
+                if (vertex == 4)
+                {
+                    intType = UP_DOWN;
+                }
+                else
+                {
+                    intType = RIGHT_T;
+                }
             }
         }
         else if (hexPos.col == NUM_COLS - 1)
         {
             /* Bottom right tile */
             hexPos.row = NUM_ROWS - 1;
+            intType = LEFT_RIGHT;
+        }
+    }
+
+    if (intType == INVALID)
+    {
+        if (vertex % 2)
+        {
+            intType = RIGHT_T;
+        }
+        else
+        {
+            intType = LEFT_T;
         }
     }
 }

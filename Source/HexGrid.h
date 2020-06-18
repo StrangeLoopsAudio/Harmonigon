@@ -30,13 +30,6 @@ public:
 
 private:
 
-    enum IntersectionType {
-        LEFT_T,
-        RIGHT_T,
-        UP_DOWN,
-        LEFT_RIGHT
-    };
-
     /* Tracer owning rules */
     /*
     - All hexagons own vertices 0, 1
@@ -50,7 +43,6 @@ private:
     TracerPoint getNextVertex(TracerPoint point);
     Array<TracerPoint> getAdjacentVertices(TracerPoint point);
     Point<float> getTracerPosition(TracerPoint point);
-    IntersectionType getIntersectionType(TracerPoint point);
 
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;

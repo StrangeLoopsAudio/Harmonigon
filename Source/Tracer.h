@@ -26,9 +26,17 @@
 struct TracerPoint
 {
     TracerPoint() {}
-    TracerPoint(int hexRow, int hexCol, int vertex) : hexPos(hexRow, hexCol), vertex(vertex) {
+    TracerPoint(int hexRow, int hexCol, int vertex) : hexPos(hexRow, hexCol), vertex(vertex), intType(INVALID) {
         initLinePos();
     }
+
+    enum IntersectionType {
+        INVALID = -1,
+        LEFT_T,
+        RIGHT_T,
+        UP_DOWN,
+        LEFT_RIGHT,
+    };
 
     typedef struct _coord
     {
@@ -39,11 +47,12 @@ struct TracerPoint
     } coord;
     
     void initLinePos();
-    void refreshHexPos();
+    void positionChanged();
 
     coord hexPos;
     coord pos;
     int vertex;
+    IntersectionType intType;
 };
 
 class Tracer : public Component
