@@ -13,23 +13,11 @@
 #include <JuceHeader.h>
 #include "Hexagon.h"
 
-#define NUM_TRACER_COLS   16
-#define NUM_TRACER_ROWS   17
-#define SEG_PER_SHORT_COL 14
-#define SEG_PER_LONG_COL  16
-#define SEG_PER_SHORT_ROW 7
-#define SEG_PER_LONG_ROW  8
-
 //==============================================================================
 /*
 */
 struct TracerPoint
-{
-    TracerPoint() {}
-    TracerPoint(int hexRow, int hexCol, int vertex) : hexPos(hexRow, hexCol), vertex(vertex), intType(INVALID) {
-        initLinePos();
-    }
-
+{    
     enum IntersectionType {
         INVALID = -1,
         LEFT_T,
@@ -37,6 +25,20 @@ struct TracerPoint
         UP_DOWN,
         LEFT_RIGHT,
     };
+
+    enum Direction
+    {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    };
+
+    TracerPoint() {}
+    TracerPoint(int hexRow, int hexCol, int vertex) : hexPos(hexRow, hexCol), vertex(vertex), intType(INVALID)
+    {
+        initLinePos();
+    }
 
     typedef struct _coord
     {
@@ -48,6 +50,8 @@ struct TracerPoint
     
     void initLinePos();
     void positionChanged();
+    Array<Direction> getMoves();
+    void move(Direction dir);
 
     coord hexPos;
     coord pos;

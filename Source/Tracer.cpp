@@ -89,7 +89,7 @@ void TracerPoint::positionChanged()
 
     /* Assuming new line pos has been set, need to update hexPos to match */
     /* Refresh column */
-    if (vertex > 2)
+    if (vertex < 2)
     {
         /* General case for vertices 0, 1 */
         hexPos.col = pos.col;
@@ -186,6 +186,153 @@ void TracerPoint::positionChanged()
             intType = LEFT_T;
         }
     }
+}
+
+Array<TracerPoint::Direction> TracerPoint::getMoves()
+{
+    Array<Direction> moves;
+    switch (intType)
+    {
+        case LEFT_T:
+        {
+            moves.add(LEFT);
+            moves.add(UP);
+            moves.add(DOWN);
+            break;
+        }
+        case RIGHT_T:
+        {
+            moves.add(RIGHT);
+            moves.add(UP);
+            moves.add(DOWN);
+            break;
+        }
+        case LEFT_RIGHT:
+        {
+            moves.add(LEFT);
+            moves.add(RIGHT);
+            break;
+        }
+        case UP_DOWN:
+        {
+            moves.add(UP);
+            moves.add(DOWN);
+            break;
+        }
+        default:
+        {
+            jassert(false);
+        }
+    }
+    return moves;
+}
+
+/* Absolutely no validity checking right now, yeesh */
+void TracerPoint::move(Direction dir)
+{
+    switch (dir)
+    {
+        case UP:
+        {
+            pos.row--;
+            if (intType == UP_DOWN)
+            {
+                jassert(vertex == 3 || vertex == 4);
+                vertex = (vertex == 3) ? 4 : 3;
+            }
+            else
+            {
+                if (vertex == 4)
+                {
+                    vertex = 1;
+                }
+                else if (vertex == 0 && pos.row == 1)
+                {
+                    vertex = 5;
+                }
+                else
+                {
+                    jassert(vertex < 2);
+                    vertex = !vertex;
+                }
+            }
+            break;
+        }
+        case DOWN:
+        {
+            pos.row++;
+            if (intType == UP_DOWN)
+            {
+                jassert(vertex == 3 || vertex == 4);
+                vertex = (vertex == 3) ? 4 : 3;
+            }
+            else
+            {
+                jassert(vertex < 2);
+                vertex = !vertex;
+            }
+            break;
+        }
+        case LEFT:
+        {
+            if (intType == LEFT_RIGHT)
+            {
+                if (vertex == 5)
+                {
+                    vertex = (pos.col == 0) ? 4 : 0;
+                    pos.row++;
+                }
+                else if (vertex == 2)
+                {
+                    pos.col--;
+                    vertex = (pos.row == (2 * NUM_ROWS)) ? 3 : 1;
+                }
+                else /* vertex == 3 */
+                {
+                    pos.row--;
+                    vertex = 4;
+                }
+            }
+            else
+            {
+                jassert(vertex < 2);
+                pos.col--;
+                vertex = 1;
+            }
+        }
+        case RIGHT:
+        {
+            if (intType == LEFT_RIGHT)
+            {
+                if (vertex == 5)
+                {
+                    vertex = 0;
+                    pos.col++;
+                }
+                else if (vertex == 2)
+                {
+                    vertex = 1;
+                    pos.row--;
+                }
+                else /* vertex == 3 */
+                {
+                    pos.col++;
+                    vertex = 2;
+                }
+            }
+            else
+            {
+                jassert(vertex < 2);
+                pos.col++;
+                vertex = 0;
+            }
+        }
+        default:
+        {
+            jassert(false);
+        }
+    }
+    positionChanged();
 }
 
 Tracer::Tracer()
