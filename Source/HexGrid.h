@@ -40,8 +40,7 @@ private:
     - Bottom right hex also owns vertex 2
     */
 
-    TracerPoint getNextVertex(TracerPoint point);
-    Array<TracerPoint> getAdjacentVertices(TracerPoint point);
+    void moveTracerRandom(Tracer *tracer);
     Point<float> getTracerPosition(TracerPoint point);
 
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];

@@ -80,6 +80,7 @@ void TracerPoint::initLinePos()
             jassert(false);
         }
     }
+    positionChanged();
 }
 
 void TracerPoint::positionChanged()
@@ -92,7 +93,7 @@ void TracerPoint::positionChanged()
     if (vertex < 2)
     {
         /* General case for vertices 0, 1 */
-        hexPos.col = pos.col;
+        hexPos.col = pos.col - 1;
         if (hexPos.col % 2 == 0)
         {
             hexPos.row = (pos.row - vertex - 1) / 2;
@@ -102,8 +103,13 @@ void TracerPoint::positionChanged()
             hexPos.row = (pos.row - vertex) / 2;
         }
 
+        /* Rightmost col at vertex 1 are up downs */
+        if (pos.col == NUM_COLS - 1 && vertex == 1)
+        {
+            intType = UP_DOWN;
+        }
         /* Set intersection type with a clever xor */
-        if (pos.row % 2 != pos.col % 2)
+        else if (pos.row % 2 == pos.col % 2)
         {
             /* Odd row, odd col or even row, even col */
             intType = LEFT_T;
@@ -179,11 +185,11 @@ void TracerPoint::positionChanged()
     {
         if (vertex % 2)
         {
-            intType = RIGHT_T;
+            intType = LEFT_T;
         }
         else
         {
-            intType = LEFT_T;
+            intType = RIGHT_T;
         }
     }
 }
@@ -237,8 +243,21 @@ void TracerPoint::move(Direction dir)
             pos.row--;
             if (intType == UP_DOWN)
             {
-                jassert(vertex == 3 || vertex == 4);
-                vertex = (vertex == 3) ? 4 : 3;
+                if (vertex == 4 && pos.row == 1)
+                {
+                    /* Top left tile */
+                    vertex = 5;
+                }
+                else if (vertex > 1)
+                {
+                    /* Left col up downs */
+                    vertex = (vertex == 3) ? 4 : 3;
+                }
+                else
+                {
+                    /* Right col up downs */
+                    vertex = 0;
+                }
             }
             else
             {
@@ -246,7 +265,7 @@ void TracerPoint::move(Direction dir)
                 {
                     vertex = 1;
                 }
-                else if (vertex == 0 && pos.row == 1)
+                else if (vertex == 0 && pos.row == 0)
                 {
                     vertex = 5;
                 }
@@ -263,8 +282,21 @@ void TracerPoint::move(Direction dir)
             pos.row++;
             if (intType == UP_DOWN)
             {
-                jassert(vertex == 3 || vertex == 4);
-                vertex = (vertex == 3) ? 4 : 3;
+                if (vertex > 1)
+                {
+                    /* Left col up downs */
+                    vertex = (vertex == 3) ? 4 : 3;
+                }
+                else if (pos.row == (2 * NUM_ROWS) - 1)
+                {
+                    /* Bottom right tile */
+                    vertex = 2;
+                }
+                else
+                {
+                    /* Right col up downs */
+                    vertex = 0;
+                }
             }
             else
             {
@@ -277,8 +309,15 @@ void TracerPoint::move(Direction dir)
         {
             if (intType == LEFT_RIGHT)
             {
-                if (vertex == 5)
+                if (vertex == 0)
                 {
+                    /* Odd top right side */
+                    vertex = 5;
+                    pos.col--;
+                }
+                else if (vertex == 5)
+                {
+                    /* Odd top left side */
                     vertex = (pos.col == 0) ? 4 : 0;
                     pos.row++;
                 }
@@ -297,15 +336,30 @@ void TracerPoint::move(Direction dir)
             {
                 jassert(vertex < 2);
                 pos.col--;
-                vertex = 1;
+                if (pos.col == 0)
+                {
+                    vertex = 3;
+                }
+                else
+                {
+                    vertex = 1;
+                }
             }
+            break;
         }
         case RIGHT:
         {
             if (intType == LEFT_RIGHT)
             {
-                if (vertex == 5)
+                if (vertex == 0)
                 {
+                    /* Odd top left side */
+                    vertex = 1;
+                    pos.row++;
+                }
+                else if (vertex == 5)
+                {
+                    /* Odd top left side */
                     vertex = 0;
                     pos.col++;
                 }
@@ -324,8 +378,16 @@ void TracerPoint::move(Direction dir)
             {
                 jassert(vertex < 2);
                 pos.col++;
-                vertex = 0;
+                if (pos.col == (2 * NUM_ROWS) - 1)
+                {
+                    vertex = 2;
+                }
+                else
+                {
+                    vertex = 0;
+                }
             }
+            break;
         }
         default:
         {
