@@ -35,15 +35,15 @@ HexGrid::HexGrid()
     m_tracers[0]->position = TracerPoint(7, 13, 4);
     addAndMakeVisible(m_tracers[0]); */
     
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < 10; i++)
     {
         m_tracers.add(new Tracer());
         m_tracers[i]->setSize(15, 15);
-        m_tracers[i]->position = TracerPoint(4, 7, 1);
+        m_tracers[i]->position = TracerPoint(0, 0, 1);
         addAndMakeVisible(m_tracers[i]);
     }
 
-    startTimer(250);
+    startTimer(500);
 }
 
 HexGrid::~HexGrid()
@@ -56,14 +56,14 @@ void HexGrid::timerCallback()
     {
         timerCount++;
         for (int i = 0; i < m_tracers.size(); i++){
-            if (timerCount % 4 < i % 10)
-            {
+//            if (timerCount % 4 < i % 10)
+//            {
                 Rectangle<int> center = m_tracers[i]->getBounds();
                 moveTracerRandom(m_tracers[i]);
                 center.setCentre(getTracerPosition(m_tracers[i]->position).toInt());
-                m_animator.animateComponent(m_tracers[i], center, 1, 240, true, 0.3, 0.3);
+                m_animator.animateComponent(m_tracers[i], center, 1, 400, true, 0.3, 0.3);
                 repaint();
-            }
+//            }
         }
     }
 }

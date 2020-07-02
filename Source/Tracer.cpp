@@ -113,14 +113,15 @@ void TracerPoint::positionChanged()
         {
             intType = UP_DOWN;
         }
-        else if (pos.row == 0 || (pos.row == 1 && vertex == 0))
+        else if ((pos.row == 0 && hexPos.col % 2 == 1))
         {
             intType = LEFT_RIGHT;
         }
         /* Set intersection type with a clever xor */
-        else if (pos.row % 2 == pos.col % 2)
+        else if ((pos.row % 2 == pos.col % 2) || (pos.row == 1 && pos.col == 0 && vertex == 0))
         {
             /* Odd row, odd col or even row, even col */
+            /* vertex 0 of top of first col */
             intType = LEFT_T;
         }
         else
