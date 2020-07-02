@@ -12,6 +12,8 @@
 #include "HexGrid.h"
 
 //==============================================================================
+int timerCount = 0;
+
 HexGrid::HexGrid()
 {
     setSize(200, 300);
@@ -27,12 +29,21 @@ HexGrid::HexGrid()
         }
     }
     // Add a tracerboi
-    m_tracers.add(new Tracer());
-    m_tracers[0]->setSize(10, 10);
-    m_tracers[0]->position = TracerPoint(3, 3, 1);
-    addAndMakeVisible(m_tracers[0]);
 
-    startTimer(500);
+    /*m_tracers.add(new Tracer());
+    m_tracers[0]->setSize(15, 15);
+    m_tracers[0]->position = TracerPoint(7, 13, 4);
+    addAndMakeVisible(m_tracers[0]); */
+    
+    for (int i = 0; i < 30; i++)
+    {
+        m_tracers.add(new Tracer());
+        m_tracers[i]->setSize(15, 15);
+        m_tracers[i]->position = TracerPoint(4, 7, 1);
+        addAndMakeVisible(m_tracers[i]);
+    }
+
+    startTimer(250);
 }
 
 HexGrid::~HexGrid()
@@ -43,12 +54,17 @@ void HexGrid::timerCallback()
 {
     if (!m_animator.isAnimating())
     {
-        Rectangle<int> center = m_tracers[0]->getBounds();
-        moveTracerRandom(m_tracers[0]);
-        DBG(m_tracers[0]->position.vertex);
-        center.setCentre(getTracerPosition(m_tracers[0]->position).toInt());
-        m_animator.animateComponent(m_tracers[0], center, 1, 490, true, 0.3, 0.3);
-        repaint();
+        timerCount++;
+        for (int i = 0; i < m_tracers.size(); i++){
+            if (timerCount % 4 < i % 10)
+            {
+                Rectangle<int> center = m_tracers[i]->getBounds();
+                moveTracerRandom(m_tracers[i]);
+                center.setCentre(getTracerPosition(m_tracers[i]->position).toInt());
+                m_animator.animateComponent(m_tracers[i], center, 1, 240, true, 0.3, 0.3);
+                repaint();
+            }
+        }
     }
 }
 
@@ -111,5 +127,10 @@ void HexGrid::moveTracerRandom(Tracer *tracer)
 {
     Array<TracerPoint::Direction> possibleDirs = tracer->position.getMoves();
     int index = Random::getSystemRandom().nextInt(possibleDirs.size());
+    /* DBG("possibleDirs");
+    for(int i = 0; i < possibleDirs.size(); i++){
+        DBG(possibleDirs[i]);
+    }
+    DBG("actual = " << possibleDirs[index] << "\n"); */
     return tracer->position.move(possibleDirs[index]);
 }

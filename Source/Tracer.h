@@ -18,7 +18,8 @@
 */
 struct TracerPoint
 {    
-    enum IntersectionType {
+    enum IntersectionType
+    {
         INVALID = -1,
         LEFT_T,
         RIGHT_T,
