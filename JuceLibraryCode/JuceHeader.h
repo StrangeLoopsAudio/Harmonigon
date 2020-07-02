@@ -47,7 +47,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "Harmonigon_2";
-    const char* const  companyName    = "";
+    const char* const  companyName    = "Whatever just type in something so that you can see that it changed";
     const char* const  versionString  = "1.0.0";
     const int          versionNumber  = 0x10000;
 }

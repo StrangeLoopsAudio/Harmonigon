@@ -13,6 +13,7 @@ BEGIN
   BEGIN
     BLOCK "040904E4"
     BEGIN
+      VALUE "CompanyName",  "Whatever just type in something so that you can see that it changed\0"
       VALUE "FileDescription",  "Harmonigon_2\0"
       VALUE "FileVersion",  "1.0.0\0"
       VALUE "ProductName",  "Harmonigon_2\0"

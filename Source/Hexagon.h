@@ -13,6 +13,8 @@
 #include <JuceHeader.h>
 #include "NoteUtils.h"
 
+#define Point juce::Point
+
 //==============================================================================
 /*
 */
