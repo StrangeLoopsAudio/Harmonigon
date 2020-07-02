@@ -55,7 +55,8 @@ void HexGrid::timerCallback()
     if (!m_animator.isAnimating())
     {
         timerCount++;
-        for (int i = 0; i < m_tracers.size(); i++){
+        for (int i = 0; i < m_tracers.size(); i++)
+        {
 //            if (timerCount % 4 < i % 10)
 //            {
                 Rectangle<int> center = m_tracers[i]->getBounds();
@@ -128,7 +129,8 @@ void HexGrid::moveTracerRandom(Tracer *tracer)
     Array<TracerPoint::Direction> possibleDirs = tracer->position.getMoves();
     int index = Random::getSystemRandom().nextInt(possibleDirs.size());
     /* DBG("possibleDirs");
-    for(int i = 0; i < possibleDirs.size(); i++){
+    for(int i = 0; i < possibleDirs.size(); i++)
+     {
         DBG(possibleDirs[i]);
     }
     DBG("actual = " << possibleDirs[index] << "\n"); */
