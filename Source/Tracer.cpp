@@ -344,8 +344,6 @@ void TracerPoint::move(Direction dir)
                     /* bottom left LEFT_T */
                     vertex = 3;
                 }
-                
-                
                 else if (pos.row == 2 * NUM_ROWS)
                 {
                     /* down to last row */
@@ -396,7 +394,7 @@ void TracerPoint::move(Direction dir)
         {
             if (intType == LEFT_RIGHT)
             {
-                if (vertex == 0      && hexPos.col % 2 == 1       )
+                if (vertex == 0 && hexPos.col % 2 == 1)
                 {
                     /* Odd top right side */
                     vertex = 5;
@@ -413,15 +411,11 @@ void TracerPoint::move(Direction dir)
                     pos.col--;
                     vertex = (pos.row == (2 * NUM_ROWS)) ? 3 : 1;
                 }
-                
-                
                 else if (vertex == 0 && pos.row == 1)
                 {
                     vertex = 1;
                     pos.col--;
                 }
-                
-                
                 else /* vertex == 3 */
                 {
                     pos.row--;
@@ -433,7 +427,7 @@ void TracerPoint::move(Direction dir)
                 /* jassert(vertex < 2); */
                 if (vertex == 4)
                 {
-                    if(pos.col == 1)
+                    if (pos.col == 1)
                     {
                         /* bottom of first col*/
                         vertex = 3;
