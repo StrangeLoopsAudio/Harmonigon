@@ -177,7 +177,7 @@ void TracerPoint::positionChanged()
                 {
                     intType = UP_DOWN;
                 }
-                else if (vertex == 3 and pos.row == 2 * NUM_ROWS - 1)
+                else if (vertex == 3 && pos.row == 2 * NUM_ROWS - 1)
                 {
                     /* bottom left hex */
                     intType = LEFT_RIGHT;
