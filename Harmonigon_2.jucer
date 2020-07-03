@@ -1,24 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="jF4Yi3" name="Harmonigon_2" projectType="guiapp" jucerVersion="5.4.7"
-              companyName="Whatever just type in something so that you can see that it changed">
-  <MAINGROUP id="zHqA2B" name="Harmonigon_2">
-    <GROUP id="{CEB3094D-40B6-4C97-FA58-E37DE2CD777F}" name="Source">
-      <FILE id="ehluUf" name="NoteUtils.cpp" compile="1" resource="0" file="Source/NoteUtils.cpp"/>
-      <FILE id="W5oEGI" name="NoteUtils.h" compile="0" resource="0" file="Source/NoteUtils.h"/>
-      <FILE id="TSPnIL" name="HexGrid.cpp" compile="1" resource="0" file="Source/HexGrid.cpp"/>
-      <FILE id="GoYsL0" name="HexGrid.h" compile="0" resource="0" file="Source/HexGrid.h"/>
-      <FILE id="hqm1fP" name="Tracer.cpp" compile="1" resource="0" file="Source/Tracer.cpp"/>
-      <FILE id="mVDhsD" name="Tracer.h" compile="0" resource="0" file="Source/Tracer.h"/>
-      <FILE id="V0XDzQ" name="Hexagon.cpp" compile="1" resource="0" file="Source/Hexagon.cpp"/>
-      <FILE id="BseRxj" name="Hexagon.h" compile="0" resource="0" file="Source/Hexagon.h"/>
-      <FILE id="uTpxEk" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
-      <FILE id="NqcJjh" name="MainComponent.cpp" compile="1" resource="0"
+<JUCERPROJECT id="SExJ4A" name="Harmonigon_2" projectType="guiapp" jucerVersion="5.4.4">
+  <MAINGROUP id="chvjNi" name="Harmonigon_2">
+    <GROUP id="{54EAB013-77EB-B3AA-005B-D52E84D24626}" name="Source">
+      <FILE id="d1IPNI" name="Hexagon.cpp" compile="1" resource="0" file="Source/Hexagon.cpp"/>
+      <FILE id="R9rRNe" name="Hexagon.h" compile="0" resource="0" file="Source/Hexagon.h"/>
+      <FILE id="tPnCU6" name="HexGrid.cpp" compile="1" resource="0" file="Source/HexGrid.cpp"/>
+      <FILE id="dEmmHc" name="HexGrid.h" compile="0" resource="0" file="Source/HexGrid.h"/>
+      <FILE id="AToG0F" name="NoteUtils.cpp" compile="1" resource="0" file="Source/NoteUtils.cpp"/>
+      <FILE id="MddwH5" name="NoteUtils.h" compile="0" resource="0" file="Source/NoteUtils.h"/>
+      <FILE id="DolLjJ" name="Tracer.cpp" compile="1" resource="0" file="Source/Tracer.cpp"/>
+      <FILE id="ex4Pfp" name="Tracer.h" compile="0" resource="0" file="Source/Tracer.h"/>
+      <FILE id="bbU1D2" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="IWi3bN" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
-      <FILE id="o5xt7Q" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="ZO3gJ5" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../../../../JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
@@ -29,6 +49,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_core" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_cryptography" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../../../../JUCE/modules"/>
@@ -39,32 +60,13 @@
         <MODULEPATH id="juce_opengl" path="../../../../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2019>
-    <XCODE_MAC targetFolder="Builds/MacOSX">
-      <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug"/>
-        <CONFIGURATION isDebug="0" name="Release"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="juce_opengl" path="../../juce"/>
-        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
-        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
-        <MODULEPATH id="juce_graphics" path="../../juce"/>
-        <MODULEPATH id="juce_events" path="../../juce"/>
-        <MODULEPATH id="juce_data_structures" path="../../juce"/>
-        <MODULEPATH id="juce_cryptography" path="../../juce"/>
-        <MODULEPATH id="juce_core" path="../../juce"/>
-        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
-        <MODULEPATH id="juce_audio_formats" path="../../juce"/>
-        <MODULEPATH id="juce_audio_devices" path="../../juce"/>
-        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
-      </MODULEPATHS>
-    </XCODE_MAC>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
@@ -76,7 +78,6 @@
   </MODULES>
   <LIVE_SETTINGS>
     <WINDOWS/>
-    <OSX/>
   </LIVE_SETTINGS>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
 </JUCERPROJECT>
