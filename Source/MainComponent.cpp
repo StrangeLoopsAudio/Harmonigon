@@ -12,9 +12,6 @@
 MainComponent::MainComponent()
 {
     setSize (1000, 600);
-    
-    m_grid.setBounds(0, 0, getWidth(), getHeight());
-    addAndMakeVisible(m_grid);
 
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -28,6 +25,25 @@ MainComponent::MainComponent()
         // Specify the number of input and output channels that we want to open
         setAudioChannels (2, 2);
     }
+
+    m_grid.setBounds(0, 0, getWidth(), getHeight());
+    addAndMakeVisible(m_grid);
+
+    startTimer(TRACER_MOVE_DURATION);
+
+    m_synth.addVoice(new SineWaveVoice());
+    m_synth.addSound(new SineWaveSound());
+}
+
+void MainComponent::timerCallback()
+{
+    Array<NoteUtils::HexTile> notes = m_grid.getNotesToPlay();
+    m_synth.allNotesOff(1, true);
+    for (NoteUtils::HexTile note : notes)
+    {
+        m_synth.noteOn(1, NoteUtils::tileToMidiNote(note), 1);
+    }
+    m_grid.moveTracers(TRACER_MOVE_DURATION);
 }
 
 MainComponent::~MainComponent()
@@ -39,24 +55,13 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    // This function will be called when the audio device is started, or when
-    // its settings (i.e. sample rate, block size, etc) are changed.
-
-    // You can use this function to initialise any resources you might need,
-    // but be careful - it will be called on the audio thread, not the GUI thread.
-
-    // For more details, see the help for AudioProcessor::prepareToPlay()
+    m_synth.setCurrentPlaybackSampleRate(sampleRate);
 }
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    // Your audio-processing code goes here!
-
-    // For more details, see the help for AudioProcessor::getNextAudioBlock()
-
-    // Right now we are not producing any data, in which case we need to clear the buffer
-    // (to prevent the output of random noise)
     bufferToFill.clearActiveBufferRegion();
+    m_synth.renderNextBlock(*bufferToFill.buffer, MidiBuffer(), bufferToFill.startSample, bufferToFill.numSamples);
 }
 
 void MainComponent::releaseResources()

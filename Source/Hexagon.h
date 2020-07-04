@@ -31,6 +31,7 @@ public:
     Point<float> getVertex(int index);
     void setNote(int noteNum);
     void setTile(NoteUtils::HexTile tile);
+    NoteUtils::HexTile getTile();
 
 private:
     int m_noteNum; // MIDI note number

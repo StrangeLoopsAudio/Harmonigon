@@ -35,38 +35,36 @@ HexGrid::HexGrid()
     m_tracers[0]->position = TracerPoint(7, 13, 4);
     addAndMakeVisible(m_tracers[0]); */
     
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 1; i++)
     {
         m_tracers.add(new Tracer());
         m_tracers[i]->setSize(15, 15);
-        m_tracers[i]->position = TracerPoint(0, 0, 1);
+        m_tracers[i]->position = TracerPoint(3, 5, 1);
         addAndMakeVisible(m_tracers[i]);
     }
-
-    startTimer(500);
 }
 
-HexGrid::~HexGrid()
-{
-}
-
-void HexGrid::timerCallback()
+void HexGrid::moveTracers(int duration)
 {
     if (!m_animator.isAnimating())
     {
         timerCount++;
         for (int i = 0; i < m_tracers.size(); i++)
         {
-//            if (timerCount % 4 < i % 10)
-//            {
+            //if (timerCount % 4 <= i % 4)
+            //{
                 Rectangle<int> center = m_tracers[i]->getBounds();
                 moveTracerRandom(m_tracers[i]);
                 center.setCentre(getTracerPosition(m_tracers[i]->position).toInt());
-                m_animator.animateComponent(m_tracers[i], center, 1, 400, true, 0.3, 0.3);
+                m_animator.animateComponent(m_tracers[i], center, 1, duration - 10, true, 0.3, 0.3);
                 repaint();
-//            }
+            //}
         }
     }
+}
+
+HexGrid::~HexGrid()
+{
 }
 
 void HexGrid::paint (Graphics& g)
@@ -117,6 +115,21 @@ void HexGrid::resized()
         Point<float> tracerPos = getTracerPosition(m_tracers[i]->position);
         m_tracers[i]->setCentrePosition(tracerPos.toInt());
     }
+}
+
+Array<NoteUtils::HexTile> HexGrid::getNotesToPlay()
+{
+    Array<NoteUtils::HexTile> notes;
+    for (int i = 0; i < m_tracers.size(); i++)
+    {
+        notes.add(getTracerHex(m_tracers[i])->getTile());
+    }
+    return notes;
+}
+
+Hexagon* HexGrid::getTracerHex(Tracer* tracer)
+{
+    return &m_hexArray[tracer->position.hexPos.col][tracer->position.hexPos.row];
 }
 
 Point<float> HexGrid::getTracerPosition(TracerPoint point)

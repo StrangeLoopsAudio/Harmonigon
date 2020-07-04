@@ -18,7 +18,7 @@
 
 #define HEX_W_TO_H_RATIO 1.1547005
 
-class HexGrid : public Component, Timer
+class HexGrid : public Component
 {
 public:
     HexGrid();
@@ -26,7 +26,9 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
-    virtual void timerCallback() override;
+
+    Array<NoteUtils::HexTile> getNotesToPlay();
+    void moveTracers(int duration);
 
 private:
 
@@ -42,6 +44,7 @@ private:
 
     void moveTracerRandom(Tracer *tracer);
     Point<float> getTracerPosition(TracerPoint point);
+    Hexagon* getTracerHex(Tracer* tracer);
 
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;

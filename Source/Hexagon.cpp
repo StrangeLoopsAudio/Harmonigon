@@ -93,6 +93,11 @@ void Hexagon::setTile(NoteUtils::HexTile tile)
     m_tile = tile;
 }
 
+NoteUtils::HexTile Hexagon::getTile()
+{
+    return m_tile;
+}
+
 void Hexagon::resized()
 {
     m_center = Point<float>(getX() + (getWidth() / 2), getY() + (getHeight() / 2));
