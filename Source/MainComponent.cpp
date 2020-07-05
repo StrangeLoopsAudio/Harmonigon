@@ -31,8 +31,11 @@ MainComponent::MainComponent()
 
     startTimer(TRACER_MOVE_DURATION);
 
-    m_synth.addVoice(new SineWaveVoice());
     m_synth.addSound(new SineWaveSound());
+    for (int i = 0; i < 8; i++)
+    {
+        m_synth.addVoice(new SineWaveVoice());
+    }
 }
 
 void MainComponent::timerCallback()

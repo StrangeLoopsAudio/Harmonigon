@@ -564,8 +564,10 @@ void Tracer::paint (Graphics& g)
        You should replace everything in this method with your own
        drawing code..
     */
-    g.setColour (Colours::deeppink);
-    g.drawEllipse(getLocalBounds().toFloat(), 2);
+    g.setColour(Colours::dodgerblue);
+    Rectangle<float> circle = getLocalBounds().toFloat().reduced(getWidth() / 3);
+    circle.setCentre(getWidth() / 2, getHeight() / 2);
+    g.drawEllipse(circle, 2);
 }
 
 void Tracer::resized()

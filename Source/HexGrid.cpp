@@ -35,11 +35,11 @@ HexGrid::HexGrid()
     m_tracers[0]->position = TracerPoint(7, 13, 4);
     addAndMakeVisible(m_tracers[0]); */
     
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 5; i++)
     {
         m_tracers.add(new Tracer());
         m_tracers[i]->setSize(15, 15);
-        m_tracers[i]->position = TracerPoint(3, 5, 1);
+        m_tracers[i]->position = TracerPoint(5, 7, 1);
         addAndMakeVisible(m_tracers[i]);
     }
 }
@@ -122,7 +122,9 @@ Array<NoteUtils::HexTile> HexGrid::getNotesToPlay()
     Array<NoteUtils::HexTile> notes;
     for (int i = 0; i < m_tracers.size(); i++)
     {
-        notes.add(getTracerHex(m_tracers[i])->getTile());
+        Hexagon* hex = getTracerHex(m_tracers[i]);
+        hex->pulse();
+        notes.add(hex->getTile());
     }
     return notes;
 }
