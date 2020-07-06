@@ -49,7 +49,7 @@ void Hexagon::paint (Graphics& g)
     innerPath = hexPath;
     innerPath.applyTransform(AffineTransform::scale(0.92, 0.92, getWidth() / 2, getHeight() / 2));
 
-    g.setColour(Colours::purple);
+    g.setColour(Colours::black);
     g.strokePath(hexPath, PathStrokeType(1.0f));
     g.setColour(m_curColour);
     g.strokePath(innerPath, PathStrokeType(1.0f));

@@ -35,7 +35,7 @@ HexGrid::HexGrid()
     m_tracers[0]->position = TracerPoint(7, 13, 4);
     addAndMakeVisible(m_tracers[0]); */
     
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 10; i++)
     {
         m_tracers.add(new Tracer());
         m_tracers[i]->setSize(15, 15);
