@@ -11,8 +11,7 @@
 #include <JuceHeader.h>
 #include "HexGrid.h"
 
-//==============================================================================
-int timerCount = 0;
+#define PADDING 15
 
 HexGrid::HexGrid()
 {
@@ -42,13 +41,15 @@ HexGrid::HexGrid()
         m_tracers[i]->position = TracerPoint(5, 7, 1);
         addAndMakeVisible(m_tracers[i]);
     }
+
+    m_timerCount = 0;
 }
 
 void HexGrid::moveTracers(int duration)
 {
     if (!m_animator.isAnimating())
     {
-        timerCount++;
+        m_timerCount++;
         for (int i = 0; i < m_tracers.size(); i++)
         {
             //if (timerCount % 4 <= i % 4)
@@ -77,19 +78,16 @@ void HexGrid::paint (Graphics& g)
     */
 
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
-
-    g.setColour (Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 }
 
 void HexGrid::resized()
 {
     /* Position hexagons */
-    float hexHeight = getHeight() / NUM_ROWS;
+    float hexHeight = (getHeight()- PADDING) / NUM_ROWS;
     float hexWidth = hexHeight * HEX_W_TO_H_RATIO;
 
-    float curX = 0;
-    float curY = 0;
+    float curX = PADDING;
+    float curY = PADDING;
     float yOffset = hexHeight / 2;
     int numRows = NUM_ROWS;
     for (int i = 0; i < NUM_COLS; i++)

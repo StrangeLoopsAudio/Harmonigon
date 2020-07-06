@@ -3,6 +3,9 @@
 <JUCERPROJECT id="SExJ4A" name="Harmonigon_2" projectType="guiapp" jucerVersion="5.4.4">
   <MAINGROUP id="chvjNi" name="Harmonigon_2">
     <GROUP id="{54EAB013-77EB-B3AA-005B-D52E84D24626}" name="Source">
+      <FILE id="npgaO3" name="ParameterBar.cpp" compile="1" resource="0"
+            file="Source/ParameterBar.cpp"/>
+      <FILE id="h5ZbhL" name="ParameterBar.h" compile="0" resource="0" file="Source/ParameterBar.h"/>
       <FILE id="UsXtei" name="Synth.cpp" compile="1" resource="0" file="Source/Synth.cpp"/>
       <FILE id="UvATDl" name="Synth.h" compile="0" resource="0" file="Source/Synth.h"/>
       <FILE id="d1IPNI" name="Hexagon.cpp" compile="1" resource="0" file="Source/Hexagon.cpp"/>

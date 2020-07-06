@@ -257,11 +257,11 @@ Array<TracerPoint::Direction> TracerPoint::getMoves()
 /* Absolutely no validity checking right now, yeesh */
 void TracerPoint::move(Direction dir)
 {
-    DBG("intType = " << intType);
+    /* DBG("intType = " << intType);
     DBG("dir = " << dir);
     DBG("old vertex = " << vertex);
     DBG("hex col = " << hexPos.col);
-    DBG("hex row = " << hexPos.row);
+    DBG("hex row = " << hexPos.row); */
 
     switch (dir)
     {
@@ -541,7 +541,7 @@ void TracerPoint::move(Direction dir)
             jassert(false);
         }
     }
-    DBG("new vertex = " << vertex << "\n");
+    //DBG("new vertex = " << vertex << "\n");
     positionChanged();
 }
 

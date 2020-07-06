@@ -49,6 +49,7 @@ private:
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;
     ComponentAnimator m_animator;
+    int m_timerCount = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HexGrid)
 };

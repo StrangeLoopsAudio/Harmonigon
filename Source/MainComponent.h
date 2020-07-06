@@ -8,18 +8,17 @@
 
 #pragma once
 
+#include "ParameterBar.h"
 #include "HexGrid.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Synth.h"
-
-#define TRACER_MOVE_DURATION 500
 
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent   : public AudioAppComponent, Timer
+class MainComponent: public AudioAppComponent, Timer, Slider::Listener
 {
 public:
     //==============================================================================
@@ -32,11 +31,17 @@ public:
     void releaseResources() override;
     void timerCallback() override;
 
+    void sliderValueChanged(Slider* slider) override {};
+    void sliderDragStarted(Slider* slider) override {};
+    void sliderDragEnded(Slider* slider) override;
+
     //==============================================================================
     void paint (Graphics& g) override;
     void resized() override;
 
 private:
+    ParameterBar m_paramBar;
+    double m_moveDuration;
     HexGrid m_grid;
     Synthesiser m_synth;
 
