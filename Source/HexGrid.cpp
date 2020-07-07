@@ -34,24 +34,24 @@ HexGrid::HexGrid()
     m_tracers[0]->position = TracerPoint(7, 13, 4);
     addAndMakeVisible(m_tracers[0]); */
     
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 2; i++)
     {
         m_tracers.add(new Tracer());
         m_tracers[i]->setSize(15, 15);
-        m_tracers[i]->position = TracerPoint(5, 7, 1);
+        m_tracers[i]->position = TracerPoint(0, 1, 5);
         addAndMakeVisible(m_tracers[i]);
     }
 
     m_timerCount = 0;
 
     /* getNotes() testing */
-    Array <NoteUtils::HexTile> notes = getNotes(m_tracers[0]);
+    /* Array <NoteUtils::HexTile> notes = getNotes(m_tracers[0]);
     DBG("\n" << "Printing Notes");
     for(int i = 0; i < notes.size(); i++){
         DBG("key = " << NoteUtils::keyToString(notes[i].key));
         DBG("octave = " << notes[i].octave);
     }
-    DBG("");
+    DBG(""); */
     
 }
 
@@ -125,19 +125,26 @@ void HexGrid::resized()
 Array<NoteUtils::HexTile> HexGrid::getNotesToPlay()
 {
     Array<NoteUtils::HexTile> notes;
+    int counter = 0;
     for (int i = 0; i < m_tracers.size(); i++)
     {
-        Hexagon* hex = getTracerHex(m_tracers[i]);
-        hex->pulse();
-        notes.add(hex->getTile());
+        Array <Hexagon*> tracerHex = getNotes(m_tracers[i]);
+//        Hexagon* hex = getTracerHex(m_tracers[i]);
+        for (int j = 0; j < tracerHex.size(); j++){
+            DBG("size is " << tracerHex.size() << " " << counter);
+            tracerHex[j]->pulse();
+            notes.add(tracerHex[j]->getTile());
+            counter++;
+        }
+
     }
     return notes;
 }
 
-Hexagon* HexGrid::getTracerHex(Tracer* tracer)
+/* Hexagon* HexGrid::getTracerHex(Tracer* tracer)
 {
     return &m_hexArray[tracer->position.hexPos.col][tracer->position.hexPos.row];
-}
+} */
 
 Point<float> HexGrid::getTracerPosition(TracerPoint point)
 {
@@ -158,13 +165,13 @@ void HexGrid::moveTracerRandom(Tracer *tracer)
 }
 
 /* returns array of HexTile structs the tracer is currently touching */
-Array <NoteUtils::HexTile> HexGrid::getNotes(Tracer *tracer)
+Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
 {
     DBG("tracer line row: " << tracer->position.pos.row);
     DBG("tracer line col: " << tracer->position.pos.col);
     DBG("tracer intType: " << tracer->position.intType);
 
-    Array <NoteUtils::HexTile> notes;
+    Array <Hexagon*> notes;
     
     /* 8 rows, 15 cols */
     
@@ -176,33 +183,32 @@ Array <NoteUtils::HexTile> HexGrid::getNotes(Tracer *tracer)
             {
                 if(tracer->position.pos.row == 1)
                 {
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][0].getTile());
-                    notes.add(m_hexArray[tracer->position.pos.col][0].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][0]);
+                    notes.add(&m_hexArray[tracer->position.pos.col][0]);
                 }
                 else if(tracer->position.pos.col == NUM_COLS)
                 {
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
                 }
                 else if(tracer->position.pos.row == NUM_ROWS * 2 - 1)
                 {
                     /* hex row 7 vertex 5 */
-                    DBG("horse");
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
-                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
                 }
                 else
                 {
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2].getTile());
-                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
+                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
                 }
             }
             else
             {
-                notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
-                notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2].getTile());
-                notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+                notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
+                notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
+                notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
             }
 
             break;
@@ -211,33 +217,33 @@ Array <NoteUtils::HexTile> HexGrid::getNotes(Tracer *tracer)
         {
             if (tracer->position.pos.col % 2 == 1)
             {
-                notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
-                notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
-                notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2].getTile());
+                notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
+                notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
+                notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
             }
             else
             {
                 if (tracer->position.pos.col == 0)
                 {
-                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
-                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
                 }
                 else if(tracer->position.pos.row == 1)
                 {
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][0].getTile());
-                    notes.add(m_hexArray[tracer->position.pos.col][0].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][0]);
+                    notes.add(&m_hexArray[tracer->position.pos.col][0]);
                 }
                 else if (tracer->position.pos.row == NUM_ROWS * 2 - 1)
                 {
                     /* hex row 7, odd col */
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2].getTile());
-                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
+                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
                 }
                 else
                 {
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2].getTile());
-                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2].getTile());
-                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
+                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
+                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
                 }
             }
             break;
@@ -248,21 +254,27 @@ Array <NoteUtils::HexTile> HexGrid::getNotes(Tracer *tracer)
             if(tracer->position.pos.row == 0)
             {
                 /* top of odd cols */
-//                else
-//                {
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row].getTile());
-//                }
+                if(tracer->position.vertex == 5)
+                {
+                    notes.add(&m_hexArray[tracer->position.pos.col][0]);
+                }
+                else
+                {
+                    /* vertex = 0 */
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row]);
+
+                }
             }
             else if (tracer->position.pos.row / 2 == NUM_ROWS)
             {
                 /* hex in row 7 vertex 2 or 3 */
                 if (tracer->position.vertex == 2)
                 {
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
                 }
                 else
                 {
-                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
                 }
             }
             else if (tracer->position.pos.row == NUM_ROWS * 2 - 1)
@@ -271,12 +283,12 @@ Array <NoteUtils::HexTile> HexGrid::getNotes(Tracer *tracer)
                 if (tracer->position.pos.col == 0)
                 {
                     /* bottom of col 0 vertex 3 */
-                     notes.add(m_hexArray[0][tracer->position.pos.row / 2 - 1].getTile());
+                     notes.add(&m_hexArray[0][tracer->position.pos.row / 2 - 1]);
                 }
                 else if (tracer->position.pos.col == NUM_COLS)
                 {
                     /* bottom of last col vertex 2 */
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
                 }
             }
             else
@@ -285,12 +297,12 @@ Array <NoteUtils::HexTile> HexGrid::getNotes(Tracer *tracer)
                 if (tracer->position.pos.col == 0)
                 {
                     /* top of col 0 vertex 5 */
-                     notes.add(m_hexArray[0][0].getTile());
+                     notes.add(&m_hexArray[0][0]);
                 }
                 else if (tracer->position.pos.col == NUM_COLS)
                 {
                     /* top of last col vertex 0 */
-                    notes.add(m_hexArray[tracer->position.pos.col - 1][0].getTile());
+                    notes.add(&m_hexArray[tracer->position.pos.col - 1][0]);
                 }
             }
             break;
@@ -299,11 +311,11 @@ Array <NoteUtils::HexTile> HexGrid::getNotes(Tracer *tracer)
         {
             if(tracer->position.pos.col == 0)
             {
-                notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+                notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
             }
             else{
                 /* last col vertex 1*/
-                notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+                notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
             }
             break;
         }
