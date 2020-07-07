@@ -49,4 +49,6 @@ static String keyToString(Key key);
 
 static float hexToFreq(HexTile hex);
 
+static int tileToMidiNote(NoteUtils::HexTile tile);
+
 };

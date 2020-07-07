@@ -138,6 +138,8 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\ParameterBar.cpp"/>
+    <ClCompile Include="..\..\Source\Synth.cpp"/>
     <ClCompile Include="..\..\Source\Hexagon.cpp"/>
     <ClCompile Include="..\..\Source\HexGrid.cpp"/>
     <ClCompile Include="..\..\Source\NoteUtils.cpp"/>
@@ -1911,6 +1913,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\ParameterBar.h"/>
+    <ClInclude Include="..\..\Source\Synth.h"/>
     <ClInclude Include="..\..\Source\Hexagon.h"/>
     <ClInclude Include="..\..\Source\HexGrid.h"/>
     <ClInclude Include="..\..\Source\NoteUtils.h"/>

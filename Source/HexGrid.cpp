@@ -11,8 +11,7 @@
 #include <JuceHeader.h>
 #include "HexGrid.h"
 
-//==============================================================================
-int timerCount = 0;
+#define PADDING 15
 
 HexGrid::HexGrid()
 {
@@ -39,34 +38,34 @@ HexGrid::HexGrid()
     {
         m_tracers.add(new Tracer());
         m_tracers[i]->setSize(15, 15);
-        m_tracers[i]->position = TracerPoint(0, 0, 1);
+        m_tracers[i]->position = TracerPoint(5, 7, 1);
         addAndMakeVisible(m_tracers[i]);
     }
 
-    startTimer(500);
+    m_timerCount = 0;
+}
+
+void HexGrid::moveTracers(int duration)
+{
+    if (!m_animator.isAnimating())
+    {
+        m_timerCount++;
+        for (int i = 0; i < m_tracers.size(); i++)
+        {
+            //if (timerCount % 4 <= i % 4)
+            //{
+                Rectangle<int> center = m_tracers[i]->getBounds();
+                moveTracerRandom(m_tracers[i]);
+                center.setCentre(getTracerPosition(m_tracers[i]->position).toInt());
+                m_animator.animateComponent(m_tracers[i], center, 1, duration - 10, true, 0.3, 0.3);
+                repaint();
+            //}
+        }
+    }
 }
 
 HexGrid::~HexGrid()
 {
-}
-
-void HexGrid::timerCallback()
-{
-    if (!m_animator.isAnimating())
-    {
-        timerCount++;
-        for (int i = 0; i < m_tracers.size(); i++)
-        {
-//            if (timerCount % 4 < i % 10)
-//            {
-                Rectangle<int> center = m_tracers[i]->getBounds();
-                moveTracerRandom(m_tracers[i]);
-                center.setCentre(getTracerPosition(m_tracers[i]->position).toInt());
-                m_animator.animateComponent(m_tracers[i], center, 1, 400, true, 0.3, 0.3);
-                repaint();
-//            }
-        }
-    }
 }
 
 void HexGrid::paint (Graphics& g)
@@ -79,19 +78,16 @@ void HexGrid::paint (Graphics& g)
     */
 
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
-
-    g.setColour (Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 }
 
 void HexGrid::resized()
 {
     /* Position hexagons */
-    float hexHeight = getHeight() / NUM_ROWS;
+    float hexHeight = (getHeight()- PADDING) / NUM_ROWS;
     float hexWidth = hexHeight * HEX_W_TO_H_RATIO;
 
-    float curX = 0;
-    float curY = 0;
+    float curX = PADDING;
+    float curY = PADDING;
     float yOffset = hexHeight / 2;
     int numRows = NUM_ROWS;
     for (int i = 0; i < NUM_COLS; i++)
@@ -117,6 +113,23 @@ void HexGrid::resized()
         Point<float> tracerPos = getTracerPosition(m_tracers[i]->position);
         m_tracers[i]->setCentrePosition(tracerPos.toInt());
     }
+}
+
+Array<NoteUtils::HexTile> HexGrid::getNotesToPlay()
+{
+    Array<NoteUtils::HexTile> notes;
+    for (int i = 0; i < m_tracers.size(); i++)
+    {
+        Hexagon* hex = getTracerHex(m_tracers[i]);
+        hex->pulse();
+        notes.add(hex->getTile());
+    }
+    return notes;
+}
+
+Hexagon* HexGrid::getTracerHex(Tracer* tracer)
+{
+    return &m_hexArray[tracer->position.hexPos.col][tracer->position.hexPos.row];
 }
 
 Point<float> HexGrid::getTracerPosition(TracerPoint point)

@@ -257,11 +257,11 @@ Array<TracerPoint::Direction> TracerPoint::getMoves()
 /* Absolutely no validity checking right now, yeesh */
 void TracerPoint::move(Direction dir)
 {
-    DBG("intType = " << intType);
+    /* DBG("intType = " << intType);
     DBG("dir = " << dir);
     DBG("old vertex = " << vertex);
     DBG("hex col = " << hexPos.col);
-    DBG("hex row = " << hexPos.row);
+    DBG("hex row = " << hexPos.row); */
 
     switch (dir)
     {
@@ -541,7 +541,7 @@ void TracerPoint::move(Direction dir)
             jassert(false);
         }
     }
-    DBG("new vertex = " << vertex << "\n");
+    //DBG("new vertex = " << vertex << "\n");
     positionChanged();
 }
 
@@ -564,8 +564,10 @@ void Tracer::paint (Graphics& g)
        You should replace everything in this method with your own
        drawing code..
     */
-    g.setColour (Colours::deeppink);
-    g.drawEllipse(getLocalBounds().toFloat(), 2);
+    g.setColour(Colours::dodgerblue);
+    Rectangle<float> circle = getLocalBounds().toFloat().reduced(getWidth() / 3);
+    circle.setCentre(getWidth() / 2, getHeight() / 2);
+    g.drawEllipse(circle, 2);
 }
 
 void Tracer::resized()

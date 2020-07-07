@@ -16,6 +16,7 @@ Hexagon::Hexagon()
 {
     m_noteNum = 0;
     m_sideLength = 0;
+    m_curColour = Colours::purple;
 }
 
 Hexagon::~Hexagon()
@@ -37,7 +38,7 @@ void Hexagon::paint (Graphics& g)
 
     g.fillAll (Colours::transparentBlack);   // clear the background
 
-    Path hexPath;
+    Path hexPath, innerPath;
     hexPath.startNewSubPath(getLocalPoint(getParentComponent(), getVertex(0)));
     for (int i = 1; i < 6; i++)
     {
@@ -45,8 +46,13 @@ void Hexagon::paint (Graphics& g)
     }
     hexPath.closeSubPath();
 
-    g.setColour(Colours::purple);
+    innerPath = hexPath;
+    innerPath.applyTransform(AffineTransform::scale(0.92, 0.92, getWidth() / 2, getHeight() / 2));
+
+    g.setColour(Colours::black);
     g.strokePath(hexPath, PathStrokeType(1.0f));
+    g.setColour(m_curColour);
+    g.strokePath(innerPath, PathStrokeType(1.0f));
 
     g.setColour (Colours::white);
     g.setFont (20.0f);
@@ -83,6 +89,29 @@ Point<float> Hexagon::getVertex(int index) {
     }
 }
 
+void Hexagon::timerCallback()
+{
+    if (m_timerCount > 10)
+    {
+        stopTimer();
+        m_curColour = Colours::purple;
+        repaint();
+        return;
+    }
+    m_curColour = m_curColour.brighter();
+    m_timerCount++;
+    repaint();
+}
+
+void Hexagon::pulse()
+{
+    if (!isTimerRunning())
+    {
+        m_timerCount = 0;
+        startTimer(20);
+    }
+}
+
 void Hexagon::setNote(int noteNum)
 {
     m_noteNum = noteNum;
@@ -91,6 +120,11 @@ void Hexagon::setNote(int noteNum)
 void Hexagon::setTile(NoteUtils::HexTile tile)
 {
     m_tile = tile;
+}
+
+NoteUtils::HexTile Hexagon::getTile()
+{
+    return m_tile;
 }
 
 void Hexagon::resized()

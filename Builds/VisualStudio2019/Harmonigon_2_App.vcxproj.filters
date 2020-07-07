@@ -412,6 +412,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\ParameterBar.cpp">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Synth.cpp">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Hexagon.cpp">
       <Filter>Harmonigon_2\Source</Filter>
     </ClCompile>
@@ -2340,6 +2346,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\ParameterBar.h">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Synth.h">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Hexagon.h">
       <Filter>Harmonigon_2\Source</Filter>
     </ClInclude>

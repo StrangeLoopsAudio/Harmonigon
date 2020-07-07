@@ -64,11 +64,6 @@ const float NoteUtils::freqs[5][12] = {
     /*6 */  {1047.0f, 1109.0f, 1175.0f, 1245.0f, 1319.0f, 1397.0f, 1480.0f, 1568.0f, 1661.0f, 1760.0f, 1865.0f, 1976.0f}
 };
 
-float NoteUtils::hexToFreq(HexTile hex)
-{
-    return freqs[hex.octave - 2][hex.key];
-}
-
 const NoteUtils::HexTile NoteUtils::hexagons[NUM_ROWS][NUM_COLS] = {
     { {6, Cs}, {6, F }, {6, D }, {6, Fs}, {6, Ds}, {6, G }, {6, E }, {6, Gs}, {6, F }, {6, A }, {6, Fs}, {6, As}, {6, G }, {6, B }, {6, Gs} },
     { {5, Fs}, {5, As}, {5, G }, {5, B }, {5, Gs}, {6, C }, {5, A }, {6, Cs}, {5, As}, {6, D }, {5, B }, {6, Ds}, {6, C }, {6, E }, {6, Cs} },
@@ -79,3 +74,13 @@ const NoteUtils::HexTile NoteUtils::hexagons[NUM_ROWS][NUM_COLS] = {
     { {2, G }, {2, B }, {2, Gs}, {3, C }, {2, A }, {3, Cs}, {2, As}, {3, D }, {2, B }, {3, Ds}, {3, C }, {3, E }, {3, Cs}, {3, F }, {3, D } },
     { {     }, {2, E }, {     }, {2, F }, {     }, {2, Fs}, {     }, {2, G }, {     }, {2, Gs}, {     }, {2, A }, {     }, {2, As}, {     } }
 };
+
+float NoteUtils::hexToFreq(HexTile hex)
+{
+    return freqs[hex.octave - 2][hex.key];
+}
+
+int NoteUtils::tileToMidiNote(NoteUtils::HexTile tile)
+{
+    return (12 * (tile.octave + 2)) + tile.key;
+}

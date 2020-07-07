@@ -18,7 +18,7 @@
 //==============================================================================
 /*
 */
-class Hexagon : public Component
+class Hexagon : public Component, Timer
 {
 public:
     Hexagon();
@@ -26,17 +26,22 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
+    void timerCallback() override;
 
     // Vertex index is 0 at top right, goes clockwise
     Point<float> getVertex(int index);
     void setNote(int noteNum);
     void setTile(NoteUtils::HexTile tile);
+    NoteUtils::HexTile getTile();
+    void pulse();
 
 private:
     int m_noteNum; // MIDI note number
     float m_sideLength;
     Point<float> m_center;
     NoteUtils::HexTile m_tile;
+    Colour m_curColour;
+    int m_timerCount;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Hexagon)
 };
