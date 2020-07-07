@@ -29,12 +29,12 @@ HexGrid::HexGrid()
     }
     // Add a tracerboi
 
-    /*m_tracers.add(new Tracer());
+    /* m_tracers.add(new Tracer());
     m_tracers[0]->setSize(15, 15);
     m_tracers[0]->position = TracerPoint(7, 13, 4);
     addAndMakeVisible(m_tracers[0]); */
     
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 1; i++)
     {
         m_tracers.add(new Tracer());
         m_tracers[i]->setSize(15, 15);
@@ -43,6 +43,16 @@ HexGrid::HexGrid()
     }
 
     m_timerCount = 0;
+
+    /* getNotes() testing */
+    Array <NoteUtils::HexTile> notes = getNotes(m_tracers[0]);
+    DBG("\n" << "Printing Notes");
+    for(int i = 0; i < notes.size(); i++){
+        DBG("key = " << NoteUtils::keyToString(notes[i].key));
+        DBG("octave = " << notes[i].octave);
+    }
+    DBG("");
+    
 }
 
 void HexGrid::moveTracers(int duration)
@@ -52,14 +62,11 @@ void HexGrid::moveTracers(int duration)
         m_timerCount++;
         for (int i = 0; i < m_tracers.size(); i++)
         {
-            //if (timerCount % 4 <= i % 4)
-            //{
                 Rectangle<int> center = m_tracers[i]->getBounds();
                 moveTracerRandom(m_tracers[i]);
                 center.setCentre(getTracerPosition(m_tracers[i]->position).toInt());
                 m_animator.animateComponent(m_tracers[i], center, 1, duration - 10, true, 0.3, 0.3);
                 repaint();
-            //}
         }
     }
 }
@@ -148,4 +155,163 @@ void HexGrid::moveTracerRandom(Tracer *tracer)
     }
     DBG("actual = " << possibleDirs[index] << "\n"); */
     return tracer->position.move(possibleDirs[index]);
+}
+
+/* returns array of HexTile structs the tracer is currently touching */
+Array <NoteUtils::HexTile> HexGrid::getNotes(Tracer *tracer)
+{
+    DBG("tracer line row: " << tracer->position.pos.row);
+    DBG("tracer line col: " << tracer->position.pos.col);
+    DBG("tracer intType: " << tracer->position.intType);
+
+    Array <NoteUtils::HexTile> notes;
+    
+    /* 8 rows, 15 cols */
+    
+    switch(tracer->position.intType){
+        case TracerPoint::LEFT_T:
+        {
+            /* internal: one left, two right */
+            if(tracer->position.pos.col % 2 == 1)
+            {
+                if(tracer->position.pos.row == 1)
+                {
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][0].getTile());
+                    notes.add(m_hexArray[tracer->position.pos.col][0].getTile());
+                }
+                else if(tracer->position.pos.col == NUM_COLS)
+                {
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2].getTile());
+                }
+                else if(tracer->position.pos.row == NUM_ROWS * 2 - 1)
+                {
+                    /* hex row 7 vertex 5 */
+                    DBG("horse");
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2].getTile());
+                }
+                else
+                {
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2].getTile());
+                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2].getTile());
+                }
+            }
+            else
+            {
+                notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+                notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2].getTile());
+                notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+            }
+
+            break;
+        }
+        case TracerPoint::RIGHT_T:
+        {
+            if (tracer->position.pos.col % 2 == 1)
+            {
+                notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+                notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+                notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2].getTile());
+            }
+            else
+            {
+                if (tracer->position.pos.col == 0)
+                {
+                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2].getTile());
+                }
+                else if(tracer->position.pos.row == 1)
+                {
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][0].getTile());
+                    notes.add(m_hexArray[tracer->position.pos.col][0].getTile());
+                }
+                else if (tracer->position.pos.row == NUM_ROWS * 2 - 1)
+                {
+                    /* hex row 7, odd col */
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2].getTile());
+                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+                }
+                else
+                {
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2].getTile());
+                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2].getTile());
+                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+                }
+            }
+            break;
+        }
+        case TracerPoint::LEFT_RIGHT:
+        {
+            /* only one hex */
+            if(tracer->position.pos.row == 0)
+            {
+                /* top of odd cols */
+//                else
+//                {
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row].getTile());
+//                }
+            }
+            else if (tracer->position.pos.row / 2 == NUM_ROWS)
+            {
+                /* hex in row 7 vertex 2 or 3 */
+                if (tracer->position.vertex == 2)
+                {
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+                }
+                else
+                {
+                    notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+                }
+            }
+            else if (tracer->position.pos.row == NUM_ROWS * 2 - 1)
+            {
+                /* bottom of first and last col */
+                if (tracer->position.pos.col == 0)
+                {
+                    /* bottom of col 0 vertex 3 */
+                     notes.add(m_hexArray[0][tracer->position.pos.row / 2 - 1].getTile());
+                }
+                else if (tracer->position.pos.col == NUM_COLS)
+                {
+                    /* bottom of last col vertex 2 */
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+                }
+            }
+            else
+            {
+                /* top of first and last col */
+                if (tracer->position.pos.col == 0)
+                {
+                    /* top of col 0 vertex 5 */
+                     notes.add(m_hexArray[0][0].getTile());
+                }
+                else if (tracer->position.pos.col == NUM_COLS)
+                {
+                    /* top of last col vertex 0 */
+                    notes.add(m_hexArray[tracer->position.pos.col - 1][0].getTile());
+                }
+            }
+            break;
+        }
+        case TracerPoint::UP_DOWN:
+        {
+            if(tracer->position.pos.col == 0)
+            {
+                notes.add(m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1].getTile());
+            }
+            else{
+                /* last col vertex 1*/
+                notes.add(m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1].getTile());
+            }
+            break;
+        }
+        default:
+        {
+            jassert(false);
+        }
+    }
+    
+    return notes;
 }

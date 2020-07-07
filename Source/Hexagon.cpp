@@ -132,3 +132,7 @@ void Hexagon::resized()
     m_center = Point<float>(getX() + (getWidth() / 2), getY() + (getHeight() / 2));
     m_sideLength = getWidth() / 2;
 }
+
+NoteUtils::HexTile Hexagon::getTile(){
+    return m_tile;
+}
