@@ -45,7 +45,8 @@ private:
     void moveTracerRandom(Tracer *tracer);
     Point<float> getTracerPosition(TracerPoint point);
     Hexagon* getTracerHex(Tracer* tracer);
-
+    Array <Hexagon*> getNotes(Tracer *tracer);
+    
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;
     ComponentAnimator m_animator;

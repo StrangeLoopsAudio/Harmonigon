@@ -41,8 +41,16 @@ void TracerPoint::initLinePos()
 
         if (hexPos.row == 0)
         {
-            /* Odd column top row */
-            pos.row = 0;
+            if (vertex == 5 && hexPos.col == 0)
+            {
+                /* top of first col */
+                pos.row = 1;
+            }
+            else
+            {
+                /* Odd column top row */
+                pos.row = 0;
+            }
         }
         else if (hexPos.col % 2)
         {
@@ -113,8 +121,9 @@ void TracerPoint::positionChanged()
         {
             intType = UP_DOWN;
         }
-        else if ((pos.row == 0 && hexPos.col % 2 == 1))
+        else if ((pos.row == 0 && hexPos.col % 2 == 1) || (pos.row == 1 && pos.col == NUM_COLS))
         {
+            /* top of last col */
             intType = LEFT_RIGHT;
         }
         /* Set intersection type with a clever xor */
@@ -541,7 +550,7 @@ void TracerPoint::move(Direction dir)
             jassert(false);
         }
     }
-    //DBG("new vertex = " << vertex << "\n");
+
     positionChanged();
 }
 
