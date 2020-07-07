@@ -43,16 +43,6 @@ HexGrid::HexGrid()
     }
 
     m_timerCount = 0;
-
-    /* getNotes() testing */
-    /* Array <NoteUtils::HexTile> notes = getNotes(m_tracers[0]);
-    DBG("\n" << "Printing Notes");
-    for(int i = 0; i < notes.size(); i++
-    {
-        DBG("key = " << NoteUtils::keyToString(notes[i].key));
-        DBG("octave = " << notes[i].octave);
-    }
-    DBG(""); */
     
 }
 
@@ -130,10 +120,9 @@ Array<NoteUtils::HexTile> HexGrid::getNotesToPlay()
     for (int i = 0; i < m_tracers.size(); i++)
     {
         Array <Hexagon*> tracerHex = getNotes(m_tracers[i]);
-//        Hexagon* hex = getTracerHex(m_tracers[i]);
         for (int j = 0; j < tracerHex.size(); j++)
         {
-            DBG("size is " << tracerHex.size() << " " << counter);
+            /* DBG("size is " << tracerHex.size() << " " << counter); */
             tracerHex[j]->pulse();
             notes.add(tracerHex[j]->getTile());
             counter++;
@@ -142,11 +131,6 @@ Array<NoteUtils::HexTile> HexGrid::getNotesToPlay()
     }
     return notes;
 }
-
-/* Hexagon* HexGrid::getTracerHex(Tracer* tracer)
-{
-    return &m_hexArray[tracer->position.hexPos.col][tracer->position.hexPos.row];
-} */
 
 Point<float> HexGrid::getTracerPosition(TracerPoint point)
 {
@@ -157,21 +141,15 @@ void HexGrid::moveTracerRandom(Tracer *tracer)
 {
     Array<TracerPoint::Direction> possibleDirs = tracer->position.getMoves();
     int index = Random::getSystemRandom().nextInt(possibleDirs.size());
-    /* DBG("possibleDirs");
-    for(int i = 0; i < possibleDirs.size(); i++)
-     {
-        DBG(possibleDirs[i]);
-    }
-    DBG("actual = " << possibleDirs[index] << "\n"); */
     return tracer->position.move(possibleDirs[index]);
 }
 
 /* returns array of HexTile structs the tracer is currently touching */
 Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
 {
-    DBG("tracer line row: " << tracer->position.pos.row);
+   /* DBG("tracer line row: " << tracer->position.pos.row);
     DBG("tracer line col: " << tracer->position.pos.col);
-    DBG("tracer intType: " << tracer->position.intType);
+    DBG("tracer intType: " << tracer->position.intType); */
 
     Array <Hexagon*> notes;
     
