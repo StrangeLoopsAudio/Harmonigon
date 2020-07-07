@@ -62,11 +62,11 @@ void HexGrid::moveTracers(int duration)
         m_timerCount++;
         for (int i = 0; i < m_tracers.size(); i++)
         {
-                Rectangle<int> center = m_tracers[i]->getBounds();
-                moveTracerRandom(m_tracers[i]);
-                center.setCentre(getTracerPosition(m_tracers[i]->position).toInt());
-                m_animator.animateComponent(m_tracers[i], center, 1, duration - 10, true, 0.3, 0.3);
-                repaint();
+            Rectangle<int> center = m_tracers[i]->getBounds();
+            moveTracerRandom(m_tracers[i]);
+            center.setCentre(getTracerPosition(m_tracers[i]->position).toInt());
+            m_animator.animateComponent(m_tracers[i], center, 1, duration - 10, true, 0.3, 0.3);
+            repaint();
         }
     }
 }

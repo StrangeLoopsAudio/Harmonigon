@@ -550,6 +550,7 @@ void TracerPoint::move(Direction dir)
             jassert(false);
         }
     }
+
     positionChanged();
 }
 
