@@ -47,7 +47,8 @@ HexGrid::HexGrid()
     /* getNotes() testing */
     /* Array <NoteUtils::HexTile> notes = getNotes(m_tracers[0]);
     DBG("\n" << "Printing Notes");
-    for(int i = 0; i < notes.size(); i++){
+    for(int i = 0; i < notes.size(); i++
+    {
         DBG("key = " << NoteUtils::keyToString(notes[i].key));
         DBG("octave = " << notes[i].octave);
     }
@@ -130,7 +131,8 @@ Array<NoteUtils::HexTile> HexGrid::getNotesToPlay()
     {
         Array <Hexagon*> tracerHex = getNotes(m_tracers[i]);
 //        Hexagon* hex = getTracerHex(m_tracers[i]);
-        for (int j = 0; j < tracerHex.size(); j++){
+        for (int j = 0; j < tracerHex.size(); j++)
+        {
             DBG("size is " << tracerHex.size() << " " << counter);
             tracerHex[j]->pulse();
             notes.add(tracerHex[j]->getTile());
@@ -175,23 +177,24 @@ Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
     
     /* 8 rows, 15 cols */
     
-    switch(tracer->position.intType){
+    switch(tracer->position.intType)
+    {
         case TracerPoint::LEFT_T:
         {
             /* internal: one left, two right */
-            if(tracer->position.pos.col % 2 == 1)
+            if (tracer->position.pos.col % 2 == 1)
             {
-                if(tracer->position.pos.row == 1)
+                if (tracer->position.pos.row == 1)
                 {
                     notes.add(&m_hexArray[tracer->position.pos.col - 1][0]);
                     notes.add(&m_hexArray[tracer->position.pos.col][0]);
                 }
-                else if(tracer->position.pos.col == NUM_COLS)
+                else if (tracer->position.pos.col == NUM_COLS)
                 {
                     notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
                     notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
                 }
-                else if(tracer->position.pos.row == NUM_ROWS * 2 - 1)
+                else if (tracer->position.pos.row == NUM_ROWS * 2 - 1)
                 {
                     /* hex row 7 vertex 5 */
                     notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
@@ -228,7 +231,7 @@ Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
                     notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
                     notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
                 }
-                else if(tracer->position.pos.row == 1)
+                else if (tracer->position.pos.row == 1)
                 {
                     notes.add(&m_hexArray[tracer->position.pos.col - 1][0]);
                     notes.add(&m_hexArray[tracer->position.pos.col][0]);
@@ -251,10 +254,10 @@ Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
         case TracerPoint::LEFT_RIGHT:
         {
             /* only one hex */
-            if(tracer->position.pos.row == 0)
+            if ( tracer->position.pos.row == 0)
             {
                 /* top of odd cols */
-                if(tracer->position.vertex == 5)
+                if (tracer->position.vertex == 5)
                 {
                     notes.add(&m_hexArray[tracer->position.pos.col][0]);
                 }
@@ -262,7 +265,6 @@ Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
                 {
                     /* vertex = 0 */
                     notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row]);
-
                 }
             }
             else if (tracer->position.pos.row / 2 == NUM_ROWS)
@@ -309,7 +311,7 @@ Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
         }
         case TracerPoint::UP_DOWN:
         {
-            if(tracer->position.pos.col == 0)
+            if (tracer->position.pos.col == 0)
             {
                 notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
             }
