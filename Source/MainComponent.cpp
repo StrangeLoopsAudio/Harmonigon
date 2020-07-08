@@ -70,7 +70,6 @@ void MainComponent::timerCallback()
         {
             m_synth.noteOn(1, NoteUtils::tileToMidiNote(note), 1);
             hex->pulse();
-            DBG("Playing note: " << NoteUtils::keyToString(note.key) << ", curKey: " << m_curKey << ", scaleType: " << m_curScaleType);
         }
     }
     m_grid.moveTracers(m_moveDuration);
