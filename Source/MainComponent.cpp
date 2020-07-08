@@ -33,6 +33,10 @@ MainComponent::MainComponent()
 
     m_paramBar.setBounds(0, 0, getWidth(), 100);
     m_paramBar.sliderBpm.addListener(this);
+    m_paramBar.comboKey.addListener(this);
+    m_curKey = (NoteUtils::Key)(m_paramBar.comboKey.getSelectedId() - 1);
+    m_paramBar.comboScaleType.addListener(this);
+    m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
     addAndMakeVisible(m_paramBar);
     m_moveDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
 
@@ -57,11 +61,17 @@ void MainComponent::sliderDragEnded(Slider* slider)
 
 void MainComponent::timerCallback()
 {
-    Array<NoteUtils::HexTile> notes = m_grid.getNotesToPlay();
+    Array<Hexagon *> hexes = m_grid.getNotesToPlay();
     m_synth.allNotesOff(1, true);
-    for (NoteUtils::HexTile note : notes)
+    for (Hexagon * hex : hexes)
     {
-        m_synth.noteOn(1, NoteUtils::tileToMidiNote(note), 1);
+        NoteUtils::HexTile note = hex->getTile();
+        if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
+        {
+            m_synth.noteOn(1, NoteUtils::tileToMidiNote(note), 1);
+            hex->pulse();
+            DBG("Playing note: " << NoteUtils::keyToString(note.key) << ", curKey: " << m_curKey << ", scaleType: " << m_curScaleType);
+        }
     }
     m_grid.moveTracers(m_moveDuration);
 }
@@ -106,4 +116,16 @@ void MainComponent::resized()
     Rectangle<int> b = getLocalBounds();
     m_paramBar.setBounds(b.removeFromTop(PARAM_BAR_HEIGHT));
     m_grid.setBounds(b);
+}
+
+void MainComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
+{
+    if (comboBoxThatHasChanged == &m_paramBar.comboKey)
+    {
+        m_curKey = (NoteUtils::Key)(comboBoxThatHasChanged->getSelectedId() - 1);
+    }
+    else if (comboBoxThatHasChanged == &m_paramBar.comboScaleType)
+    {
+        m_curScaleType = (NoteUtils::ScaleType)(comboBoxThatHasChanged->getSelectedId() - 1);
+    }
 }

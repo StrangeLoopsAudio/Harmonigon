@@ -32,7 +32,14 @@ enum Key
     Gs,
     A,
     As,
-    B
+    B,
+    NUM_KEYS
+};
+
+enum ScaleType
+{
+    MAJOR,
+    MINOR
 };
 
 typedef struct _hexTile
@@ -45,10 +52,14 @@ static const float freqs[5][12];
 
 static const HexTile hexagons[NUM_ROWS][NUM_COLS];
 
+static const int scaleIntervals[2][6];
+
 static String keyToString(Key key);
 
 static float hexToFreq(HexTile hex);
 
 static int tileToMidiNote(NoteUtils::HexTile tile);
+
+static bool isNoteInKey(Key note, Key key, ScaleType type);
 
 };

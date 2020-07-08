@@ -27,7 +27,7 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
-    Array<NoteUtils::HexTile> getNotesToPlay();
+    Array<Hexagon*> getNotesToPlay();
     void moveTracers(int duration);
 
 private:
