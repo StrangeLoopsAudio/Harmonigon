@@ -92,7 +92,6 @@ int NoteUtils::tileToMidiNote(NoteUtils::HexTile tile)
 
 bool NoteUtils::isNoteInKey(Key note, Key key, ScaleType type)
 {
-    int offset = key;
     if (note == key) return true;
     int curNote = key;
     for (int i = 0; i < 6; i++)
