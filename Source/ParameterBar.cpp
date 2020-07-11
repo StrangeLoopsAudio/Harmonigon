@@ -11,8 +11,9 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterBar.h"
 
-#define BPM_WIDTH  250
-#define BPM_HEIGHT 30
+#define BPM_WIDTH 250
+#define KEY_WIDTH 100
+#define SCALE_TYPE_WIDTH 80
 
 //==============================================================================
 ParameterBar::ParameterBar()
@@ -26,6 +27,21 @@ ParameterBar::ParameterBar()
     sliderBpm.setColour(Slider::ColourIds::textBoxOutlineColourId, Colours::transparentBlack);
     sliderBpm.setColour(Slider::ColourIds::textBoxHighlightColourId, Colours::purple.darker());
     addAndMakeVisible(sliderBpm);
+
+    /* Add key items */
+    for (int i = 0; i < NoteUtils::NUM_KEYS; i++)
+    {
+        comboKey.addItem(NoteUtils::keyToString((NoteUtils::Key)i), i + 1);
+    }
+    comboKey.setSelectedItemIndex(0, true);
+    addAndMakeVisible(comboKey);
+
+    /* Add scale items */
+    comboScaleType.addItem("Major", NoteUtils::MAJOR + 1);
+    comboScaleType.addItem("Minor", NoteUtils::MINOR + 1);
+    comboScaleType.setSelectedItemIndex(0, true);
+    addAndMakeVisible(comboScaleType);
+
 }
 
 ParameterBar::~ParameterBar()
@@ -51,4 +67,6 @@ void ParameterBar::resized()
     /* Top half */
     Rectangle<int> top = b.removeFromTop(getHeight() / 2);
     sliderBpm.setBounds(top.removeFromLeft(BPM_WIDTH));
+    comboKey.setBounds(top.removeFromLeft(KEY_WIDTH));
+    comboScaleType.setBounds(top.removeFromLeft(SCALE_TYPE_WIDTH));
 }

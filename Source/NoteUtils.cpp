@@ -75,6 +75,11 @@ const NoteUtils::HexTile NoteUtils::hexagons[NUM_ROWS][NUM_COLS] = {
     { {     }, {2, E }, {     }, {2, F }, {     }, {2, Fs}, {     }, {2, G }, {     }, {2, Gs}, {     }, {2, A }, {     }, {2, As}, {     } }
 };
 
+const int NoteUtils::scaleIntervals[2][6] = {
+    {2, 2, 1, 2, 2, 2},
+    {2, 1, 2, 2, 1, 2}
+};
+
 float NoteUtils::hexToFreq(HexTile hex)
 {
     return freqs[hex.octave - 2][hex.key];
@@ -83,4 +88,20 @@ float NoteUtils::hexToFreq(HexTile hex)
 int NoteUtils::tileToMidiNote(NoteUtils::HexTile tile)
 {
     return (12 * (tile.octave + 2)) + tile.key;
+}
+
+bool NoteUtils::isNoteInKey(Key note, Key key, ScaleType type)
+{
+    if (note == key) return true;
+    int curNote = key;
+    for (int i = 0; i < 6; i++)
+    {
+        curNote += scaleIntervals[type][i];
+        if (curNote > (NUM_KEYS - 1))
+        {
+            curNote -= NUM_KEYS;
+        }
+        if (note == curNote) return true;
+    }
+    return false;
 }

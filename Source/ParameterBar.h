@@ -11,6 +11,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "NoteUtils.h"
 
 //==============================================================================
 /*
@@ -25,6 +26,8 @@ public:
     void resized() override;
     
     Slider sliderBpm;
+    ComboBox comboKey;
+    ComboBox comboScaleType;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterBar)
