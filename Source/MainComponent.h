@@ -18,7 +18,7 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent: public AudioAppComponent, Timer, Slider::Listener, ComboBox::Listener
+class MainComponent: public AudioAppComponent, Timer, Slider::Listener, ComboBox::Listener, Button::Listener
 {
 public:
     //==============================================================================
@@ -31,12 +31,12 @@ public:
     void releaseResources() override;
     void timerCallback() override;
 
+    // Inherited via Listeners
     void sliderValueChanged(Slider* slider) override {};
     void sliderDragStarted(Slider* slider) override {};
     void sliderDragEnded(Slider* slider) override;
-    
-    // Inherited via Listener
-    virtual void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+    void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+    void buttonClicked(Button* button) override;
 
     //==============================================================================
     void paint (Graphics& g) override;
@@ -47,6 +47,8 @@ private:
     double m_moveDuration;
     NoteUtils::ScaleType m_curScaleType;
     NoteUtils::Key m_curKey;
+    bool m_isAddingPath = false;
+    bool m_isPlaying = false;
 
     HexGrid m_grid;
     Synthesiser m_synth;

@@ -24,26 +24,118 @@ HexGrid::HexGrid()
         {
             /* Yes this is bad for locality, but it's the easiest to traverse with flat hexagons */
             m_hexArray[i][j].setTile(NoteUtils::hexagons[j][i]);
+            m_hexArray[i][j].setPosition(j, i);
+            m_hexArray[i][j].addMouseListener(this, false);
             addAndMakeVisible(m_hexArray[i][j]);
         }
     }
-    // Add a tracerboi
-
-    /* m_tracers.add(new Tracer());
-    m_tracers[0]->setSize(15, 15);
-    m_tracers[0]->position = TracerPoint(7, 13, 4);
-    addAndMakeVisible(m_tracers[0]); */
     
-    for (int i = 0; i < 2; i++)
+    /* for (int i = 0; i < 2; i++)
     {
         m_tracers.add(new Tracer());
         m_tracers[i]->setSize(15, 15);
         m_tracers[i]->position = TracerPoint(5, 7, 0);
         addAndMakeVisible(m_tracers[i]);
-    }
+    } */
 
-    m_timerCount = 0;
-    
+    m_timerCount = 0;    
+}
+
+void HexGrid::addPathClicked(bool isAdding)
+{
+    m_canDrag = isAdding;
+}
+
+void HexGrid::mouseMove(const MouseEvent& e)
+{
+    if (m_canDrag)
+    {
+        if (m_isHexMode)
+        {
+            Hexagon* hex = (Hexagon*)e.eventComponent;
+            if (hex->isPointInside(e.getPosition().toFloat()) && hex != m_hoveringOverHex)
+            {
+                if (m_hoveringOverHex != nullptr)
+                {
+                    m_hoveringOverHex->setSelected(false);
+                }
+                m_hoveringOverHex = hex;
+                hex->setSelected(true);
+                DBG("Pos: row: " << hex->getRow() << ", col: " << hex->getCol());
+            }
+        }
+        else
+        {
+            TracerPoint hoverTracer = getNearestCoord(e.getMouseDownPosition());
+            m_hoveringOverPoint = m_hexArray[hoverTracer.hexPos.col][hoverTracer.hexPos.row].getVertex(hoverTracer.vertex);
+        }
+
+        repaint();
+    }
+}
+
+void HexGrid::mouseExit(const MouseEvent& event)
+{
+    if (m_canDrag)
+    {
+        if (m_isHexMode && m_hoveringOverHex != nullptr)
+        {
+            m_hoveringOverHex->setSelected(false);
+            m_hoveringOverHex = nullptr;
+        }
+        else
+        {
+            /* Move offscreen if mouse is off of grid */
+            m_hoveringOverPoint = Point<float>(-10, -10);
+            repaint();
+        }
+
+    }
+}
+
+void HexGrid::mouseDrag(const MouseEvent& event)
+{
+
+}
+
+void HexGrid::mouseDown(const MouseEvent& event)
+{
+    if (m_canDrag)
+    {
+        m_isDragging = true;
+        TracerPoint tPoint = getNearestCoord(event.getMouseDownPosition());
+    }
+}
+
+void HexGrid::mouseUp(const MouseEvent& event)
+{
+    if (m_isDragging)
+    {
+        m_isDragging = false;
+    }
+}
+
+TracerPoint HexGrid::getNearestCoord(Point<int> dragStart)
+{
+    TracerPoint::coord hexPosition;
+    hexPosition.col = 1; hexPosition.row = 1;
+    int xVariance = m_hexArray[0][0].getWidth() / 2;
+    /* Set x origin */
+    if (dragStart.x <= xVariance) hexPosition.col = 0; // Check first line col
+    for (int i = 0; i < NUM_COLS; i++)
+    {
+        int curX = m_hexArray[i][0].getVertex(0).x;
+        if ((dragStart.x >= curX - xVariance ) && (dragStart.x <= curX + xVariance))
+        {
+            hexPosition.col = i;
+        }
+    }
+    hexPosition.row = 1;
+    /*for (int i = 0; i < NUM_ROWS; i++)
+    {
+
+    } */
+    return TracerPoint(hexPosition.row, hexPosition.col, 0);
 }
 
 void HexGrid::moveTracers(int duration)
@@ -68,14 +160,16 @@ HexGrid::~HexGrid()
 
 void HexGrid::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
+
+    if (m_canDrag)
+    {
+        /* If user can drag, draw a fake tracer on the nearest intersection */
+        g.setColour(Colours::aqua);
+        Rectangle<float> circle(0, 0, 15, 15);
+        circle.setCentre(m_hoveringOverPoint.x, m_hoveringOverPoint.y);
+        g.drawEllipse(circle, 2);
+    }
 }
 
 void HexGrid::resized()

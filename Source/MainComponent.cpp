@@ -34,6 +34,7 @@ MainComponent::MainComponent()
     m_paramBar.setBounds(0, 0, getWidth(), 100);
     m_paramBar.sliderBpm.addListener(this);
     m_paramBar.comboKey.addListener(this);
+    m_paramBar.buttonAddPath.addListener(this);
     m_curKey = (NoteUtils::Key)(m_paramBar.comboKey.getSelectedId() - 1);
     m_paramBar.comboScaleType.addListener(this);
     m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
@@ -59,20 +60,41 @@ void MainComponent::sliderDragEnded(Slider* slider)
     }
 }
 
+void MainComponent::buttonClicked(Button* button)
+{
+    if (button == &m_paramBar.buttonAddPath)
+    {
+        if (m_isAddingPath)
+        {
+            m_paramBar.buttonAddPath.setButtonText("Add Path +");
+        }
+        else
+        {
+            m_paramBar.buttonAddPath.setButtonText("Done Drawing Path :)");
+        }
+        m_isAddingPath = !m_isAddingPath;
+        m_grid.addPathClicked(m_isAddingPath);
+        m_paramBar.resized();
+    }
+}
+
 void MainComponent::timerCallback()
 {
-    Array<Hexagon *> hexes = m_grid.getNotesToPlay();
-    m_synth.allNotesOff(1, true);
-    for (Hexagon * hex : hexes)
+    if (m_isPlaying)
     {
-        NoteUtils::HexTile note = hex->getTile();
-        if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
+        Array<Hexagon *> hexes = m_grid.getNotesToPlay();
+        m_synth.allNotesOff(1, true);
+        for (Hexagon * hex : hexes)
         {
-            m_synth.noteOn(1, NoteUtils::tileToMidiNote(note), 1);
-            hex->pulse();
+            NoteUtils::HexTile note = hex->getTile();
+            if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
+            {
+                m_synth.noteOn(1, NoteUtils::tileToMidiNote(note), 1);
+                hex->pulse();
+            }
         }
+        m_grid.moveTracers(m_moveDuration);
     }
-    m_grid.moveTracers(m_moveDuration);
 }
 
 MainComponent::~MainComponent()

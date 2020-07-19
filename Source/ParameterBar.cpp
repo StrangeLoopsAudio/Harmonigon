@@ -14,6 +14,7 @@
 #define BPM_WIDTH 250
 #define KEY_WIDTH 100
 #define SCALE_TYPE_WIDTH 80
+#define BUTTON_ADD_PATH_WIDTH 50
 
 //==============================================================================
 ParameterBar::ParameterBar()
@@ -42,6 +43,8 @@ ParameterBar::ParameterBar()
     comboScaleType.setSelectedItemIndex(0, true);
     addAndMakeVisible(comboScaleType);
 
+    buttonAddPath.setButtonText("Add Path +");
+    addAndMakeVisible(buttonAddPath);
 }
 
 ParameterBar::~ParameterBar()
@@ -69,4 +72,7 @@ void ParameterBar::resized()
     sliderBpm.setBounds(top.removeFromLeft(BPM_WIDTH));
     comboKey.setBounds(top.removeFromLeft(KEY_WIDTH));
     comboScaleType.setBounds(top.removeFromLeft(SCALE_TYPE_WIDTH));
+    buttonAddPath.changeWidthToFitText();
+    buttonAddPath.setBounds(top.removeFromRight(buttonAddPath.getWidth()));
+    
 }

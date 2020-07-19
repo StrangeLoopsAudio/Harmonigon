@@ -18,7 +18,7 @@
 
 #define HEX_W_TO_H_RATIO 1.1547005
 
-class HexGrid : public Component
+class HexGrid : public Component, public MouseListener
 {
 public:
     HexGrid();
@@ -27,8 +27,16 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
+    void mouseMove(const MouseEvent& event) override;
+    void mouseDrag(const MouseEvent& event) override;
+    void mouseExit(const MouseEvent& event) override;
+    void mouseDown(const MouseEvent& event) override;
+    void mouseUp(const MouseEvent& event) override;
+
     Array<Hexagon*> getNotesToPlay();
     void moveTracers(int duration);
+
+    void addPathClicked(bool isAdding);
 
 private:
 
@@ -46,11 +54,20 @@ private:
     Point<float> getTracerPosition(TracerPoint point);
     Hexagon* getTracerHex(Tracer* tracer);
     Array <Hexagon*> getNotes(Tracer *tracer);
+    TracerPoint getNearestCoord(Point<int> dragStart);
     
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;
     ComponentAnimator m_animator;
     int m_timerCount = 0;
+
+    /* Path adding vars */
+    bool m_canDrag = false;
+    bool m_isDragging = false;
+    Point<float> m_hoveringOverPoint;
+    Hexagon* m_hoveringOverHex = nullptr;
+
+    bool m_isHexMode = true; // Tracer or hex select mode for dragging
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HexGrid)
 };
