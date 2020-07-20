@@ -34,13 +34,13 @@ HexGrid::HexGrid()
     m_tracers[0]->position = TracerPoint(7, 13, 4);
     addAndMakeVisible(m_tracers[0]); */
     
-    for (int i = 0; i < 2; i++)
+    /* for (int i = 0; i < 2; i++)
     {
         m_tracers.add(new Tracer());
         m_tracers[i]->setSize(15, 15);
         m_tracers[i]->position = TracerPoint(5, 7, 0);
         addAndMakeVisible(m_tracers[i]);
-    }
+    } */
 
     m_timerCount = 0;
     

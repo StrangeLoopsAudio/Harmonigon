@@ -9,11 +9,12 @@
 #include "MainComponent.h"
 
 #define PARAM_BAR_HEIGHT 100
+#define TRACER_PANEL_WIDTH 200
 
 //==============================================================================
 MainComponent::MainComponent()
 {
-    setSize (1000, 700);
+    setSize (1200, 700);
 
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -28,10 +29,10 @@ MainComponent::MainComponent()
         setAudioChannels (2, 2);
     }
 
-    m_grid.setBounds(0, 100, getWidth(), getHeight() - 100);
+    m_grid.setBounds(0, 100, getWidth() - TRACER_PANEL_WIDTH, getHeight() - PARAM_BAR_HEIGHT);
     addAndMakeVisible(m_grid);
 
-    m_paramBar.setBounds(0, 0, getWidth(), 100);
+    m_paramBar.setBounds(0, 0, getWidth() - TRACER_PANEL_WIDTH, 100);
     m_paramBar.sliderBpm.addListener(this);
     m_paramBar.comboKey.addListener(this);
     m_curKey = (NoteUtils::Key)(m_paramBar.comboKey.getSelectedId() - 1);
@@ -40,6 +41,8 @@ MainComponent::MainComponent()
     addAndMakeVisible(m_paramBar);
     m_moveDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
 
+    m_tracerPanel.setBounds(1000, 0, TRACER_PANEL_WIDTH, getHeight());
+    addAndMakeVisible(m_tracerPanel);
     startTimer(m_moveDuration);
 
     m_synth.addSound(new SineWaveSound());
@@ -112,7 +115,9 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
+    DBG("resized");
     Rectangle<int> b = getLocalBounds();
+//    m_paramBar.setBounds(b.removeFromRight(TRACER_PANEL_WIDTH));
     m_paramBar.setBounds(b.removeFromTop(PARAM_BAR_HEIGHT));
     m_grid.setBounds(b);
 }

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ParameterBar.h"
+#include "TracerPanel.h"
 #include "HexGrid.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Synth.h"
@@ -44,6 +45,7 @@ public:
 
 private:
     ParameterBar m_paramBar;
+    TracerPanel m_tracerPanel;
     double m_moveDuration;
     NoteUtils::ScaleType m_curScaleType;
     NoteUtils::Key m_curKey;
