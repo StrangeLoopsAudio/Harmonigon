@@ -4,12 +4,12 @@
               jucerFormatVersion="1">
   <MAINGROUP id="chvjNi" name="Harmonigon_2">
     <GROUP id="{54EAB013-77EB-B3AA-005B-D52E84D24626}" name="Source">
-      <FILE id="aAyd98" name="PathListItem.cpp" compile="1" resource="0"
+      <FILE id="r8QPXI" name="PathListItem.cpp" compile="1" resource="0"
             file="Source/PathListItem.cpp"/>
-      <FILE id="VcdeRb" name="PathListItem.h" compile="0" resource="0" file="Source/PathListItem.h"/>
-      <FILE id="W8WSuo" name="PathListPanel.cpp" compile="1" resource="0"
+      <FILE id="n212Zx" name="PathListItem.h" compile="0" resource="0" file="Source/PathListItem.h"/>
+      <FILE id="NTY5qm" name="PathListPanel.cpp" compile="1" resource="0"
             file="Source/PathListPanel.cpp"/>
-      <FILE id="lCBq7Q" name="PathListPanel.h" compile="0" resource="0" file="Source/PathListPanel.h"/>
+      <FILE id="aFFxXR" name="PathListPanel.h" compile="0" resource="0" file="Source/PathListPanel.h"/>
       <FILE id="npgaO3" name="ParameterBar.cpp" compile="1" resource="0"
             file="Source/ParameterBar.cpp"/>
       <FILE id="h5ZbhL" name="ParameterBar.h" compile="0" resource="0" file="Source/ParameterBar.h"/>

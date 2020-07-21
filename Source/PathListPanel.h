@@ -2,7 +2,7 @@
   ==============================================================================
 
     PathListPanel.h
-    Created: 19 Jul 2020 9:36:19pm
+    Created: 21 Jul 2020 4:43:41pm
     Author:  Nick Merfeld
 
   ==============================================================================
@@ -11,8 +11,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "PathListItem.h"
-
 
 //==============================================================================
 /*
@@ -25,11 +23,7 @@ public:
 
     void paint (juce::Graphics&) override;
     void resized() override;
-        
+
 private:
-    OwnedArray<PathListItem> m_pathListItems;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PathListPanel)
-
-
 };

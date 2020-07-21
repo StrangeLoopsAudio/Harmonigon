@@ -20,7 +20,7 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent: public AudioAppComponent, Timer, Slider::Listener, ComboBox::Listener, Button::Listener
+class MainComponent: public AudioAppComponent, Timer, Slider::Listener, ComboBox::Listener
 {
 public:
     //==============================================================================
@@ -39,7 +39,7 @@ public:
     
     // Inherited via Listener
     virtual void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
-    void buttonClicked(Button* button) override;
+//    void buttonClicked(Button* button) override;
     
     //==============================================================================
     void paint (Graphics& g) override;

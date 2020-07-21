@@ -133,7 +133,3 @@ void MainComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
     }
 }
 
-void MainComponent::buttonClicked(<#Button *button#>)
-{
-    
-}
