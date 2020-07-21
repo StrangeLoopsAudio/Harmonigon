@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    TracerPanelObject.h
+    PathListItem.h
     Created: 19 Jul 2020 9:50:47pm
     Author:  Nick Merfeld
 
@@ -15,15 +15,15 @@
 //==============================================================================
 /*
 */
-class TracerPanelObject  : public juce::Component
+class PathListItem  : public juce::Component
 {
 public:
-    TracerPanelObject();
-    ~TracerPanelObject() override;
+    PathListItem();
+    ~PathListItem() override;
 
     void paint (juce::Graphics&) override;
     void resized() override;
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TracerPanelObject)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PathListItem)
 };

@@ -41,8 +41,8 @@ MainComponent::MainComponent()
     addAndMakeVisible(m_paramBar);
     m_moveDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
 
-    m_tracerPanel.setBounds(1000, 0, TRACER_PANEL_WIDTH, getHeight());
-    addAndMakeVisible(m_tracerPanel);
+    m_pathListPanel.setBounds(1000, 0, TRACER_PANEL_WIDTH, getHeight());
+    addAndMakeVisible(m_pathListPanel);
     startTimer(m_moveDuration);
 
     m_synth.addSound(new SineWaveSound());
@@ -115,7 +115,6 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    DBG("resized");
     Rectangle<int> b = getLocalBounds();
 //    m_paramBar.setBounds(b.removeFromRight(TRACER_PANEL_WIDTH));
     m_paramBar.setBounds(b.removeFromTop(PARAM_BAR_HEIGHT));
@@ -132,4 +131,9 @@ void MainComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
     {
         m_curScaleType = (NoteUtils::ScaleType)(comboBoxThatHasChanged->getSelectedId() - 1);
     }
+}
+
+void MainComponent::buttonClicked(<#Button *button#>)
+{
+    
 }

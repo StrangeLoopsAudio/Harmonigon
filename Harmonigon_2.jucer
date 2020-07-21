@@ -4,12 +4,12 @@
               jucerFormatVersion="1">
   <MAINGROUP id="chvjNi" name="Harmonigon_2">
     <GROUP id="{54EAB013-77EB-B3AA-005B-D52E84D24626}" name="Source">
-      <FILE id="aAyd98" name="TracerPanelObject.cpp" compile="1" resource="0"
-            file="Source/TracerPanelObject.cpp"/>
-      <FILE id="VcdeRb" name="TracerPanelObject.h" compile="0" resource="0"
-            file="Source/TracerPanelObject.h"/>
-      <FILE id="W8WSuo" name="TracerPanel.cpp" compile="1" resource="0" file="Source/TracerPanel.cpp"/>
-      <FILE id="lCBq7Q" name="TracerPanel.h" compile="0" resource="0" file="Source/TracerPanel.h"/>
+      <FILE id="aAyd98" name="PathListItem.cpp" compile="1" resource="0"
+            file="Source/PathListItem.cpp"/>
+      <FILE id="VcdeRb" name="PathListItem.h" compile="0" resource="0" file="Source/PathListItem.h"/>
+      <FILE id="W8WSuo" name="PathListPanel.cpp" compile="1" resource="0"
+            file="Source/PathListPanel.cpp"/>
+      <FILE id="lCBq7Q" name="PathListPanel.h" compile="0" resource="0" file="Source/PathListPanel.h"/>
       <FILE id="npgaO3" name="ParameterBar.cpp" compile="1" resource="0"
             file="Source/ParameterBar.cpp"/>
       <FILE id="h5ZbhL" name="ParameterBar.h" compile="0" resource="0" file="Source/ParameterBar.h"/>

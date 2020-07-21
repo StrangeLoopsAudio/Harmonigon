@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    TracerPanelObject.cpp
+    PathListItem.cpp
     Created: 19 Jul 2020 9:50:47pm
     Author:  Nick Merfeld
 
@@ -9,21 +9,21 @@
 */
 
 #include <JuceHeader.h>
-#include "TracerPanelObject.h"
+#include "PathListItem.h"
 
 //==============================================================================
-TracerPanelObject::TracerPanelObject()
+PathListItem::PathListItem()
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
 
 }
 
-TracerPanelObject::~TracerPanelObject()
+PathListItem::~PathListItem()
 {
 }
 
-void TracerPanelObject::paint (juce::Graphics& g)
+void PathListItem::paint (juce::Graphics& g)
 {
     /* This demo code just fills the component's background and
        draws some placeholder text to get you started.
@@ -39,11 +39,11 @@ void TracerPanelObject::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (14.0f);
-    g.drawText ("TracerPanelObject", getLocalBounds(),
+    g.drawText ("PathListItem", getLocalBounds(),
                 juce::Justification::centred, true);   // draw some placeholder text
 }
 
-void TracerPanelObject::resized()
+void PathListItem::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..

@@ -9,7 +9,8 @@
 #pragma once
 
 #include "ParameterBar.h"
-#include "TracerPanel.h"
+#include "PathListPanel.h"
+#include "PathListItem.h"
 #include "HexGrid.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Synth.h"
@@ -19,7 +20,7 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent: public AudioAppComponent, Timer, Slider::Listener, ComboBox::Listener
+class MainComponent: public AudioAppComponent, Timer, Slider::Listener, ComboBox::Listener, Button::Listener
 {
 public:
     //==============================================================================
@@ -38,14 +39,15 @@ public:
     
     // Inherited via Listener
     virtual void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
-
+    void buttonClicked(Button* button) override;
+    
     //==============================================================================
     void paint (Graphics& g) override;
     void resized() override;
 
 private:
     ParameterBar m_paramBar;
-    TracerPanel m_tracerPanel;
+    PathListPanel m_pathListPanel;
     double m_moveDuration;
     NoteUtils::ScaleType m_curScaleType;
     NoteUtils::Key m_curKey;
