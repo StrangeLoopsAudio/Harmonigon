@@ -26,6 +26,7 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
+    bool hitTest(int x, int y) override;
     void timerCallback() override;
 
     // Vertex index is 0 at top right, goes clockwise
@@ -37,7 +38,6 @@ public:
     int getCol();
     void pulse(); /* Flash a note when it's played */
     NoteUtils::HexTile getTile();
-    bool isPointInside(Point<float> point); /* Checks if a point is in the hexagon path in this component */
 
     void setSelected(bool isSelected);
     

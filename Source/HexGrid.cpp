@@ -53,7 +53,7 @@ void HexGrid::mouseMove(const MouseEvent& e)
         if (m_isHexMode)
         {
             Hexagon* hex = (Hexagon*)e.eventComponent;
-            if (hex->isPointInside(e.getPosition().toFloat()) && hex != m_hoveringOverHex)
+            if (hex != m_hoveringOverHex)
             {
                 if (m_hoveringOverHex != nullptr)
                 {
@@ -61,7 +61,6 @@ void HexGrid::mouseMove(const MouseEvent& e)
                 }
                 m_hoveringOverHex = hex;
                 hex->setSelected(true);
-                DBG("Pos: row: " << hex->getRow() << ", col: " << hex->getCol());
             }
         }
         else

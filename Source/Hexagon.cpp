@@ -25,6 +25,12 @@ Hexagon::~Hexagon()
     m_sideLength = getWidth() / 2;
 }
 
+bool Hexagon::hitTest(int x, int y)
+{
+    Point<float> point(x, y);
+    return m_hexPath.contains(point);
+}
+
 void Hexagon::paint (Graphics& g)
 {
     /* This demo code just fills the component's background and
@@ -136,11 +142,6 @@ int Hexagon::getRow()
 int Hexagon::getCol()
 {
     return m_col;
-}
-
-bool Hexagon::isPointInside(Point<float> point)
-{
-    return m_hexPath.contains(point);
 }
 
 void Hexagon::setSelected(bool isSelected)
