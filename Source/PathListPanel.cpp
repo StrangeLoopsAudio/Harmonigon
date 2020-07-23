@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PathListPanel.h"
 
+#define PATH_LIST_ITEM_HEIGHT 100
 //==============================================================================
 PathListPanel::PathListPanel()
 {
@@ -39,13 +40,20 @@ void PathListPanel::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (14.0f);
-    g.drawText ("PathListPanel", getLocalBounds(),
-                juce::Justification::centred, true);   // draw some placeholder text
+
 }
 
 void PathListPanel::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
+    Rectangle<int> b = getLocalBounds();
+    for(int i = 0; i < m_pathListItems.size(); i++){
+        m_pathListItems[i]->setBounds(b.removeFromTop(PATH_LIST_ITEM_HEIGHT));
+        addAndMakeVisible(m_pathListItems[i]);
+        /* m_pathListItems[i]->resized(); */
+    }
+}
 
+void PathListPanel::addPath(PathListItem* p)
+{
+    m_pathListItems.add(p);
 }

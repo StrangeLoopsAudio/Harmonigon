@@ -9,13 +9,14 @@
 #include "MainComponent.h"
 
 #define PARAM_BAR_HEIGHT 100
-#define TRACER_PANEL_WIDTH 200
+#define PATH_LIST_PANEL_WIDTH 200
 
 //==============================================================================
 MainComponent::MainComponent()
 {
     setSize (1200, 700);
 
+    numPaths = 0;
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
         && ! RuntimePermissions::isGranted (RuntimePermissions::recordAudio))
@@ -29,19 +30,20 @@ MainComponent::MainComponent()
         setAudioChannels (2, 2);
     }
 
-    m_grid.setBounds(0, 100, getWidth() - TRACER_PANEL_WIDTH, getHeight() - PARAM_BAR_HEIGHT);
+    /* m_grid.setBounds(0, 100, getWidth() - TRACER_PANEL_WIDTH, getHeight() - PARAM_BAR_HEIGHT); */
     addAndMakeVisible(m_grid);
 
-    m_paramBar.setBounds(0, 0, getWidth() - TRACER_PANEL_WIDTH, 100);
+    /* m_paramBar.setBounds(0, 0, getWidth() - TRACER_PANEL_WIDTH, 100); */
     m_paramBar.sliderBpm.addListener(this);
     m_paramBar.comboKey.addListener(this);
+    m_paramBar.buttonAddPath.addListener(this);
     m_curKey = (NoteUtils::Key)(m_paramBar.comboKey.getSelectedId() - 1);
     m_paramBar.comboScaleType.addListener(this);
     m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
     addAndMakeVisible(m_paramBar);
     m_moveDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
 
-    m_pathListPanel.setBounds(1000, 0, TRACER_PANEL_WIDTH, getHeight());
+    /* m_pathListPanel.setBounds(1000, 0, TRACER_PANEL_WIDTH, getHeight()); */
     addAndMakeVisible(m_pathListPanel);
     startTimer(m_moveDuration);
 
@@ -116,7 +118,7 @@ void MainComponent::paint (Graphics& g)
 void MainComponent::resized()
 {
     Rectangle<int> b = getLocalBounds();
-//    m_paramBar.setBounds(b.removeFromRight(TRACER_PANEL_WIDTH));
+    m_pathListPanel.setBounds(b.removeFromRight(PATH_LIST_PANEL_WIDTH));
     m_paramBar.setBounds(b.removeFromTop(PARAM_BAR_HEIGHT));
     m_grid.setBounds(b);
 }
@@ -133,3 +135,11 @@ void MainComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
     }
 }
 
+void MainComponent::buttonClicked(Button* button)
+{
+    if(button == &m_paramBar.buttonAddPath){
+        m_pathListPanel.addPath(new PathListItem(numPaths));
+        numPaths++;
+        m_pathListPanel.resized();
+    }
+}
