@@ -392,10 +392,26 @@ TracerPoint HexGrid::getNearestVert(Point<int> pos)
         }
     }
 
-
+    if (linePosition.col == -1)
+    {
+        /* Rightmost line col */
+        linePosition.col = NUM_COLS;
+    }
+    int hexCol = (linePosition.col == 0) ? 0 : linePosition.col - 1;
+    if ((pos.y <= (yVariance + PADDING)) && (linePosition.col % 2) && linePosition.col < NUM_COLS)
+    {
+        hexCol = linePosition.col;
+    }
+    else if ((pos.y >= m_hexArray[1][7].getVertex(0).y + yVariance) &&
+            (pos.y <= m_hexArray[1][7].getVertex(2).y - yVariance) && 
+            linePosition.col % 2 &&
+            linePosition.col < NUM_COLS)
+    {
+        /* Holy fucking edge case, bottom odd col vert 4 */
+        hexCol = linePosition.col;
+    }
     for (int i = 0; i < NUM_ROWS; i++)
     {
-        int hexCol = (linePosition.col == 0) ? 0 : linePosition.col - 1;
         int yTop = m_hexArray[hexCol][i].getVertex(0).y;
         if ((pos.y <= (yTop + yVariance)))
         {
@@ -492,7 +508,7 @@ TracerPoint HexGrid::getNearestVert(Point<int> pos)
         }
     }
 
-    DBG("row: " << linePosition.row << ", col: " << linePosition.col << ", vert: " << vertex);
+    //DBG("row: " << linePosition.row << ", col: " << linePosition.col << ", vert: " << vertex);
     
     return TracerPoint(linePosition.row, linePosition.col, vertex, false);
 }
