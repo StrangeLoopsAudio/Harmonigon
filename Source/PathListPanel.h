@@ -26,6 +26,7 @@ public:
     void resized() override;
 
     void addPath(PathListItem* p);
+    int getNumPaths();
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PathListPanel)
     OwnedArray <PathListItem> m_pathListItems;

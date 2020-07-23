@@ -10,7 +10,6 @@
 
 #include "ParameterBar.h"
 #include "PathListPanel.h"
-#include "PathListItem.h"
 #include "HexGrid.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Synth.h"
@@ -40,7 +39,7 @@ public:
     // Inherited via Listener
     virtual void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
     void buttonClicked(Button* button) override;
-    
+
     //==============================================================================
     void paint (Graphics& g) override;
     void resized() override;
@@ -54,7 +53,6 @@ private:
 
     HexGrid m_grid;
     Synthesiser m_synth;
-    int numPaths;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 
 

@@ -16,7 +16,6 @@ MainComponent::MainComponent()
 {
     setSize (1300, 700);
 
-    numPaths = 0;
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
         && ! RuntimePermissions::isGranted (RuntimePermissions::recordAudio))
@@ -30,10 +29,8 @@ MainComponent::MainComponent()
         setAudioChannels (2, 2);
     }
 
-    /* m_grid.setBounds(0, 100, getWidth() - TRACER_PANEL_WIDTH, getHeight() - PARAM_BAR_HEIGHT); */
     addAndMakeVisible(m_grid);
 
-    /* m_paramBar.setBounds(0, 0, getWidth() - TRACER_PANEL_WIDTH, 100); */
     m_paramBar.sliderBpm.addListener(this);
     m_paramBar.comboKey.addListener(this);
     m_paramBar.buttonAddPath.addListener(this);
@@ -43,7 +40,6 @@ MainComponent::MainComponent()
     addAndMakeVisible(m_paramBar);
     m_moveDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
 
-    /* m_pathListPanel.setBounds(1000, 0, TRACER_PANEL_WIDTH, getHeight()); */
     addAndMakeVisible(m_pathListPanel);
     startTimer(m_moveDuration);
 
@@ -138,8 +134,6 @@ void MainComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
 void MainComponent::buttonClicked(Button* button)
 {
     if(button == &m_paramBar.buttonAddPath){
-        m_pathListPanel.addPath(new PathListItem(numPaths));
-        numPaths++;
-        m_pathListPanel.resized();
+        m_pathListPanel.addPath(new PathListItem(m_pathListPanel.getNumPaths()));
     }
 }

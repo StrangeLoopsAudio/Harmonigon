@@ -17,7 +17,7 @@ PathListPanel::PathListPanel()
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-
+    setSize(300, 700);
 }
 
 PathListPanel::~PathListPanel()
@@ -37,9 +37,6 @@ void PathListPanel::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
-    g.setColour (juce::Colours::white);
-    g.setFont (14.0f);
 }
 
 void PathListPanel::resized()
@@ -48,11 +45,16 @@ void PathListPanel::resized()
     for(int i = 0; i < m_pathListItems.size(); i++){
         m_pathListItems[i]->setBounds(b.removeFromTop(PATH_LIST_ITEM_HEIGHT));
         addAndMakeVisible(m_pathListItems[i]);
-        /* m_pathListItems[i]->resized(); */
     }
 }
 
 void PathListPanel::addPath(PathListItem* p)
 {
     m_pathListItems.add(p);
+    resized();
+}
+
+int PathListPanel::getNumPaths()
+{
+    return m_pathListItems.size();
 }
