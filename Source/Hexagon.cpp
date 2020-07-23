@@ -27,8 +27,8 @@ Hexagon::~Hexagon()
 
 bool Hexagon::hitTest(int x, int y)
 {
-    Point<float> point(x, y);
-    return m_hexPath.contains(point);
+    Point<float> point(x + .5f, y + .5f);
+    return m_hexPath.contains(point, 5.f);
 }
 
 void Hexagon::paint (Graphics& g)
@@ -60,6 +60,10 @@ void Hexagon::paint (Graphics& g)
     g.strokePath(m_hexPath, PathStrokeType(1.0f));
     g.setColour(m_curColour);
     if (m_isSelected)
+    {
+        g.setColour(Colours::coral);
+    }
+    else if (m_isHovering)
     {
         g.setColour(Colours::aqua);
     }
@@ -144,10 +148,21 @@ int Hexagon::getCol()
     return m_col;
 }
 
+void Hexagon::setHovering(bool isHovering)
+{
+    m_isHovering = isHovering;
+    repaint();
+}
+
 void Hexagon::setSelected(bool isSelected)
 {
     m_isSelected = isSelected;
     repaint();
+}
+
+bool Hexagon::isSelected()
+{
+    return m_isSelected;
 }
 
 void Hexagon::setTile(NoteUtils::HexTile tile)

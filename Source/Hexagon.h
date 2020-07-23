@@ -40,6 +40,8 @@ public:
     NoteUtils::HexTile getTile();
 
     void setSelected(bool isSelected);
+    void setHovering(bool isHovering);
+    bool isSelected();
     
 private:
     int m_noteNum; // MIDI note number
@@ -50,6 +52,7 @@ private:
     Colour m_curColour;
     int m_timerCount;
     int m_row, m_col;
+    bool m_isHovering = false;
     bool m_isSelected = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Hexagon)

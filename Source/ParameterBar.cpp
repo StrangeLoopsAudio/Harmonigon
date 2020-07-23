@@ -45,6 +45,9 @@ ParameterBar::ParameterBar()
 
     buttonAddPath.setButtonText("Add Path +");
     addAndMakeVisible(buttonAddPath);
+
+    buttonPathMode.setButtonText("Hex Path Mode");
+    addAndMakeVisible(buttonPathMode);
 }
 
 ParameterBar::~ParameterBar()
@@ -74,5 +77,7 @@ void ParameterBar::resized()
     comboScaleType.setBounds(top.removeFromLeft(SCALE_TYPE_WIDTH));
     buttonAddPath.changeWidthToFitText();
     buttonAddPath.setBounds(top.removeFromRight(buttonAddPath.getWidth()));
+    buttonPathMode.changeWidthToFitText();
+    buttonPathMode.setBounds(top.removeFromRight(buttonPathMode.getWidth()));
     
 }

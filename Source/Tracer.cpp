@@ -13,6 +13,15 @@
 
 //==============================================================================
 
+bool TracerPoint::operator==(TracerPoint const& point)
+{
+    if (point.vertex == vertex && hexPos.col == point.hexPos.col && hexPos.row == point.hexPos.row)
+    {
+        return true;
+    }
+    return false;
+}
+
 void TracerPoint::initLinePos()
 {
     if (vertex < 2)
@@ -96,10 +105,6 @@ void TracerPoint::positionChanged()
 {
     /* Reset intersection type */
     intType = INVALID;
-    
-    /* DBG("\n Position Changed");
-    DBG("hexPos.col = " << hexPos.col);
-    DBG("hexPos.row = " << hexPos.row); */
     
     /* Assuming new line pos has been set, need to update hexPos to match */
     /* Refresh column */

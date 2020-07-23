@@ -28,15 +28,14 @@ public:
     void resized() override;
 
     void mouseMove(const MouseEvent& event) override;
-    void mouseDrag(const MouseEvent& event) override;
     void mouseExit(const MouseEvent& event) override;
     void mouseDown(const MouseEvent& event) override;
-    void mouseUp(const MouseEvent& event) override;
 
     Array<Hexagon*> getNotesToPlay();
     void moveTracers(int duration);
 
     void addPathClicked(bool isAdding);
+    void pathModeChanged(bool isInHexMode);
 
 private:
 
@@ -54,7 +53,7 @@ private:
     Point<float> getTracerPosition(TracerPoint point);
     Hexagon* getTracerHex(Tracer* tracer);
     Array <Hexagon*> getNotes(Tracer *tracer);
-    TracerPoint getNearestCoord(Point<int> dragStart);
+    TracerPoint getNearestVert(Point<int> pos);
     
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;
@@ -62,10 +61,12 @@ private:
     int m_timerCount = 0;
 
     /* Path adding vars */
-    bool m_canDrag = false;
-    bool m_isDragging = false;
-    Point<float> m_hoveringOverPoint;
+    bool m_canSelect = false;
+    TracerPoint m_hoveringOverPoint;
     Hexagon* m_hoveringOverHex = nullptr;
+    TracerPoint m_tracerStart;
+    Array<TracerPoint::Direction> m_pathDirs;
+    Array<Hexagon*> m_selectedHexes;
 
     bool m_isHexMode = true; // Tracer or hex select mode for dragging
 

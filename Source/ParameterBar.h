@@ -29,6 +29,7 @@ public:
     ComboBox comboKey;
     ComboBox comboScaleType;
     TextButton buttonAddPath;
+    TextButton buttonPathMode;
     
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterBar)

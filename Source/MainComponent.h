@@ -48,6 +48,7 @@ private:
     NoteUtils::ScaleType m_curScaleType;
     NoteUtils::Key m_curKey;
     bool m_isAddingPath = false;
+    bool m_isInHexPathMode = true;
     bool m_isPlaying = false;
 
     HexGrid m_grid;

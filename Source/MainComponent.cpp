@@ -35,6 +35,7 @@ MainComponent::MainComponent()
     m_paramBar.sliderBpm.addListener(this);
     m_paramBar.comboKey.addListener(this);
     m_paramBar.buttonAddPath.addListener(this);
+    m_paramBar.buttonPathMode.addListener(this);
     m_curKey = (NoteUtils::Key)(m_paramBar.comboKey.getSelectedId() - 1);
     m_paramBar.comboScaleType.addListener(this);
     m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
@@ -74,6 +75,20 @@ void MainComponent::buttonClicked(Button* button)
         }
         m_isAddingPath = !m_isAddingPath;
         m_grid.addPathClicked(m_isAddingPath);
+        m_paramBar.resized();
+    }
+    else if (button == &m_paramBar.buttonPathMode)
+    {
+        if (m_isInHexPathMode)
+        {
+            m_paramBar.buttonPathMode.setButtonText("Line Path Mode");
+        }
+        else
+        {
+            m_paramBar.buttonPathMode.setButtonText("Hex Path Mode");
+        }
+        m_isInHexPathMode = !m_isInHexPathMode;
+        m_grid.pathModeChanged(m_isInHexPathMode);
         m_paramBar.resized();
     }
 }
