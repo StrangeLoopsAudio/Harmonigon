@@ -40,7 +40,6 @@ void PathListPanel::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (14.0f);
-
 }
 
 void PathListPanel::resized()

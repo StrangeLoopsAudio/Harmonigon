@@ -9,12 +9,12 @@
 #include "MainComponent.h"
 
 #define PARAM_BAR_HEIGHT 100
-#define PATH_LIST_PANEL_WIDTH 200
+#define PATH_LIST_PANEL_WIDTH 300
 
 //==============================================================================
 MainComponent::MainComponent()
 {
-    setSize (1200, 700);
+    setSize (1300, 700);
 
     numPaths = 0;
     // Some platforms require permissions to open input channels so request that here

@@ -27,7 +27,7 @@ PathListItem::PathListItem(int id): id(id)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    setSize(200, 100);
+    setSize(300, 100);
     setLookAndFeel(&otherLookAndFeel);
     
     repeatType.addItem("Start From Beginning", 1);
@@ -51,6 +51,16 @@ PathListItem::PathListItem(int id): id(id)
     name.setText("Path " + String(id + 1), dontSendNotification);
     name.setJustificationType(Justification::centred);
     addAndMakeVisible(name);
+    
+    repeatTypeLabel.setText("Repeat Type", dontSendNotification);
+    addAndMakeVisible(repeatTypeLabel);
+
+    stepIntervalTypeLabel.setText("Note Type", dontSendNotification);
+    addAndMakeVisible(stepIntervalTypeLabel);
+
+    loopLengthLabel.setText("Loop Length", dontSendNotification);
+    addAndMakeVisible(loopLengthLabel);
+    
 }
 
 PathListItem::~PathListItem()
@@ -74,6 +84,13 @@ void PathListItem::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (14.0f);
+    
+    g.drawLine(getWidth() / 3, 0, getWidth() / 3, getHeight());
+    g.drawLine(0, getHeight() / 2, getWidth() / 3, getHeight() / 2);
+
+    g.drawLine(getWidth() / 3, getHeight() / 3, 2 * (getWidth() / 3), getHeight() / 3);
+    g.drawLine(getWidth() / 3, (2 * getHeight()) / 3, 2 * (getWidth() / 3), (2 * getHeight()) / 3);
+
 }
 
 void PathListItem::resized()
@@ -81,18 +98,19 @@ void PathListItem::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     Rectangle<int> b = getLocalBounds();
-    DBG("b = " << b.getHeight());
-    DBG("b = " << b.getWidth());
+    int panelHeightThird = b.getHeight() / 3;
+    int panelWidthThird = b.getWidth() / 3;
+
+    Rectangle<int> optionBoxes = b.removeFromRight(panelWidthThird);
+    Rectangle<int> labelOptions = b.removeFromRight(panelWidthThird);
     
-    Rectangle<int> options = b.removeFromRight((b.getWidth() / 3) * 2);
-    DBG("options height = " << options.getHeight());
-    DBG("options width = " << options.getWidth());
-    
-    int third = options.getHeight() / 3;
-    repeatType.setBounds(options.removeFromTop(third));
-    stepIntervalType.setBounds(options.removeFromTop(third));
-    loopLength.setBounds(options.removeFromTop(third));
+    repeatType.setBounds(optionBoxes.removeFromTop(panelHeightThird));
+    stepIntervalType.setBounds(optionBoxes.removeFromTop(panelHeightThird));
+    loopLength.setBounds(optionBoxes.removeFromTop(panelHeightThird));
     
     name.setBounds(b.removeFromTop(b.getHeight() / 2));
     
+    repeatTypeLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
+    stepIntervalTypeLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
+    loopLengthLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
 }

@@ -35,6 +35,9 @@ public:
     ComboBox stepIntervalType;
     ComboBox loopLength;
     Label name;
+    Label repeatTypeLabel;
+    Label stepIntervalTypeLabel;
+    Label loopLengthLabel;
     
 private:
     int id;
