@@ -44,11 +44,13 @@ HexGrid::HexGrid()
 void HexGrid::addPathClicked(bool isAdding)
 {
     m_canSelect = isAdding;
+    repaint();
 }
 
 void HexGrid::pathModeChanged(bool isInHexMode)
 {
     m_isHexMode = isInHexMode;
+    repaint();
 }
 
 void HexGrid::mouseMove(const MouseEvent& e)
@@ -70,7 +72,27 @@ void HexGrid::mouseMove(const MouseEvent& e)
         }
         else
         {
-            m_hoveringOverPoint = getNearestVert(getLocalPoint(e.eventComponent, e.getMouseDownPosition()));
+            TracerPoint nearestPoint = getNearestVert(getLocalPoint(e.eventComponent, e.getMouseDownPosition()));
+            if (m_tracerStart.intType != TracerPoint::INVALID)
+            {
+                m_hoveringOverPoint = TracerPoint();
+                TracerPoint endPath = m_tracerStart.getPathEnd(m_pathDirs);
+                Array<TracerPoint::Direction> moves = m_tracerStart.getValidNextMoves(m_pathDirs);
+                for (TracerPoint::Direction dir : moves)
+                {
+                    TracerPoint nextVertOption = endPath;
+                    nextVertOption.move(dir);
+                    if (nearestPoint == nextVertOption)
+                    {
+                        m_hoveringOverPoint = nearestPoint;
+                    }
+                }
+            }
+            else
+            {
+                m_hoveringOverPoint = nearestPoint;
+            }
+            
         }
 
         repaint();
@@ -104,14 +126,28 @@ void HexGrid::mouseDown(const MouseEvent& event)
             m_selectedHexes.add(m_hoveringOverHex);
             m_hoveringOverHex->setSelected(true);
         }
-        else if (!m_isHexMode)
+        else if (!m_isHexMode && m_hoveringOverPoint.intType != TracerPoint::INVALID)
         {
-            if (m_hoveringOverPoint.intType != TracerPoint::INVALID)
+            if (m_tracerStart.intType == TracerPoint::INVALID)
             {
                 m_tracerStart = m_hoveringOverPoint;
             }
+            else
+            {
+                TracerPoint pathEnd = m_tracerStart.getPathEnd(m_pathDirs);
+                Array<TracerPoint::Direction> moves = m_tracerStart.getValidNextMoves(m_pathDirs);
+                for (TracerPoint::Direction dir : moves)
+                {
+                    TracerPoint nextVertOption = pathEnd;
+                    nextVertOption.move(dir);
+                    if (m_hoveringOverPoint == nextVertOption)
+                    {
+                        m_pathDirs.add(dir);
+                    }
+                }
+            }
         }
-        
+        repaint();
     }
 }
 
@@ -141,10 +177,43 @@ void HexGrid::paint(Graphics& g)
     if (m_hoveringOverPoint.intType != TracerPoint::INVALID)
     {
         g.setColour(Colours::aqua);
-        Rectangle<float> circle(0, 0, 15, 15);
+        Rectangle<float> circle(0, 0, 10, 10);
         Point<float> vert = m_hexArray[m_hoveringOverPoint.hexPos.col][m_hoveringOverPoint.hexPos.row].getVertex(m_hoveringOverPoint.vertex);
         circle.setCentre(vert);
         g.drawEllipse(circle, 2);
+    }
+    if (m_tracerStart.intType != TracerPoint::INVALID)
+    {
+        g.setColour(Colours::coral);
+        Rectangle<float> circle(0, 0, 10, 10);
+        Point<float> vert = m_hexArray[m_tracerStart.hexPos.col][m_tracerStart.hexPos.row].getVertex(m_tracerStart.vertex);
+        circle.setCentre(vert);
+        g.drawEllipse(circle, 2);
+        TracerPoint curPoint = m_tracerStart;
+        Path tracerPath;
+        tracerPath.startNewSubPath(vert);
+        for (TracerPoint::Direction dir : m_pathDirs)
+        {
+            curPoint.move(dir);
+            tracerPath.lineTo(m_hexArray[curPoint.hexPos.col][curPoint.hexPos.row].getVertex(curPoint.vertex));
+        }
+        g.strokePath(tracerPath, PathStrokeType(4.0f));
+        
+        if (m_canSelect)
+        {
+            /* Draw possible next moves */
+            g.setColour(Colours::aqua);
+            TracerPoint end = m_tracerStart.getPathEnd(m_pathDirs);
+            Array<TracerPoint::Direction> possibleMoves = m_tracerStart.getValidNextMoves(m_pathDirs);
+            for (TracerPoint::Direction dir : possibleMoves)
+            {
+                TracerPoint point = end;
+                point.move(dir);
+                g.drawLine(Line<float>(m_hexArray[end.hexPos.col][end.hexPos.row].getVertex(end.vertex),
+                    m_hexArray[point.hexPos.col][point.hexPos.row].getVertex(point.vertex)), 4.f);
+            }
+        }
+
     }
 }
 

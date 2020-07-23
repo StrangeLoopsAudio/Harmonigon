@@ -68,7 +68,7 @@ private:
     Array<TracerPoint::Direction> m_pathDirs;
     Array<Hexagon*> m_selectedHexes;
 
-    bool m_isHexMode = true; // Tracer or hex select mode for dragging
+    bool m_isHexMode = true; // Tracer or hex select mode for path making
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HexGrid)
 };
