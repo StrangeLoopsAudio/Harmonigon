@@ -68,6 +68,25 @@ void MainComponent::buttonClicked(Button* button)
         if (m_isAddingPath)
         {
             m_paramBar.buttonAddPath.setButtonText("Add Path +");
+            if (m_isInHexPathMode)
+            {
+                Array<Hexagon*> path = m_grid.getHexPath();
+                if (path.size() > 0)
+                {
+                    m_pathListPanel.addPath(new PathListItem(m_pathListPanel.getNumPaths(), path));
+                }
+                
+            }
+            else
+            {
+                TracerPoint origin = m_grid.getLinePathOrigin();
+                Array<TracerPoint::Direction> path = m_grid.getLinePath();
+                if (origin.intType != TracerPoint::INVALID && path.size() > 0)
+                {
+                    m_pathListPanel.addPath(new PathListItem(m_pathListPanel.getNumPaths(), origin, path));
+                }
+            }
+            
         }
         else
         {
@@ -164,12 +183,5 @@ void MainComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == &m_paramBar.comboScaleType)
     {
         m_curScaleType = (NoteUtils::ScaleType)(comboBoxThatHasChanged->getSelectedId() - 1);
-    }
-}
-
-void MainComponent::buttonClicked(Button* button)
-{
-    if(button == &m_paramBar.buttonAddPath){
-        m_pathListPanel.addPath(new PathListItem(m_pathListPanel.getNumPaths()));
     }
 }

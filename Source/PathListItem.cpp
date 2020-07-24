@@ -23,35 +23,56 @@ juce::Font OtherLookAndFeel::getComboBoxFont(ComboBox &)
 }
 
 
-PathListItem::PathListItem(int id): id(id)
+PathListItem::PathListItem(int id,
+    TracerPoint origin,
+    Array<TracerPoint::Direction> path): m_id(id),
+    m_tracerStart(origin),
+    m_pathDirs(path),
+    m_isHexPath(false)
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
+    initializeItem();
+}
+
+PathListItem::PathListItem(int id,
+    Array<Hexagon*> hexagons) : m_id(id),
+    m_selectedHexes(hexagons),
+    m_isHexPath(true)
+{
+    initializeItem();
+}
+
+PathListItem::~PathListItem()
+{
+    setLookAndFeel (nullptr);
+}
+
+void PathListItem::initializeItem()
+{
     setSize(300, 100);
     setLookAndFeel(&otherLookAndFeel);
-    
+
     repeatType.addItem("Start From Beginning", 1);
     repeatType.addItem("Travel Back Down Path", 2);
     repeatType.setSelectedItemIndex(0, true);
     addAndMakeVisible(repeatType);
-    
+
     stepIntervalType.addItem("1/4", 1);
     stepIntervalType.addItem("1/8", 2);
     stepIntervalType.addItem("1/16", 3);
     stepIntervalType.setSelectedItemIndex(0, true);
     addAndMakeVisible(stepIntervalType);
-    
+
     loopLength.addItem("1", 1);
     loopLength.addItem("2", 2);
     loopLength.addItem("3", 3);
     loopLength.addItem("4", 4);
     loopLength.setSelectedItemIndex(0, true);
     addAndMakeVisible(loopLength);
-    
-    name.setText("Path " + String(id + 1), dontSendNotification);
+
+    name.setText("Path " + String(m_id + 1), dontSendNotification);
     name.setJustificationType(Justification::centred);
     addAndMakeVisible(name);
-    
+
     repeatTypeLabel.setText("Repeat Type", dontSendNotification);
     addAndMakeVisible(repeatTypeLabel);
 
@@ -60,23 +81,10 @@ PathListItem::PathListItem(int id): id(id)
 
     loopLengthLabel.setText("Loop Length", dontSendNotification);
     addAndMakeVisible(loopLengthLabel);
-    
-}
-
-PathListItem::~PathListItem()
-{
-    setLookAndFeel (nullptr);
 }
 
 void PathListItem::paint (juce::Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
     g.setColour (juce::Colours::grey);

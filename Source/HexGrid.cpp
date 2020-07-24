@@ -65,7 +65,7 @@ void HexGrid::mouseMove(const MouseEvent& e)
             TracerPoint nearestPoint = getNearestVert(getLocalPoint(e.eventComponent, e.getMouseDownPosition()));
             if (m_tracerStart.intType != TracerPoint::INVALID)
             {
-                m_hoveringOverPoint = TracerPoint();
+                m_hoveringOverPoint.intType = TracerPoint::INVALID;
                 TracerPoint endPath = m_tracerStart.getPathEnd(m_pathDirs);
                 Array<TracerPoint::Direction> moves = m_tracerStart.getValidNextMoves(m_pathDirs);
                 for (TracerPoint::Direction dir : moves)
@@ -101,7 +101,7 @@ void HexGrid::mouseExit(const MouseEvent& event)
         else
         {
             /* Move offscreen if mouse is off of grid */
-            m_hoveringOverPoint = TracerPoint();
+            m_hoveringOverPoint.intType = TracerPoint::INVALID;
             repaint();
         }
     }
@@ -189,7 +189,7 @@ void HexGrid::paint(Graphics& g)
         }
         g.strokePath(tracerPath, PathStrokeType(4.0f));
         
-        if (m_canSelect)
+        if (m_canSelect && !m_isHexMode)
         {
             /* Draw possible next moves */
             g.setColour(Colours::aqua);
@@ -240,6 +240,21 @@ void HexGrid::resized()
         Point<float> tracerPos = getTracerPosition(m_tracers[i]->position);
         m_tracers[i]->setCentrePosition(tracerPos.toInt());
     }
+}
+
+Array<Hexagon*> HexGrid::getHexPath()
+{
+    return m_selectedHexes;
+}
+
+TracerPoint HexGrid::getLinePathOrigin()
+{
+    return m_tracerStart;
+}
+
+Array<TracerPoint::Direction> HexGrid::getLinePath()
+{
+    return m_pathDirs;
 }
 
 Array<Hexagon*> HexGrid::getNotesToPlay()

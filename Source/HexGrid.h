@@ -31,6 +31,10 @@ public:
     void mouseExit(const MouseEvent& event) override;
     void mouseDown(const MouseEvent& event) override;
 
+    Array<Hexagon*>  getHexPath();
+    TracerPoint      getLinePathOrigin();
+    Array<TracerPoint::Direction> getLinePath();
+
     Array<Hexagon*> getNotesToPlay();
     void moveTracers(int duration);
 
@@ -49,11 +53,11 @@ private:
     - Bottom right hex also owns vertex 2
     */
 
-    void moveTracerRandom(Tracer *tracer);
-    Point<float> getTracerPosition(TracerPoint point);
-    Hexagon* getTracerHex(Tracer* tracer);
+    void             moveTracerRandom(Tracer *tracer);
+    Point<float>     getTracerPosition(TracerPoint point);
+    Hexagon*         getTracerHex(Tracer* tracer);
     Array <Hexagon*> getNotes(Tracer *tracer);
-    TracerPoint getNearestVert(Point<int> pos);
+    TracerPoint      getNearestVert(Point<int> pos);
     
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;
