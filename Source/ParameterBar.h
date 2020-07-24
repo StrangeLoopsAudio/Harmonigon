@@ -28,7 +28,8 @@ public:
     Slider sliderBpm;
     ComboBox comboKey;
     ComboBox comboScaleType;
-
+    TextButton buttonAddPath;
+    
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterBar)
 };

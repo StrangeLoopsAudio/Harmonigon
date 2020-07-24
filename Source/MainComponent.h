@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ParameterBar.h"
+#include "PathListPanel.h"
 #include "HexGrid.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Synth.h"
@@ -18,7 +19,7 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent: public AudioAppComponent, Timer, Slider::Listener, ComboBox::Listener
+class MainComponent: public AudioAppComponent, Timer, Slider::Listener, ComboBox::Listener, Button::Listener
 {
 public:
     //==============================================================================
@@ -37,6 +38,7 @@ public:
     
     // Inherited via Listener
     virtual void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+    void buttonClicked(Button* button) override;
 
     //==============================================================================
     void paint (Graphics& g) override;
@@ -44,13 +46,13 @@ public:
 
 private:
     ParameterBar m_paramBar;
+    PathListPanel m_pathListPanel;
     double m_moveDuration;
     NoteUtils::ScaleType m_curScaleType;
     NoteUtils::Key m_curKey;
 
     HexGrid m_grid;
     Synthesiser m_synth;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 
 

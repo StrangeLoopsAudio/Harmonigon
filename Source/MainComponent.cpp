@@ -9,11 +9,12 @@
 #include "MainComponent.h"
 
 #define PARAM_BAR_HEIGHT 100
+#define PATH_LIST_PANEL_WIDTH 300
 
 //==============================================================================
 MainComponent::MainComponent()
 {
-    setSize (1000, 700);
+    setSize (1300, 700);
 
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired (RuntimePermissions::recordAudio)
@@ -28,18 +29,18 @@ MainComponent::MainComponent()
         setAudioChannels (2, 2);
     }
 
-    m_grid.setBounds(0, 100, getWidth(), getHeight() - 100);
     addAndMakeVisible(m_grid);
 
-    m_paramBar.setBounds(0, 0, getWidth(), 100);
     m_paramBar.sliderBpm.addListener(this);
     m_paramBar.comboKey.addListener(this);
+    m_paramBar.buttonAddPath.addListener(this);
     m_curKey = (NoteUtils::Key)(m_paramBar.comboKey.getSelectedId() - 1);
     m_paramBar.comboScaleType.addListener(this);
     m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
     addAndMakeVisible(m_paramBar);
     m_moveDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
 
+    addAndMakeVisible(m_pathListPanel);
     startTimer(m_moveDuration);
 
     m_synth.addSound(new SineWaveSound());
@@ -113,6 +114,7 @@ void MainComponent::paint (Graphics& g)
 void MainComponent::resized()
 {
     Rectangle<int> b = getLocalBounds();
+    m_pathListPanel.setBounds(b.removeFromRight(PATH_LIST_PANEL_WIDTH));
     m_paramBar.setBounds(b.removeFromTop(PARAM_BAR_HEIGHT));
     m_grid.setBounds(b);
 }
@@ -126,5 +128,12 @@ void MainComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == &m_paramBar.comboScaleType)
     {
         m_curScaleType = (NoteUtils::ScaleType)(comboBoxThatHasChanged->getSelectedId() - 1);
+    }
+}
+
+void MainComponent::buttonClicked(Button* button)
+{
+    if(button == &m_paramBar.buttonAddPath){
+        m_pathListPanel.addPath(new PathListItem(m_pathListPanel.getNumPaths()));
     }
 }

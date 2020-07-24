@@ -445,6 +445,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\PathListItem.cpp">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\PathListPanel.cpp">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\ParameterBar.cpp">
       <Filter>Harmonigon_2\Source</Filter>
     </ClCompile>
@@ -2544,6 +2550,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\PathListItem.h">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\PathListPanel.h">
+      <Filter>Harmonigon_2\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\ParameterBar.h">
       <Filter>Harmonigon_2\Source</Filter>
     </ClInclude>
