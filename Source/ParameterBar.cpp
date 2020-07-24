@@ -14,7 +14,6 @@
 #define BPM_WIDTH 250
 #define KEY_WIDTH 100
 #define SCALE_TYPE_WIDTH 80
-#define BUTTON_ADD_PATH_WIDTH 50
 
 //==============================================================================
 ParameterBar::ParameterBar()

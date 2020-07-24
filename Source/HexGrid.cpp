@@ -29,16 +29,6 @@ HexGrid::HexGrid()
             addAndMakeVisible(m_hexArray[i][j]);
         }
     }
-    
-    /* for (int i = 0; i < 2; i++)
-    {
-        m_tracers.add(new Tracer());
-        m_tracers[i]->setSize(15, 15);
-        m_tracers[i]->position = TracerPoint(5, 7, 0);
-        addAndMakeVisible(m_tracers[i]);
-    } */
-
-    m_timerCount = 0;    
 }
 
 void HexGrid::addPathClicked(bool isAdding)

@@ -138,6 +138,8 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\PathListItem.cpp"/>
+    <ClCompile Include="..\..\Source\PathListPanel.cpp"/>
     <ClCompile Include="..\..\Source\ParameterBar.cpp"/>
     <ClCompile Include="..\..\Source\Synth.cpp"/>
     <ClCompile Include="..\..\Source\Hexagon.cpp"/>
@@ -2078,6 +2080,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\PathListItem.h"/>
+    <ClInclude Include="..\..\Source\PathListPanel.h"/>
     <ClInclude Include="..\..\Source\ParameterBar.h"/>
     <ClInclude Include="..\..\Source\Synth.h"/>
     <ClInclude Include="..\..\Source\Hexagon.h"/>

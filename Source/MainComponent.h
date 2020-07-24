@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ParameterBar.h"
+#include "PathListPanel.h"
 #include "HexGrid.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Synth.h"
@@ -44,6 +45,7 @@ public:
 
 private:
     ParameterBar m_paramBar;
+    PathListPanel m_pathListPanel;
     double m_moveDuration;
     NoteUtils::ScaleType m_curScaleType;
     NoteUtils::Key m_curKey;
@@ -53,7 +55,6 @@ private:
 
     HexGrid m_grid;
     Synthesiser m_synth;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 
 
