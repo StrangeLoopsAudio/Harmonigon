@@ -35,10 +35,19 @@ struct TracerPoint
         RIGHT
     };
 
-    TracerPoint() {}
-    TracerPoint(int hexRow, int hexCol, int vertex) : hexPos(hexRow, hexCol), vertex(vertex), intType(INVALID)
+    TracerPoint() : hexPos(0, 0), vertex(0), intType(INVALID) {}
+    TracerPoint(int row, int col, int vertex, bool isHex) : vertex(vertex), intType(INVALID)
     {
-        initLinePos();
+        if (isHex)
+        {
+            hexPos = coord(row, col);
+            initLinePos();
+        }
+        else
+        {
+            pos = coord(row, col);
+            positionChanged();
+        }
     }
 
     typedef struct _coord
@@ -52,7 +61,11 @@ struct TracerPoint
     void initLinePos();
     void positionChanged();
     Array<Direction> getMoves();
+    Array<Direction> getValidNextMoves(Array<Direction> path); /* Assuming origin is current tracer */
+    TracerPoint getPathEnd(Array<Direction> path); /* Assuming start is the current tracer, return the point at the end of the path */
     void move(Direction dir);
+    bool operator==(TracerPoint const& point);
+    bool operator!=(TracerPoint const& point);
 
     coord hexPos;
     coord pos;

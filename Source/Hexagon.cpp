@@ -25,6 +25,12 @@ Hexagon::~Hexagon()
     m_sideLength = getWidth() / 2;
 }
 
+bool Hexagon::hitTest(int x, int y)
+{
+    Point<float> point(x + .5f, y + .5f);
+    return m_hexPath.contains(point, 5.f);
+}
+
 void Hexagon::paint (Graphics& g)
 {
     /* This demo code just fills the component's background and
@@ -38,20 +44,29 @@ void Hexagon::paint (Graphics& g)
 
     g.fillAll (Colours::transparentBlack);   // clear the background
 
-    Path hexPath, innerPath;
-    hexPath.startNewSubPath(getLocalPoint(getParentComponent(), getVertex(0)));
+    Path innerPath;
+    m_hexPath.clear();
+    m_hexPath.startNewSubPath(getLocalPoint(getParentComponent(), getVertex(0)));
     for (int i = 1; i < 6; i++)
     {
-        hexPath.lineTo(getLocalPoint(getParentComponent(), getVertex(i)));
+        m_hexPath.lineTo(getLocalPoint(getParentComponent(), getVertex(i)));
     }
-    hexPath.closeSubPath();
+    m_hexPath.closeSubPath();
 
-    innerPath = hexPath;
+    innerPath = m_hexPath;
     innerPath.applyTransform(AffineTransform::scale(0.92, 0.92, getWidth() / 2, getHeight() / 2));
 
     g.setColour(Colours::black);
-    g.strokePath(hexPath, PathStrokeType(1.0f));
+    g.strokePath(m_hexPath, PathStrokeType(1.0f));
     g.setColour(m_curColour);
+    if (m_isSelected)
+    {
+        g.setColour(Colours::coral);
+    }
+    else if (m_isHovering)
+    {
+        g.setColour(Colours::aqua);
+    }
     g.strokePath(innerPath, PathStrokeType(1.0f));
 
     g.setColour (Colours::white);
@@ -115,6 +130,39 @@ void Hexagon::pulse()
 void Hexagon::setNote(int noteNum)
 {
     m_noteNum = noteNum;
+}
+
+void Hexagon::setPosition(int row, int col)
+{
+    m_row = row;
+    m_col = col;
+}
+
+int Hexagon::getRow()
+{
+    return m_row;
+}
+
+int Hexagon::getCol()
+{
+    return m_col;
+}
+
+void Hexagon::setHovering(bool isHovering)
+{
+    m_isHovering = isHovering;
+    repaint();
+}
+
+void Hexagon::setSelected(bool isSelected)
+{
+    m_isSelected = isSelected;
+    repaint();
+}
+
+bool Hexagon::isSelected()
+{
+    return m_isSelected;
 }
 
 void Hexagon::setTile(NoteUtils::HexTile tile)

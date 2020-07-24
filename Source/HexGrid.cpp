@@ -24,26 +24,121 @@ HexGrid::HexGrid()
         {
             /* Yes this is bad for locality, but it's the easiest to traverse with flat hexagons */
             m_hexArray[i][j].setTile(NoteUtils::hexagons[j][i]);
+            m_hexArray[i][j].setPosition(j, i);
+            m_hexArray[i][j].addMouseListener(this, false);
             addAndMakeVisible(m_hexArray[i][j]);
         }
     }
-    // Add a tracerboi
+}
 
-    /* m_tracers.add(new Tracer());
-    m_tracers[0]->setSize(15, 15);
-    m_tracers[0]->position = TracerPoint(7, 13, 4);
-    addAndMakeVisible(m_tracers[0]); */
-    
-    /* for (int i = 0; i < 2; i++)
+void HexGrid::addPathClicked(bool isAdding)
+{
+    m_canSelect = isAdding;
+    repaint();
+}
+
+void HexGrid::pathModeChanged(bool isInHexMode)
+{
+    m_isHexMode = isInHexMode;
+    repaint();
+}
+
+void HexGrid::mouseMove(const MouseEvent& e)
+{
+    if (m_canSelect)
     {
-        m_tracers.add(new Tracer());
-        m_tracers[i]->setSize(15, 15);
-        m_tracers[i]->position = TracerPoint(5, 7, 0);
-        addAndMakeVisible(m_tracers[i]);
-    } */
+        if (m_isHexMode)
+        {
+            Hexagon* hex = (Hexagon*)e.eventComponent;
+            if (hex != m_hoveringOverHex)
+            {
+                if (m_hoveringOverHex != nullptr)
+                {
+                    m_hoveringOverHex->setHovering(false);
+                }
+                m_hoveringOverHex = hex;
+                hex->setHovering(true);
+            }
+        }
+        else
+        {
+            TracerPoint nearestPoint = getNearestVert(getLocalPoint(e.eventComponent, e.getMouseDownPosition()));
+            if (m_tracerStart.intType != TracerPoint::INVALID)
+            {
+                m_hoveringOverPoint = TracerPoint();
+                TracerPoint endPath = m_tracerStart.getPathEnd(m_pathDirs);
+                Array<TracerPoint::Direction> moves = m_tracerStart.getValidNextMoves(m_pathDirs);
+                for (TracerPoint::Direction dir : moves)
+                {
+                    TracerPoint nextVertOption = endPath;
+                    nextVertOption.move(dir);
+                    if (nearestPoint == nextVertOption)
+                    {
+                        m_hoveringOverPoint = nearestPoint;
+                    }
+                }
+            }
+            else
+            {
+                m_hoveringOverPoint = nearestPoint;
+            }
+            
+        }
 
-    m_timerCount = 0;
-    
+        repaint();
+    }
+}
+
+void HexGrid::mouseExit(const MouseEvent& event)
+{
+    if (m_canSelect)
+    {
+        if (m_isHexMode)
+        {
+            m_hoveringOverHex->setHovering(false);
+            m_hoveringOverHex = nullptr;
+        }
+        else
+        {
+            /* Move offscreen if mouse is off of grid */
+            m_hoveringOverPoint = TracerPoint();
+            repaint();
+        }
+    }
+}
+
+void HexGrid::mouseDown(const MouseEvent& event)
+{
+    if (m_canSelect)
+    {
+        if (m_isHexMode && m_hoveringOverHex != nullptr)
+        {
+            m_selectedHexes.add(m_hoveringOverHex);
+            m_hoveringOverHex->setSelected(true);
+        }
+        else if (!m_isHexMode && m_hoveringOverPoint.intType != TracerPoint::INVALID)
+        {
+            if (m_tracerStart.intType == TracerPoint::INVALID)
+            {
+                m_tracerStart = m_hoveringOverPoint;
+            }
+            else
+            {
+                TracerPoint pathEnd = m_tracerStart.getPathEnd(m_pathDirs);
+                Array<TracerPoint::Direction> moves = m_tracerStart.getValidNextMoves(m_pathDirs);
+                for (TracerPoint::Direction dir : moves)
+                {
+                    TracerPoint nextVertOption = pathEnd;
+                    nextVertOption.move(dir);
+                    if (m_hoveringOverPoint == nextVertOption)
+                    {
+                        m_pathDirs.add(dir);
+                    }
+                }
+            }
+        }
+        repaint();
+    }
 }
 
 void HexGrid::moveTracers(int duration)
@@ -66,22 +161,56 @@ HexGrid::~HexGrid()
 {
 }
 
-void HexGrid::paint (Graphics& g)
+void HexGrid::paint(Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
+    g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId));   // clear the background
+    if (m_hoveringOverPoint.intType != TracerPoint::INVALID)
+    {
+        g.setColour(Colours::aqua);
+        Rectangle<float> circle(0, 0, 10, 10);
+        Point<float> vert = m_hexArray[m_hoveringOverPoint.hexPos.col][m_hoveringOverPoint.hexPos.row].getVertex(m_hoveringOverPoint.vertex);
+        circle.setCentre(vert);
+        g.drawEllipse(circle, 2);
+    }
+    if (m_tracerStart.intType != TracerPoint::INVALID)
+    {
+        g.setColour(Colours::coral);
+        Rectangle<float> circle(0, 0, 10, 10);
+        Point<float> vert = m_hexArray[m_tracerStart.hexPos.col][m_tracerStart.hexPos.row].getVertex(m_tracerStart.vertex);
+        circle.setCentre(vert);
+        g.drawEllipse(circle, 2);
+        TracerPoint curPoint = m_tracerStart;
+        Path tracerPath;
+        tracerPath.startNewSubPath(vert);
+        for (TracerPoint::Direction dir : m_pathDirs)
+        {
+            curPoint.move(dir);
+            tracerPath.lineTo(m_hexArray[curPoint.hexPos.col][curPoint.hexPos.row].getVertex(curPoint.vertex));
+        }
+        g.strokePath(tracerPath, PathStrokeType(4.0f));
+        
+        if (m_canSelect)
+        {
+            /* Draw possible next moves */
+            g.setColour(Colours::aqua);
+            TracerPoint end = m_tracerStart.getPathEnd(m_pathDirs);
+            Array<TracerPoint::Direction> possibleMoves = m_tracerStart.getValidNextMoves(m_pathDirs);
+            for (TracerPoint::Direction dir : possibleMoves)
+            {
+                TracerPoint point = end;
+                point.move(dir);
+                g.drawLine(Line<float>(m_hexArray[end.hexPos.col][end.hexPos.row].getVertex(end.vertex),
+                    m_hexArray[point.hexPos.col][point.hexPos.row].getVertex(point.vertex)), 4.f);
+            }
+        }
 
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
+    }
 }
 
 void HexGrid::resized()
 {
     /* Position hexagons */
-    float hexHeight = (getHeight()- PADDING) / NUM_ROWS;
+    float hexHeight = (getHeight()- (PADDING * 2)) / NUM_ROWS;
     float hexWidth = hexHeight * HEX_W_TO_H_RATIO;
 
     float curX = PADDING;
@@ -95,7 +224,7 @@ void HexGrid::resized()
             // Set x to previous column's top right vertex coordinate
             curX = m_hexArray[i-1][0].getVertex(0).x;
         }
-        curY = (i % 2 == 0) ? yOffset : 0;
+        curY = (i % 2 == 0) ? yOffset + PADDING : PADDING;
         numRows = (i % 2 == 0) ? (NUM_ROWS - 1) : NUM_ROWS;
 
         for (int j = 0; j < numRows; j++)
@@ -143,10 +272,6 @@ void HexGrid::moveTracerRandom(Tracer *tracer)
 /* returns array of HexTile structs the tracer is currently touching */
 Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
 {
-   /* DBG("tracer line row: " << tracer->position.pos.row);
-    DBG("tracer line col: " << tracer->position.pos.col);
-    DBG("tracer intType: " << tracer->position.intType); */
-
     Array <Hexagon*> notes;
     
     /* 8 rows, 15 cols */
@@ -302,4 +427,147 @@ Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
     }
     
     return notes;
+}
+
+/* Returns the closest TracerPoint to any point relative to the grid */
+TracerPoint HexGrid::getNearestVert(Point<int> pos)
+{
+    TracerPoint::coord linePosition(-1, -1);
+    int vertex = -1;
+
+    /* variance is used to find what column or row the user is in */
+    int xVariance = m_hexArray[0][0].getWidth() / 2;
+    int yVariance = m_hexArray[0][0].getHeight() / 3;
+
+    /* Find line column */
+    if (pos.x <= (xVariance + PADDING)) linePosition.col = 0; // Check first line col
+    for (int i = 0; i < NUM_COLS; i++)
+    {
+        int curX = m_hexArray[i][0].getVertex(0).x;
+        if ((pos.x >= (curX - xVariance)) && (pos.x <= (curX + xVariance)))
+        {
+            linePosition.col = i + 1;
+            break;
+        }
+    }
+
+    if (linePosition.col == -1)
+    {
+        /* Rightmost line col */
+        linePosition.col = NUM_COLS;
+    }
+    int hexCol = (linePosition.col == 0) ? 0 : linePosition.col - 1;
+    if ((pos.y <= (yVariance + PADDING)) && (linePosition.col % 2) && linePosition.col < NUM_COLS)
+    {
+        hexCol = linePosition.col;
+    }
+    else if ((pos.y >= m_hexArray[1][7].getVertex(0).y + yVariance) &&
+            (pos.y <= m_hexArray[1][7].getVertex(2).y - yVariance) && 
+            linePosition.col % 2 &&
+            linePosition.col < NUM_COLS)
+    {
+        /* Holy fucking edge case, bottom odd col vert 4 */
+        hexCol = linePosition.col;
+    }
+    for (int i = 0; i < NUM_ROWS; i++)
+    {
+        int yTop = m_hexArray[hexCol][i].getVertex(0).y;
+        if ((pos.y <= (yTop + yVariance)))
+        {
+            if (hexCol % 2) /* If odd col */
+            {
+                linePosition.row = (2 * i);
+            }
+            else /* If even col */
+            {
+                linePosition.row = (2 * i) + 1;
+            }
+            if (linePosition.col == 0)
+            {
+                /* Leftmost col */
+                if (linePosition.row == 1)
+                {
+                    /* Top left intersection*/
+                    vertex = 5;
+                }
+                else
+                {
+                    vertex = 3;
+                }
+            }
+            else
+            {
+                if (linePosition.row == 0 && (linePosition.col % 2))
+                {
+                    vertex = 5;
+                }
+                else
+                {
+                    vertex = 0;
+                }
+            }
+            break;
+        }
+        int yMid = m_hexArray[hexCol][i].getVertex(1).y;
+        if ((pos.y <= (yMid + yVariance)))
+        {
+            if (hexCol % 2) /* If odd col */
+            {
+                linePosition.row = (2 * i) + 1;
+            }
+            else /* If even col */
+            {
+                linePosition.row = (2 * i) + 2;
+            }
+            if (linePosition.col == 0 || ((linePosition.col % 2) && linePosition.row == ((NUM_ROWS * 2) - 1)))
+            {
+                /* Either first col or bottom hex vert 4 */
+                vertex = 4;
+            }
+            else
+            {
+                if (hexCol % 2 == linePosition.col % 2)
+                {
+                    /* Odd hex and line col or even hex and line col */
+                    vertex = 0;
+                }
+                else
+                {
+                    vertex = 1;
+                }
+            }
+            break;
+        }
+    }
+
+    /* If row and vertex still not set, must be bottom edge case */
+    if (vertex == -1)
+    {
+        if (linePosition.col == 0)
+        {
+            /* Bottom left vert 3 */
+            linePosition.row = (NUM_ROWS * 2) - 1;
+            vertex = 3;
+        }
+        else if (linePosition.col == NUM_COLS)
+        {
+            /* Bottom right vert 2 */
+            linePosition.row = (NUM_ROWS * 2) - 1;
+            vertex = 2;
+        }
+        else if (linePosition.col % 2)
+        {
+            linePosition.row = NUM_ROWS * 2;
+            vertex = 3;
+        }
+        else
+        {
+            linePosition.row = NUM_ROWS * 2;
+            vertex = 2;
+        }
+    }
+
+    //DBG("row: " << linePosition.row << ", col: " << linePosition.col << ", vert: " << vertex);
+    
+    return TracerPoint(linePosition.row, linePosition.col, vertex, false);
 }

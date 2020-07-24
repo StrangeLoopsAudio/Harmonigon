@@ -13,6 +13,24 @@
 
 //==============================================================================
 
+bool TracerPoint::operator==(TracerPoint const& point)
+{
+    if (point.vertex == vertex && hexPos.col == point.hexPos.col && hexPos.row == point.hexPos.row)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool TracerPoint::operator!=(TracerPoint const& point)
+{
+    if (point.vertex != vertex || hexPos.col != point.hexPos.col || hexPos.row != point.hexPos.row)
+    {
+        return true;
+    }
+    return false;
+}
+
 void TracerPoint::initLinePos()
 {
     if (vertex < 2)
@@ -96,10 +114,6 @@ void TracerPoint::positionChanged()
 {
     /* Reset intersection type */
     intType = INVALID;
-    
-    /* DBG("\n Position Changed");
-    DBG("hexPos.col = " << hexPos.col);
-    DBG("hexPos.row = " << hexPos.row); */
     
     /* Assuming new line pos has been set, need to update hexPos to match */
     /* Refresh column */
@@ -218,10 +232,33 @@ void TracerPoint::positionChanged()
             intType = RIGHT_T;
         }
     }
-    
-    /* DBG("UPDATED");
-    DBG("hexPos.col = " << hexPos.col);
-    DBG("hexPos.row = " << hexPos.row); */
+}
+
+Array<TracerPoint::Direction> TracerPoint::getValidNextMoves(Array<Direction> path)
+{
+    Array<Direction> allMoves = getPathEnd(path).getMoves();
+    Array<TracerPoint> allPoints;
+    allPoints.add(*this);
+    TracerPoint point = *this;
+    for (Direction dir : path)
+    {
+        point.move(dir);
+        allPoints.add(point);
+    }
+    /* Point should be at end of path, check if hit any of the same points */
+    for (int i = 0; i < allMoves.size(); i++)
+    {
+        TracerPoint newPoint = point;
+        newPoint.move(allMoves[i]);
+        for (TracerPoint pointInPath : allPoints)
+        {
+            if (pointInPath == newPoint)
+            {
+                allMoves.remove(i);
+            }
+        }
+    }
+    return allMoves;
 }
 
 Array<TracerPoint::Direction> TracerPoint::getMoves()
@@ -263,15 +300,18 @@ Array<TracerPoint::Direction> TracerPoint::getMoves()
     return moves;
 }
 
-/* Absolutely no validity checking right now, yeesh */
+TracerPoint TracerPoint::getPathEnd(Array<Direction> path)
+{
+    TracerPoint curPoint = *this;
+    for (Direction dir : path)
+    {
+        curPoint.move(dir);
+    }
+    return curPoint;
+}
+
 void TracerPoint::move(Direction dir)
 {
-    /* DBG("intType = " << intType);
-    DBG("dir = " << dir);
-    DBG("old vertex = " << vertex);
-    DBG("hex col = " << hexPos.col);
-    DBG("hex row = " << hexPos.row); */
-
     switch (dir)
     {
         case UP:
@@ -520,7 +560,6 @@ void TracerPoint::move(Direction dir)
                     pos.col++;
                 }
                 
-                /* jassert(vertex < 2); */
                 else
                 {
                     pos.col++;
