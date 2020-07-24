@@ -27,8 +27,8 @@ public:
 class PathListItem  : public juce::Component
 {
 public:
-    PathListItem(int id, TracerPoint origin, Array<TracerPoint::Direction> path);
-    PathListItem(int id, Array<Hexagon*> hexagons);
+    PathListItem(int id, Colour colour, TracerPoint origin, Array<TracerPoint::Direction> path);
+    PathListItem(int id, Colour colour, Array<Hexagon*> hexagons);
     ~PathListItem() override;
 
     void paint (juce::Graphics&) override;
@@ -50,6 +50,7 @@ private:
     TracerPoint m_tracerStart;
     Array<TracerPoint::Direction> m_pathDirs;
     Array<Hexagon*> m_selectedHexes;
+    Colour m_pathColour;
 
     OtherLookAndFeel otherLookAndFeel;
 

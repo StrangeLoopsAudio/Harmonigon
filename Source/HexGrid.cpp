@@ -29,17 +29,25 @@ HexGrid::HexGrid()
             addAndMakeVisible(m_hexArray[i][j]);
         }
     }
+    setInterceptsMouseClicks(false, true);
 }
 
-void HexGrid::addPathClicked(bool isAdding)
+void HexGrid::startNewPath(bool isHexPath, Colour colour)
 {
-    m_canSelect = isAdding;
+    m_canSelect = true;
+    m_curPathColour = colour;
+    m_isHexMode = isHexPath;
     repaint();
 }
 
-void HexGrid::pathModeChanged(bool isInHexMode)
+void HexGrid::endPath()
 {
-    m_isHexMode = isInHexMode;
+    m_canSelect = false;
+    m_selectedHexes.clear();
+    m_tracerStart.intType = TracerPoint::INVALID;
+    m_hoveringOverPoint.intType = TracerPoint::INVALID;
+    m_hoveringOverHex = nullptr;
+    m_pathDirs.clear();
     repaint();
 }
 
@@ -113,8 +121,12 @@ void HexGrid::mouseDown(const MouseEvent& event)
     {
         if (m_isHexMode && m_hoveringOverHex != nullptr)
         {
-            m_selectedHexes.add(m_hoveringOverHex);
-            m_hoveringOverHex->setSelected(true);
+            /* Only add if isn't already selected */
+            if (!m_hoveringOverHex->isSelected())
+            {
+                m_selectedHexes.add(m_hoveringOverHex);
+                m_hoveringOverHex->setSelected(m_curPathColour);
+            }
         }
         else if (!m_isHexMode && m_hoveringOverPoint.intType != TracerPoint::INVALID)
         {
@@ -174,7 +186,7 @@ void HexGrid::paint(Graphics& g)
     }
     if (m_tracerStart.intType != TracerPoint::INVALID)
     {
-        g.setColour(Colours::coral);
+        g.setColour(m_curPathColour);
         Rectangle<float> circle(0, 0, 10, 10);
         Point<float> vert = m_hexArray[m_tracerStart.hexPos.col][m_tracerStart.hexPos.row].getVertex(m_tracerStart.vertex);
         circle.setCentre(vert);
@@ -203,7 +215,6 @@ void HexGrid::paint(Graphics& g)
                     m_hexArray[point.hexPos.col][point.hexPos.row].getVertex(point.vertex)), 4.f);
             }
         }
-
     }
 }
 
@@ -284,7 +295,7 @@ void HexGrid::moveTracerRandom(Tracer *tracer)
     return tracer->position.move(possibleDirs[index]);
 }
 
-/* returns array of HexTile structs the tracer is currently touching */
+/* Returns array of HexTile structs the tracer is currently touching */
 Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
 {
     Array <Hexagon*> notes;

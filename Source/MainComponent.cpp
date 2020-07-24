@@ -68,14 +68,14 @@ void MainComponent::buttonClicked(Button* button)
         if (m_isAddingPath)
         {
             m_paramBar.buttonAddPath.setButtonText("Add Path +");
+            m_paramBar.buttonPathMode.setEnabled(true);
             if (m_isInHexPathMode)
             {
                 Array<Hexagon*> path = m_grid.getHexPath();
                 if (path.size() > 0)
                 {
-                    m_pathListPanel.addPath(new PathListItem(m_pathListPanel.getNumPaths(), path));
+                    m_pathListPanel.addPath(path);
                 }
-                
             }
             else
             {
@@ -83,17 +83,18 @@ void MainComponent::buttonClicked(Button* button)
                 Array<TracerPoint::Direction> path = m_grid.getLinePath();
                 if (origin.intType != TracerPoint::INVALID && path.size() > 0)
                 {
-                    m_pathListPanel.addPath(new PathListItem(m_pathListPanel.getNumPaths(), origin, path));
+                    m_pathListPanel.addPath(origin, path);
                 }
             }
-            
+            m_grid.endPath();
         }
         else
         {
+            m_grid.startNewPath(m_isInHexPathMode, m_pathListPanel.getNextColour());
             m_paramBar.buttonAddPath.setButtonText("Done Drawing Path :)");
+            m_paramBar.buttonPathMode.setEnabled(false);
         }
         m_isAddingPath = !m_isAddingPath;
-        m_grid.addPathClicked(m_isAddingPath);
         m_paramBar.resized();
     }
     else if (button == &m_paramBar.buttonPathMode)
@@ -107,7 +108,6 @@ void MainComponent::buttonClicked(Button* button)
             m_paramBar.buttonPathMode.setButtonText("Hex Path Mode");
         }
         m_isInHexPathMode = !m_isInHexPathMode;
-        m_grid.pathModeChanged(m_isInHexPathMode);
         m_paramBar.resized();
     }
 }

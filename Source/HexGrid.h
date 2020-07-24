@@ -38,8 +38,8 @@ public:
     Array<Hexagon*> getNotesToPlay();
     void moveTracers(int duration);
 
-    void addPathClicked(bool isAdding);
-    void pathModeChanged(bool isInHexMode);
+    void startNewPath(bool isHexPath, Colour colour);
+    void endPath();
 
 private:
 
@@ -71,6 +71,7 @@ private:
     TracerPoint m_tracerStart;
     Array<TracerPoint::Direction> m_pathDirs;
     Array<Hexagon*> m_selectedHexes;
+    Colour m_curPathColour;
 
     bool m_isHexMode = true; // Tracer or hex select mode for path making
 

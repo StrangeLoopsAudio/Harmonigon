@@ -33,15 +33,6 @@ bool Hexagon::hitTest(int x, int y)
 
 void Hexagon::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-
-
     g.fillAll (Colours::transparentBlack);   // clear the background
 
     Path innerPath;
@@ -61,7 +52,7 @@ void Hexagon::paint (Graphics& g)
     g.setColour(m_curColour);
     if (m_isSelected)
     {
-        g.setColour(Colours::coral);
+        g.setColour(m_pathColour);
     }
     else if (m_isHovering)
     {
@@ -71,9 +62,7 @@ void Hexagon::paint (Graphics& g)
 
     g.setColour (Colours::white);
     g.setFont (20.0f);
-    g.drawText (NoteUtils::keyToString(m_tile.key), getLocalBounds(),
-            Justification::centred, true);   // draw some placeholder text
-
+    g.drawText (NoteUtils::keyToString(m_tile.key), getLocalBounds(), Justification::centred, true);
 }
 
 /* Returns vertex coordinates relative to parent */
@@ -154,9 +143,16 @@ void Hexagon::setHovering(bool isHovering)
     repaint();
 }
 
-void Hexagon::setSelected(bool isSelected)
+void Hexagon::setSelected(Colour colour)
 {
-    m_isSelected = isSelected;
+    m_isSelected = true;
+    m_pathColour = colour;
+    repaint();
+}
+
+void Hexagon::endSelected()
+{
+    m_isSelected = false;
     repaint();
 }
 

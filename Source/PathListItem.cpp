@@ -24,8 +24,10 @@ juce::Font OtherLookAndFeel::getComboBoxFont(ComboBox &)
 
 
 PathListItem::PathListItem(int id,
+    Colour colour,
     TracerPoint origin,
     Array<TracerPoint::Direction> path): m_id(id),
+    m_pathColour(colour),
     m_tracerStart(origin),
     m_pathDirs(path),
     m_isHexPath(false)
@@ -34,7 +36,9 @@ PathListItem::PathListItem(int id,
 }
 
 PathListItem::PathListItem(int id,
+    Colour colour,
     Array<Hexagon*> hexagons) : m_id(id),
+    m_pathColour(colour),
     m_selectedHexes(hexagons),
     m_isHexPath(true)
 {
@@ -91,20 +95,23 @@ void PathListItem::paint (juce::Graphics& g)
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 
     g.setColour (juce::Colours::white);
-    g.setFont (14.0f);
     
+    /* Dividers */
     g.drawLine(getWidth() / 3, 0, getWidth() / 3, getHeight());
     g.drawLine(0, getHeight() / 2, getWidth() / 3, getHeight() / 2);
-
     g.drawLine(getWidth() / 3, getHeight() / 3, 2 * (getWidth() / 3), getHeight() / 3);
     g.drawLine(getWidth() / 3, (2 * getHeight()) / 3, 2 * (getWidth() / 3), (2 * getHeight()) / 3);
+
+    /* Color square */
+    g.setColour(m_pathColour);
+    Rectangle<float> colorSquare(0, 0, 10, 10);
+    colorSquare.setCentre(name.getPosition().translated(15, name.getHeight() / 2).toFloat());
+    g.fillRoundedRectangle(colorSquare, 3.f);
 
 }
 
 void PathListItem::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
     Rectangle<int> b = getLocalBounds();
     int panelHeightThird = b.getHeight() / 3;
     int panelWidthThird = b.getWidth() / 3;
