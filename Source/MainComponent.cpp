@@ -34,6 +34,7 @@ MainComponent::MainComponent()
     m_paramBar.sliderBpm.addListener(this);
     m_paramBar.comboKey.addListener(this);
     m_paramBar.buttonAddPath.addListener(this);
+    m_paramBar.buttonPlayStop.addListener(this);
     m_paramBar.buttonPathMode.addListener(this);
     m_curKey = (NoteUtils::Key)(m_paramBar.comboKey.getSelectedId() - 1);
     m_paramBar.comboScaleType.addListener(this);
@@ -109,6 +110,21 @@ void MainComponent::buttonClicked(Button* button)
             m_paramBar.buttonPathMode.setButtonText("Hex Path Mode");
         }
         m_isInHexPathMode = !m_isInHexPathMode;
+        m_paramBar.resized();
+    }
+    else if (button == &m_paramBar.buttonPlayStop)
+    {
+        if (m_isPlaying)
+        {
+            m_paramBar.buttonPlayStop.setButtonText("Play");
+            m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::green);
+        }
+        else
+        {
+            m_paramBar.buttonPlayStop.setButtonText("Stop");
+            m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::red);
+        }
+        m_isPlaying = !m_isPlaying;
         m_paramBar.resized();
     }
 }
