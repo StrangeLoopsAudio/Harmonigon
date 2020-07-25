@@ -24,17 +24,30 @@ public:
     Font getComboBoxFont(ComboBox &) override;
 };
 
+struct HarmonigonPath
+{
+    HarmonigonPath();
+    HarmonigonPath(int id, Colour colour, TracerPoint origin, Array<TracerPoint::Direction> path) : id(id),
+        colour(colour), isHexPath(false), tracerStart(origin), pathDirs(path) { };
+    HarmonigonPath(int id, Colour colour, Array<Hexagon*> hexagons) : id(id),
+        colour(colour), isHexPath(true), selectedHexes(hexagons) { };
+    
+    int id;
+    Colour colour;
+    bool isHexPath; // Boolean for if path is hex or line path
+    TracerPoint tracerStart;
+    Array<TracerPoint::Direction> pathDirs;
+    Array<Hexagon*> selectedHexes;
+};
+
 class PathListItem  : public juce::Component
 {
 public:
-    PathListItem(int id, Colour colour, TracerPoint origin, Array<TracerPoint::Direction> path);
-    PathListItem(int id, Colour colour, Array<Hexagon*> hexagons);
+    PathListItem(HarmonigonPath *path);
     ~PathListItem() override;
 
     void paint (juce::Graphics&) override;
     void resized() override;
-
-    void initializeItem();
 
     ComboBox repeatType;
     ComboBox stepIntervalType;
@@ -45,12 +58,7 @@ public:
     Label loopLengthLabel;
     
 private:
-    int m_id;
-    bool m_isHexPath; // Boolean for if path is hex or line path
-    TracerPoint m_tracerStart;
-    Array<TracerPoint::Direction> m_pathDirs;
-    Array<Hexagon*> m_selectedHexes;
-    Colour m_pathColour;
+    HarmonigonPath* m_path;
 
     OtherLookAndFeel otherLookAndFeel;
 

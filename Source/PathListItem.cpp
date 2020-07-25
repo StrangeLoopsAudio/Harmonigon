@@ -23,34 +23,7 @@ juce::Font OtherLookAndFeel::getComboBoxFont(ComboBox &)
 }
 
 
-PathListItem::PathListItem(int id,
-    Colour colour,
-    TracerPoint origin,
-    Array<TracerPoint::Direction> path): m_id(id),
-    m_pathColour(colour),
-    m_tracerStart(origin),
-    m_pathDirs(path),
-    m_isHexPath(false)
-{
-    initializeItem();
-}
-
-PathListItem::PathListItem(int id,
-    Colour colour,
-    Array<Hexagon*> hexagons) : m_id(id),
-    m_pathColour(colour),
-    m_selectedHexes(hexagons),
-    m_isHexPath(true)
-{
-    initializeItem();
-}
-
-PathListItem::~PathListItem()
-{
-    setLookAndFeel (nullptr);
-}
-
-void PathListItem::initializeItem()
+PathListItem::PathListItem(HarmonigonPath* path): m_path(path)
 {
     setSize(300, 100);
     setLookAndFeel(&otherLookAndFeel);
@@ -73,7 +46,7 @@ void PathListItem::initializeItem()
     loopLength.setSelectedItemIndex(0, true);
     addAndMakeVisible(loopLength);
 
-    name.setText("Path " + String(m_id + 1), dontSendNotification);
+    name.setText("Path " + String(m_path->id + 1), dontSendNotification);
     name.setJustificationType(Justification::centred);
     addAndMakeVisible(name);
 
@@ -85,6 +58,11 @@ void PathListItem::initializeItem()
 
     loopLengthLabel.setText("Loop Length", dontSendNotification);
     addAndMakeVisible(loopLengthLabel);
+}
+
+PathListItem::~PathListItem()
+{
+    setLookAndFeel (nullptr);
 }
 
 void PathListItem::paint (juce::Graphics& g)
@@ -103,7 +81,7 @@ void PathListItem::paint (juce::Graphics& g)
     g.drawLine(getWidth() / 3, (2 * getHeight()) / 3, 2 * (getWidth() / 3), (2 * getHeight()) / 3);
 
     /* Color square */
-    g.setColour(m_pathColour);
+    g.setColour(m_path->colour);
     Rectangle<float> colorSquare(0, 0, 10, 10);
     colorSquare.setCentre(name.getPosition().translated(15, name.getHeight() / 2).toFloat());
     g.fillRoundedRectangle(colorSquare, 3.f);

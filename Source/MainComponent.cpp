@@ -71,26 +71,27 @@ void MainComponent::buttonClicked(Button* button)
             m_paramBar.buttonPathMode.setEnabled(true);
             if (m_isInHexPathMode)
             {
-                Array<Hexagon*> path = m_grid.getHexPath();
-                if (path.size() > 0)
+                HarmonigonPath* path = m_grid.getPath();
+                if (path->selectedHexes.size() > 0)
                 {
                     m_pathListPanel.addPath(path);
+                    m_grid.storePath(path);
                 }
             }
             else
             {
-                TracerPoint origin = m_grid.getLinePathOrigin();
-                Array<TracerPoint::Direction> path = m_grid.getLinePath();
-                if (origin.intType != TracerPoint::INVALID && path.size() > 0)
+                HarmonigonPath* path = m_grid.getPath();
+                if (path->tracerStart.intType != TracerPoint::INVALID && path->pathDirs.size() > 0)
                 {
-                    m_pathListPanel.addPath(origin, path);
+                    m_pathListPanel.addPath(path);
+                    m_grid.storePath(path);
                 }
             }
             m_grid.endPath();
         }
         else
         {
-            m_grid.startNewPath(m_isInHexPathMode, m_pathListPanel.getNextColour());
+            m_grid.startNewPath(m_isInHexPathMode);
             m_paramBar.buttonAddPath.setButtonText("Done Drawing Path :)");
             m_paramBar.buttonPathMode.setEnabled(false);
         }

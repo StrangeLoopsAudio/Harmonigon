@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "Hexagon.h"
 #include "Tracer.h"
+#include "PathListItem.h"
 
 //==============================================================================
 
@@ -31,15 +32,14 @@ public:
     void mouseExit(const MouseEvent& event) override;
     void mouseDown(const MouseEvent& event) override;
 
-    Array<Hexagon*>  getHexPath();
-    TracerPoint      getLinePathOrigin();
-    Array<TracerPoint::Direction> getLinePath();
+    HarmonigonPath*  getPath();
 
     Array<Hexagon*> getNotesToPlay();
     void moveTracers(int duration);
 
-    void startNewPath(bool isHexPath, Colour colour);
+    void startNewPath(bool isHexPath);
     void endPath();
+    void storePath(HarmonigonPath* path);
 
 private:
 
@@ -55,9 +55,9 @@ private:
 
     void             moveTracerRandom(Tracer *tracer);
     Point<float>     getTracerPosition(TracerPoint point);
-    Hexagon*         getTracerHex(Tracer* tracer);
     Array <Hexagon*> getNotes(Tracer *tracer);
     TracerPoint      getNearestVert(Point<int> pos);
+    Colour           getNextColour();
     
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;
@@ -72,6 +72,10 @@ private:
     Array<TracerPoint::Direction> m_pathDirs;
     Array<Hexagon*> m_selectedHexes;
     Colour m_curPathColour;
+
+    int m_numPaths = 0;
+    Array<Colour> m_colours;
+    OwnedArray<HarmonigonPath> m_paths; /* Completed paths */
 
     bool m_isHexMode = true; // Tracer or hex select mode for path making
 

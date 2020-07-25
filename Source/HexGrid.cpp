@@ -29,13 +29,24 @@ HexGrid::HexGrid()
             addAndMakeVisible(m_hexArray[i][j]);
         }
     }
+
+    m_colours =
+    {
+        Colours::crimson,
+        Colours::goldenrod,
+        Colours::palegreen,
+        Colours::orchid,
+        Colours::peachpuff,
+        Colours::lavender
+    };
+
     setInterceptsMouseClicks(false, true);
 }
 
-void HexGrid::startNewPath(bool isHexPath, Colour colour)
+void HexGrid::startNewPath(bool isHexPath)
 {
     m_canSelect = true;
-    m_curPathColour = colour;
+    m_curPathColour = getNextColour();
     m_isHexMode = isHexPath;
     repaint();
 }
@@ -48,6 +59,13 @@ void HexGrid::endPath()
     m_hoveringOverPoint.intType = TracerPoint::INVALID;
     m_hoveringOverHex = nullptr;
     m_pathDirs.clear();
+    repaint();
+}
+
+void HexGrid::storePath(HarmonigonPath* path)
+{
+    m_paths.add(path);
+    m_numPaths++;
     repaint();
 }
 
@@ -216,6 +234,28 @@ void HexGrid::paint(Graphics& g)
             }
         }
     }
+
+    /* Draw completed paths */
+    for (HarmonigonPath* path : m_paths)
+    {
+        if (!path->isHexPath)
+        {
+            g.setColour(path->colour);
+            Rectangle<float> circle(0, 0, 10, 10);
+            Point<float> vert = m_hexArray[path->tracerStart.hexPos.col][path->tracerStart.hexPos.row].getVertex(path->tracerStart.vertex);
+            circle.setCentre(vert);
+            g.drawEllipse(circle, 2);
+            TracerPoint curPoint = path->tracerStart;
+            Path tracerPath;
+            tracerPath.startNewSubPath(vert);
+            for (TracerPoint::Direction dir : path->pathDirs)
+            {
+                curPoint.move(dir);
+                tracerPath.lineTo(m_hexArray[curPoint.hexPos.col][curPoint.hexPos.row].getVertex(curPoint.vertex));
+            }
+            g.strokePath(tracerPath, PathStrokeType(4.0f));
+        }
+    }
 }
 
 void HexGrid::resized()
@@ -253,19 +293,23 @@ void HexGrid::resized()
     }
 }
 
-Array<Hexagon*> HexGrid::getHexPath()
+HarmonigonPath* HexGrid::getPath()
 {
-    return m_selectedHexes;
+    HarmonigonPath* newPath;
+    if (m_isHexMode)
+    {
+        newPath = new HarmonigonPath(m_numPaths, m_curPathColour, m_selectedHexes);
+    }
+    else
+    {
+        newPath = new HarmonigonPath(m_numPaths, m_curPathColour, m_tracerStart, m_pathDirs);
+    }
+    return newPath;
 }
 
-TracerPoint HexGrid::getLinePathOrigin()
+Colour HexGrid::getNextColour()
 {
-    return m_tracerStart;
-}
-
-Array<TracerPoint::Direction> HexGrid::getLinePath()
-{
-    return m_pathDirs;
+    return m_colours[m_numPaths % m_colours.size()];
 }
 
 Array<Hexagon*> HexGrid::getNotesToPlay()
@@ -278,7 +322,6 @@ Array<Hexagon*> HexGrid::getNotesToPlay()
         {
             notes.add(tracerHex[j]);
         }
-
     }
     return notes;
 }

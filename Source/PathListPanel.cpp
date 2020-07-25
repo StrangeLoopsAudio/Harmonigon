@@ -16,16 +16,6 @@
 PathListPanel::PathListPanel()
 {
     setSize(300, 700);
-
-    m_colours =
-    {
-        Colours::crimson,
-        Colours::goldenrod,
-        Colours::palegreen,
-        Colours::orchid,
-        Colours::peachpuff,
-        Colours::lavender
-    };
 }
 
 PathListPanel::~PathListPanel()
@@ -55,26 +45,11 @@ void PathListPanel::resized()
     }
 }
 
-Colour PathListPanel::getNextColour()
+void PathListPanel::addPath(HarmonigonPath* path)
 {
-    return m_colours[m_colourIndex % m_colours.size()];
-}
-
-void PathListPanel::addPath(TracerPoint origin, Array<TracerPoint::Direction> path)
-{
-    PathListItem* newItem = new PathListItem(m_pathListItems.size(), m_colours[m_colourIndex], origin, path);
+    PathListItem* newItem = new PathListItem(path);
     m_pathListItems.add(newItem);
     addAndMakeVisible(newItem);
-    m_colourIndex++;
-    resized();
-}
-
-void PathListPanel::addPath(Array<Hexagon*> hexagons)
-{
-    PathListItem* newItem = new PathListItem(m_pathListItems.size(), m_colours[m_colourIndex], hexagons);
-    m_pathListItems.add(newItem);
-    addAndMakeVisible(newItem);
-    m_colourIndex++;
     resized();
 }
 

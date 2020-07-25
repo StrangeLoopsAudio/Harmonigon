@@ -25,13 +25,9 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-    void addPath(TracerPoint origin, Array<TracerPoint::Direction> path);
-    void addPath(Array<Hexagon*> hexagons);
+    void addPath(HarmonigonPath* path);
     int getNumPaths();
-    Colour getNextColour();
 private:
-    Array<Colour> m_colours;
-    int m_colourIndex = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PathListPanel)
     OwnedArray <PathListItem> m_pathListItems;
