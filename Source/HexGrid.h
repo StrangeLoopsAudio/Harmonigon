@@ -57,6 +57,7 @@ private:
     Point<float>     getTracerPosition(TracerPoint point);
     Array <Hexagon*> getNotes(Tracer *tracer);
     TracerPoint      getNearestVert(Point<int> pos);
+    Array<Hexagon*>  getAdjacentHexes();
     Colour           getNextColour();
     
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];

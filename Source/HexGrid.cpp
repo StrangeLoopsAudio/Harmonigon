@@ -76,7 +76,24 @@ void HexGrid::mouseMove(const MouseEvent& e)
         if (m_isHexMode)
         {
             Hexagon* hex = (Hexagon*)e.eventComponent;
-            if (hex != m_hoveringOverHex)
+            if (m_selectedHexes.size() > 0)
+            {
+                m_hoveringOverHex = nullptr;
+                Array<Hexagon *> moves = getAdjacentHexes();
+                for (Hexagon* move : moves)
+                {
+                    if (move == hex)
+                    {
+                        if (m_hoveringOverHex != nullptr)
+                        {
+                            m_hoveringOverHex->setHovering(false);
+                        }
+                        m_hoveringOverHex = hex;
+                        hex->setHovering(true);
+                    }
+                }
+            }
+            else
             {
                 if (m_hoveringOverHex != nullptr)
                 {
@@ -121,8 +138,11 @@ void HexGrid::mouseExit(const MouseEvent& event)
     {
         if (m_isHexMode)
         {
-            m_hoveringOverHex->setHovering(false);
-            m_hoveringOverHex = nullptr;
+            if (m_hoveringOverHex != nullptr)
+            {
+                m_hoveringOverHex->setHovering(false);
+                m_hoveringOverHex = nullptr;
+            }
         }
         else
         {
@@ -496,6 +516,78 @@ Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
     }
     
     return notes;
+}
+
+Array<Hexagon*> HexGrid::getAdjacentHexes()
+{
+    Array<Hexagon*> hexes;
+    Hexagon* end = m_selectedHexes.getLast();
+    bool isOdd = end->getCol() % 2;
+    if (end->getRow() != 0)
+    {
+        /* Add top hex */
+        hexes.add(&m_hexArray[end->getCol()][end->getRow() - 1]);
+    }
+    if ((end->getRow() != NUM_ROWS - 1 && isOdd) || (end->getRow() != NUM_ROWS - 2 && !isOdd))
+    {
+        /* Add bottom hex */
+        hexes.add(&m_hexArray[end->getCol()][end->getRow() + 1]);
+    }
+    if (end->getCol() != 0)
+    {
+        if ((end->getRow() != 0 && isOdd) || !isOdd)
+        {
+            /* Add top left hex */
+            if (isOdd)
+            {
+                hexes.add(&m_hexArray[end->getCol() - 1][end->getRow() - 1]);
+            }
+            else
+            {
+                hexes.add(&m_hexArray[end->getCol() - 1][end->getRow()]);
+            }
+        }
+        if ((end->getRow() != NUM_ROWS - 1 && isOdd) || !isOdd)
+        {
+            /* Add bottom left hex */
+            if (isOdd)
+            {
+                hexes.add(&m_hexArray[end->getCol() - 1][end->getRow()]);
+            }
+            else
+            {
+                hexes.add(&m_hexArray[end->getCol() - 1][end->getRow() + 1]);
+            }
+        }
+    }
+    if (end->getCol() != NUM_COLS - 1)
+    {
+        if ((end->getRow() != 0 && isOdd) || !isOdd)
+        {
+            /* Add top right hex */
+            if (isOdd)
+            {
+                hexes.add(&m_hexArray[end->getCol() + 1][end->getRow() - 1]);
+            }
+            else
+            {
+                hexes.add(&m_hexArray[end->getCol() + 1][end->getRow()]);
+            }
+        }
+        if ((end->getRow() != NUM_ROWS - 1 && isOdd) || !isOdd)
+        {
+            /* Add bottom right hex */
+            if (isOdd)
+            {
+                hexes.add(&m_hexArray[end->getCol() + 1][end->getRow()]);
+            }
+            else
+            {
+                hexes.add(&m_hexArray[end->getCol() + 1][end->getRow() + 1]);
+            }
+        }
+    }
+    return hexes;
 }
 
 /* Returns the closest TracerPoint to any point relative to the grid */
