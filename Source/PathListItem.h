@@ -33,6 +33,7 @@ struct HarmonigonPath
         colour(colour), isHexPath(true), selectedHexes(hexagons) { };
     
     int id;
+    int curIndex = 0;
     Colour colour;
     bool isHexPath; // Boolean for if path is hex or line path
     TracerPoint tracerStart;

@@ -593,26 +593,27 @@ void TracerPoint::move(Direction dir)
     positionChanged();
 }
 
-Tracer::Tracer()
+Tracer::Tracer(TracerPoint position, HarmonigonPath* path) : m_position(position), m_path(path)
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
-
 }
 
 Tracer::~Tracer()
 {
 }
 
+TracerPoint Tracer::getPoint()
+{
+    return m_position;
+}
+
+void Tracer::move(TracerPoint::Direction dir)
+{
+    m_position.move(dir);
+}
+
 void Tracer::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-    g.setColour(Colours::dodgerblue);
+    g.setColour(m_path->colour);
     Rectangle<float> circle = getLocalBounds().toFloat().reduced(getWidth() / 3);
     circle.setCentre(getWidth() / 2, getHeight() / 2);
     g.drawEllipse(circle, 2);
@@ -620,8 +621,5 @@ void Tracer::paint (Graphics& g)
 
 void Tracer::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-
 }
 

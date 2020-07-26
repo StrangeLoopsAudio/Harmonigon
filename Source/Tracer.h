@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "Hexagon.h"
+#include "PathListItem.h"
 
 //==============================================================================
 /*
@@ -76,15 +77,19 @@ struct TracerPoint
 class Tracer : public Component
 {
 public:
-    Tracer();
+    Tracer(TracerPoint position, HarmonigonPath* path);
     ~Tracer();
 
     void paint (Graphics&) override;
     void resized() override;
-    
-    TracerPoint position;
+
+    TracerPoint getPoint();
+    void move(TracerPoint::Direction dir);
 
 private:
+
+    TracerPoint m_position;
+    HarmonigonPath* m_path;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Tracer)
 };
