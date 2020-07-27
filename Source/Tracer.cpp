@@ -33,8 +33,7 @@ void Tracer::move(TracerPoint::Direction dir)
 
 void Tracer::advancePath()
 {
-    m_path->curIndex++;
-    if (m_path->curIndex > m_path->pathDirs.size())
+    if (m_path->curIndex >= m_path->pathDirs.size())
     {
         m_path->curIndex = 0;
         m_position = m_path->tracerStart;
@@ -42,6 +41,7 @@ void Tracer::advancePath()
     else
     {
         m_position.move(m_path->pathDirs[m_path->curIndex]);
+        m_path->curIndex++;
     }
 }
 

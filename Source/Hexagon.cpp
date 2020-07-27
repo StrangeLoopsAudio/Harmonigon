@@ -49,7 +49,7 @@ void Hexagon::paint (Graphics& g)
 
     /* Draw selected path */
     selectedPath = m_hexPath;
-    selectedPath.applyTransform(AffineTransform::scale(0.92, 0.92, getWidth() / 2, getHeight() / 2));
+    selectedPath.applyTransform(AffineTransform::scale(0.89, 0.89, getWidth() / 2, getHeight() / 2));
 
     g.setColour(m_curColour);
     if (m_isSelected)
@@ -64,7 +64,7 @@ void Hexagon::paint (Graphics& g)
 
     /* Draw pulse path */
     pulsePath = m_hexPath;
-    pulsePath.applyTransform(AffineTransform::scale(0.96, 0.96, getWidth() / 2, getHeight() / 2));
+    pulsePath.applyTransform(AffineTransform::scale(0.91, 0.91, getWidth() / 2, getHeight() / 2));
 
     g.setColour(m_curColour);
     g.strokePath(pulsePath, PathStrokeType(1.0f));

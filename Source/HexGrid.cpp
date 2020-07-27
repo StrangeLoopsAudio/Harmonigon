@@ -217,9 +217,9 @@ void HexGrid::mouseDown(const MouseEvent& event)
 
 void HexGrid::advancePaths(int quarterNoteDuration)
 {
-    if (!m_animator.isAnimating())
+    //if (!m_animator.isAnimating())
     {
-        m_timerCount++;
+        //m_timerCount++;
         for (int i = 0; i < m_tracers.size(); i++)
         {
             Rectangle<int> center = m_tracers[i]->getBounds();
