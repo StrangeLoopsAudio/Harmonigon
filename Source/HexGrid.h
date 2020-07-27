@@ -20,7 +20,7 @@
 
 #define HEX_W_TO_H_RATIO 1.1547005
 
-class HexGrid : public Component, public MouseListener
+class HexGrid : public Component
 {
 public:
     HexGrid();
