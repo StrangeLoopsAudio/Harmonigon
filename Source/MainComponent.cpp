@@ -40,10 +40,9 @@ MainComponent::MainComponent()
     m_paramBar.comboScaleType.addListener(this);
     m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
     addAndMakeVisible(m_paramBar);
-    m_moveDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
+    m_quarterNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
 
     addAndMakeVisible(m_pathListPanel);
-    startTimer(m_moveDuration);
 
     m_synth.addSound(new SineWaveSound());
     for (int i = 0; i < 8; i++)
@@ -57,8 +56,11 @@ void MainComponent::sliderDragEnded(Slider* slider)
     if (slider == &m_paramBar.sliderBpm)
     {
         stopTimer();
-        m_moveDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
-        startTimer(m_moveDuration);
+        m_quarterNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
+        if (m_isPlaying)
+        {
+            startTimer(m_quarterNoteDuration);
+        }
     }
 }
 
@@ -116,13 +118,17 @@ void MainComponent::buttonClicked(Button* button)
     {
         if (m_isPlaying)
         {
+            stopTimer();
+            m_synth.allNotesOff(1, true);
             m_paramBar.buttonPlayStop.setButtonText("Play");
             m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::green);
+            m_grid.resetPathPositions();
         }
         else
         {
             m_paramBar.buttonPlayStop.setButtonText("Stop");
             m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::red);
+            startTimer(m_quarterNoteDuration);
         }
         m_isPlaying = !m_isPlaying;
         m_paramBar.resized();
@@ -138,13 +144,13 @@ void MainComponent::timerCallback()
         for (Hexagon * hex : hexes)
         {
             NoteUtils::HexTile note = hex->getTile();
-            if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
+            //if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
             {
                 m_synth.noteOn(1, NoteUtils::tileToMidiNote(note), 1);
                 hex->pulse();
             }
         }
-        m_grid.moveTracers(m_moveDuration);
+        m_grid.advancePaths(m_quarterNoteDuration);
     }
 }
 

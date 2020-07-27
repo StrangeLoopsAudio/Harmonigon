@@ -28,6 +28,7 @@ public:
 
     TracerPoint getPoint();
     void move(TracerPoint::Direction dir);
+    void advancePath();
 
 private:
 

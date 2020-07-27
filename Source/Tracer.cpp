@@ -31,6 +31,20 @@ void Tracer::move(TracerPoint::Direction dir)
     m_position.move(dir);
 }
 
+void Tracer::advancePath()
+{
+    m_path->curIndex++;
+    if (m_path->curIndex > m_path->pathDirs.size())
+    {
+        m_path->curIndex = 0;
+        m_position = m_path->tracerStart;
+    }
+    else
+    {
+        m_position.move(m_path->pathDirs[m_path->curIndex]);
+    }
+}
+
 void Tracer::paint (Graphics& g)
 {
     g.setColour(m_path->colour);

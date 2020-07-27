@@ -44,7 +44,7 @@ public:
     void resized() override;
 
 private:
-    double m_moveDuration;
+    double m_quarterNoteDuration;
     NoteUtils::ScaleType m_curScaleType;
     NoteUtils::Key m_curKey;
     bool m_isAddingPath = false;

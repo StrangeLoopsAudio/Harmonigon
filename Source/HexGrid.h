@@ -36,11 +36,12 @@ public:
     HarmonigonPath*  getPath();
 
     Array<Hexagon*> getNotesToPlay();
-    void moveTracers(int duration);
+    void advancePaths(int quarterNoteDuration);
 
     void startNewPath(bool isHexPath);
     void endPath();
     void storePath(HarmonigonPath* path);
+    void resetPathPositions();
 
 private:
 

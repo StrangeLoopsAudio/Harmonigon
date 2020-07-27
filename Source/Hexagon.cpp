@@ -35,7 +35,6 @@ void Hexagon::paint (Graphics& g)
 {
     g.fillAll (Colours::transparentBlack);   // clear the background
 
-    Path innerPath;
     m_hexPath.clear();
     m_hexPath.startNewSubPath(getLocalPoint(getParentComponent(), getVertex(0)));
     for (int i = 1; i < 6; i++)
@@ -43,12 +42,15 @@ void Hexagon::paint (Graphics& g)
         m_hexPath.lineTo(getLocalPoint(getParentComponent(), getVertex(i)));
     }
     m_hexPath.closeSubPath();
-
-    innerPath = m_hexPath;
-    innerPath.applyTransform(AffineTransform::scale(0.92, 0.92, getWidth() / 2, getHeight() / 2));
-
     g.setColour(Colours::black);
     g.strokePath(m_hexPath, PathStrokeType(1.0f));
+
+    Path selectedPath, pulsePath;
+
+    /* Draw selected path */
+    selectedPath = m_hexPath;
+    selectedPath.applyTransform(AffineTransform::scale(0.92, 0.92, getWidth() / 2, getHeight() / 2));
+
     g.setColour(m_curColour);
     if (m_isSelected)
     {
@@ -58,8 +60,16 @@ void Hexagon::paint (Graphics& g)
     {
         g.setColour(Colours::aqua);
     }
-    g.strokePath(innerPath, PathStrokeType(1.0f));
+    g.strokePath(selectedPath, PathStrokeType(1.0f));
 
+    /* Draw pulse path */
+    pulsePath = m_hexPath;
+    pulsePath.applyTransform(AffineTransform::scale(0.96, 0.96, getWidth() / 2, getHeight() / 2));
+
+    g.setColour(m_curColour);
+    g.strokePath(pulsePath, PathStrokeType(1.0f));
+
+    /* Draw note text */
     g.setColour (Colours::white);
     g.setFont (20.0f);
     g.drawText (NoteUtils::keyToString(m_tile.key), getLocalBounds(), Justification::centred, true);

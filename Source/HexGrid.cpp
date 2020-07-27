@@ -70,8 +70,25 @@ void HexGrid::storePath(HarmonigonPath* path)
     {
         /* Create tracer for path */
         Tracer* newTracer = new Tracer(path->tracerStart, path);
-        addAndMakeVisible(newTracer);
         m_tracers.add(newTracer);
+        newTracer->toFront(false);
+        addAndMakeVisible(newTracer);
+    }
+    repaint();
+}
+
+void HexGrid::resetPathPositions()
+{
+    m_tracers.clear();
+    for (HarmonigonPath* path : m_paths)
+    {
+        path->curIndex = 0;
+        if (!path->isHexPath)
+        {
+            Tracer* newTracer = new Tracer(path->tracerStart, path);
+            m_tracers.add(newTracer);
+            addAndMakeVisible(newTracer);
+        }
     }
     repaint();
 }
@@ -198,20 +215,31 @@ void HexGrid::mouseDown(const MouseEvent& event)
     }
 }
 
-void HexGrid::moveTracers(int duration)
+void HexGrid::advancePaths(int quarterNoteDuration)
 {
-    /* if (!m_animator.isAnimating())
+    if (!m_animator.isAnimating())
     {
         m_timerCount++;
         for (int i = 0; i < m_tracers.size(); i++)
         {
             Rectangle<int> center = m_tracers[i]->getBounds();
-            moveTracerRandom(m_tracers[i]);
-            center.setCentre(getTracerPosition(m_tracers[i]->position).toInt());
-            m_animator.animateComponent(m_tracers[i], center, 1, duration - 10, true, 0.3, 0.3);
+            m_tracers[i]->advancePath();
+            center.setCentre(getTracerPosition(m_tracers[i]->getPoint()).toInt());
+            m_animator.animateComponent(m_tracers[i], center, 1, quarterNoteDuration - 10, true, 0.3, 0.3);
             repaint();
         }
-    } */
+    }
+    for (HarmonigonPath* path : m_paths)
+    {
+        if (path->isHexPath)
+        {
+            path->curIndex++;
+            if (path->curIndex >= path->selectedHexes.size())
+            {
+                path->curIndex = 0;
+            }
+        }
+    }
 }
 
 HexGrid::~HexGrid()
@@ -232,10 +260,7 @@ void HexGrid::paint(Graphics& g)
     if (m_tracerStart.intType != TracerPoint::INVALID)
     {
         g.setColour(m_curPathColour);
-        Rectangle<float> circle(0, 0, 10, 10);
         Point<float> vert = m_hexArray[m_tracerStart.hexPos.col][m_tracerStart.hexPos.row].getVertex(m_tracerStart.vertex);
-        circle.setCentre(vert);
-        g.drawEllipse(circle, 2);
         TracerPoint curPoint = m_tracerStart;
         Path tracerPath;
         tracerPath.startNewSubPath(vert);
