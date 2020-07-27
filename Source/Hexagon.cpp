@@ -51,7 +51,6 @@ void Hexagon::paint (Graphics& g)
     selectedPath = m_hexPath;
     selectedPath.applyTransform(AffineTransform::scale(0.89, 0.89, getWidth() / 2, getHeight() / 2));
 
-    g.setColour(m_curColour);
     if (m_isSelected)
     {
         g.setColour(m_pathColour);
@@ -60,7 +59,18 @@ void Hexagon::paint (Graphics& g)
     {
         g.setColour(Colours::aqua);
     }
-    g.strokePath(selectedPath, PathStrokeType(1.0f));
+    else
+    {
+        g.setColour(Colours::purple);
+    }
+    if (m_isFirst)
+    {
+        g.strokePath(selectedPath, PathStrokeType(4.0f));
+    }
+    else
+    {
+        g.strokePath(selectedPath, PathStrokeType(2.0f));
+    }
 
     /* Draw pulse path */
     pulsePath = m_hexPath;
@@ -153,9 +163,10 @@ void Hexagon::setHovering(bool isHovering)
     repaint();
 }
 
-void Hexagon::setSelected(Colour colour)
+void Hexagon::setSelected(Colour colour, bool isFirst)
 {
     m_isSelected = true;
+    m_isFirst = isFirst;
     m_pathColour = colour;
     repaint();
 }

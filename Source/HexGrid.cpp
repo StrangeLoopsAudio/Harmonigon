@@ -70,9 +70,10 @@ void HexGrid::storePath(HarmonigonPath* path)
     {
         /* Create tracer for path */
         Tracer* newTracer = new Tracer(path->tracerStart, path);
+        newTracer->setSize(15, 15);
         m_tracers.add(newTracer);
-        newTracer->toFront(false);
         addAndMakeVisible(newTracer);
+        resized();
     }
     repaint();
 }
@@ -86,11 +87,12 @@ void HexGrid::resetPathPositions()
         if (!path->isHexPath)
         {
             Tracer* newTracer = new Tracer(path->tracerStart, path);
+            newTracer->setSize(15, 15);
             m_tracers.add(newTracer);
             addAndMakeVisible(newTracer);
         }
     }
-    repaint();
+    resized();
 }
 
 void HexGrid::mouseMove(const MouseEvent& e)
@@ -186,8 +188,8 @@ void HexGrid::mouseDown(const MouseEvent& event)
             /* Only add if isn't already selected */
             if (!m_hoveringOverHex->isSelected())
             {
+                m_hoveringOverHex->setSelected(m_curPathColour, m_selectedHexes.isEmpty());
                 m_selectedHexes.add(m_hoveringOverHex);
-                m_hoveringOverHex->setSelected(m_curPathColour);
             }
         }
         else if (!m_isHexMode && m_hoveringOverPoint.intType != TracerPoint::INVALID)
@@ -217,17 +219,14 @@ void HexGrid::mouseDown(const MouseEvent& event)
 
 void HexGrid::advancePaths(int quarterNoteDuration)
 {
-    //if (!m_animator.isAnimating())
+    for (int i = 0; i < m_tracers.size(); i++)
     {
-        //m_timerCount++;
-        for (int i = 0; i < m_tracers.size(); i++)
-        {
-            Rectangle<int> center = m_tracers[i]->getBounds();
-            m_tracers[i]->advancePath();
-            center.setCentre(getTracerPosition(m_tracers[i]->getPoint()).toInt());
-            m_animator.animateComponent(m_tracers[i], center, 1, quarterNoteDuration - 10, true, 0.3, 0.3);
-            repaint();
-        }
+        Rectangle<int> center = m_tracers[i]->getBounds();
+        m_tracers[i]->advancePath();
+        center.setCentre(getTracerPosition(m_tracers[i]->getPoint()).toInt());
+        m_animator.animateComponent(m_tracers[i], center, 1, quarterNoteDuration - 10, true, 0.3, 0.3);
+        repaint();
+        resized();
     }
     for (HarmonigonPath* path : m_paths)
     {
@@ -293,10 +292,7 @@ void HexGrid::paint(Graphics& g)
         if (!path->isHexPath)
         {
             g.setColour(path->colour);
-            Rectangle<float> circle(0, 0, 10, 10);
             Point<float> vert = m_hexArray[path->tracerStart.hexPos.col][path->tracerStart.hexPos.row].getVertex(path->tracerStart.vertex);
-            circle.setCentre(vert);
-            g.drawEllipse(circle, 2);
             TracerPoint curPoint = path->tracerStart;
             Path tracerPath;
             tracerPath.startNewSubPath(vert);
