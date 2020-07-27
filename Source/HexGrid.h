@@ -13,7 +13,8 @@
 #include <JuceHeader.h>
 #include "Hexagon.h"
 #include "Tracer.h"
-#include "PathListItem.h"
+#include "HarmonigonPath.h"
+#include "TracerPoint.h"
 
 //==============================================================================
 

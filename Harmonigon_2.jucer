@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="SExJ4A" name="Harmonigon_2" projectType="guiapp" displaySplashScreen="1"
-              jucerFormatVersion="1">
+              jucerFormatVersion="1" jucerVersion="5.4.4">
   <MAINGROUP id="chvjNi" name="Harmonigon_2">
     <GROUP id="{54EAB013-77EB-B3AA-005B-D52E84D24626}" name="Source">
+      <FILE id="PQQZZc" name="HarmonigonPath.cpp" compile="1" resource="0"
+            file="Source/HarmonigonPath.cpp"/>
+      <FILE id="mUVlZ3" name="HarmonigonPath.h" compile="0" resource="0"
+            file="Source/HarmonigonPath.h"/>
+      <FILE id="WHWb3s" name="TracerPoint.cpp" compile="1" resource="0" file="Source/TracerPoint.cpp"/>
+      <FILE id="jBTyHG" name="TracerPoint.h" compile="0" resource="0" file="Source/TracerPoint.h"/>
       <FILE id="r8QPXI" name="PathListItem.cpp" compile="1" resource="0"
             file="Source/PathListItem.cpp"/>
       <FILE id="n212Zx" name="PathListItem.h" compile="0" resource="0" file="Source/PathListItem.h"/>
