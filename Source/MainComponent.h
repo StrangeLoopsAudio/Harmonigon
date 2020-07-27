@@ -44,16 +44,17 @@ public:
     void resized() override;
 
 private:
-    ParameterBar m_paramBar;
-    PathListPanel m_pathListPanel;
-    double m_moveDuration;
+    double m_quarterNoteDuration;
     NoteUtils::ScaleType m_curScaleType;
     NoteUtils::Key m_curKey;
     bool m_isAddingPath = false;
     bool m_isInHexPathMode = true;
     bool m_isPlaying = false;
 
+    ParameterBar m_paramBar;
+    PathListPanel m_pathListPanel;
     HexGrid m_grid;
+
     Synthesiser m_synth;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 

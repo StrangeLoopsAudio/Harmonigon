@@ -13,6 +13,8 @@
 #include <JuceHeader.h>
 #include "Hexagon.h"
 #include "Tracer.h"
+#include "HarmonigonPath.h"
+#include "TracerPoint.h"
 
 //==============================================================================
 
@@ -31,15 +33,15 @@ public:
     void mouseExit(const MouseEvent& event) override;
     void mouseDown(const MouseEvent& event) override;
 
-    Array<Hexagon*>  getHexPath();
-    TracerPoint      getLinePathOrigin();
-    Array<TracerPoint::Direction> getLinePath();
+    HarmonigonPath*  getPath();
 
     Array<Hexagon*> getNotesToPlay();
-    void moveTracers(int duration);
+    void advancePaths(int quarterNoteDuration);
 
-    void addPathClicked(bool isAdding);
-    void pathModeChanged(bool isInHexMode);
+    void startNewPath(bool isHexPath);
+    void endPath();
+    void storePath(HarmonigonPath* path);
+    void resetPathPositions();
 
 private:
 
@@ -55,9 +57,10 @@ private:
 
     void             moveTracerRandom(Tracer *tracer);
     Point<float>     getTracerPosition(TracerPoint point);
-    Hexagon*         getTracerHex(Tracer* tracer);
     Array <Hexagon*> getNotes(Tracer *tracer);
     TracerPoint      getNearestVert(Point<int> pos);
+    Array<Hexagon*>  getAdjacentHexes();
+    Colour           getNextColour();
     
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;
@@ -71,6 +74,11 @@ private:
     TracerPoint m_tracerStart;
     Array<TracerPoint::Direction> m_pathDirs;
     Array<Hexagon*> m_selectedHexes;
+    Colour m_curPathColour;
+
+    int m_numPaths = 0;
+    Array<Colour> m_colours;
+    OwnedArray<HarmonigonPath> m_paths; /* Completed paths */
 
     bool m_isHexMode = true; // Tracer or hex select mode for path making
 

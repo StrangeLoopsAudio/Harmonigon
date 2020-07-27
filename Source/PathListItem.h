@@ -11,7 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "Tracer.h"
+#include "HarmonigonPath.h"
 #include "Hexagon.h"
 
 //==============================================================================
@@ -27,14 +27,11 @@ public:
 class PathListItem  : public juce::Component
 {
 public:
-    PathListItem(int id, TracerPoint origin, Array<TracerPoint::Direction> path);
-    PathListItem(int id, Array<Hexagon*> hexagons);
+    PathListItem(HarmonigonPath *path);
     ~PathListItem() override;
 
     void paint (juce::Graphics&) override;
     void resized() override;
-
-    void initializeItem();
 
     ComboBox repeatType;
     ComboBox stepIntervalType;
@@ -45,11 +42,7 @@ public:
     Label loopLengthLabel;
     
 private:
-    int m_id;
-    bool m_isHexPath; // Boolean for if path is hex or line path
-    TracerPoint m_tracerStart;
-    Array<TracerPoint::Direction> m_pathDirs;
-    Array<Hexagon*> m_selectedHexes;
+    HarmonigonPath* m_path;
 
     OtherLookAndFeel otherLookAndFeel;
 

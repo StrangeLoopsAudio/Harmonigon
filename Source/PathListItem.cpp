@@ -23,30 +23,7 @@ juce::Font OtherLookAndFeel::getComboBoxFont(ComboBox &)
 }
 
 
-PathListItem::PathListItem(int id,
-    TracerPoint origin,
-    Array<TracerPoint::Direction> path): m_id(id),
-    m_tracerStart(origin),
-    m_pathDirs(path),
-    m_isHexPath(false)
-{
-    initializeItem();
-}
-
-PathListItem::PathListItem(int id,
-    Array<Hexagon*> hexagons) : m_id(id),
-    m_selectedHexes(hexagons),
-    m_isHexPath(true)
-{
-    initializeItem();
-}
-
-PathListItem::~PathListItem()
-{
-    setLookAndFeel (nullptr);
-}
-
-void PathListItem::initializeItem()
+PathListItem::PathListItem(HarmonigonPath* path): m_path(path)
 {
     setSize(300, 100);
     setLookAndFeel(&otherLookAndFeel);
@@ -69,7 +46,7 @@ void PathListItem::initializeItem()
     loopLength.setSelectedItemIndex(0, true);
     addAndMakeVisible(loopLength);
 
-    name.setText("Path " + String(m_id + 1), dontSendNotification);
+    name.setText("Path " + String(m_path->id + 1), dontSendNotification);
     name.setJustificationType(Justification::centred);
     addAndMakeVisible(name);
 
@@ -83,6 +60,11 @@ void PathListItem::initializeItem()
     addAndMakeVisible(loopLengthLabel);
 }
 
+PathListItem::~PathListItem()
+{
+    setLookAndFeel (nullptr);
+}
+
 void PathListItem::paint (juce::Graphics& g)
 {
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
@@ -91,20 +73,23 @@ void PathListItem::paint (juce::Graphics& g)
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 
     g.setColour (juce::Colours::white);
-    g.setFont (14.0f);
     
+    /* Dividers */
     g.drawLine(getWidth() / 3, 0, getWidth() / 3, getHeight());
     g.drawLine(0, getHeight() / 2, getWidth() / 3, getHeight() / 2);
-
     g.drawLine(getWidth() / 3, getHeight() / 3, 2 * (getWidth() / 3), getHeight() / 3);
     g.drawLine(getWidth() / 3, (2 * getHeight()) / 3, 2 * (getWidth() / 3), (2 * getHeight()) / 3);
+
+    /* Color square */
+    g.setColour(m_path->colour);
+    Rectangle<float> colorSquare(0, 0, 10, 10);
+    colorSquare.setCentre(name.getPosition().translated(15, name.getHeight() / 2).toFloat());
+    g.fillRoundedRectangle(colorSquare, 3.f);
 
 }
 
 void PathListItem::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
     Rectangle<int> b = getLocalBounds();
     int panelHeightThird = b.getHeight() / 3;
     int panelWidthThird = b.getWidth() / 3;

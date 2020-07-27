@@ -29,18 +29,70 @@ HexGrid::HexGrid()
             addAndMakeVisible(m_hexArray[i][j]);
         }
     }
+
+    m_colours =
+    {
+        Colours::crimson,
+        Colours::goldenrod,
+        Colours::palegreen,
+        Colours::orchid,
+        Colours::peachpuff,
+        Colours::lavender
+    };
+
+    setInterceptsMouseClicks(false, true);
 }
 
-void HexGrid::addPathClicked(bool isAdding)
+void HexGrid::startNewPath(bool isHexPath)
 {
-    m_canSelect = isAdding;
+    m_canSelect = true;
+    m_curPathColour = getNextColour();
+    m_isHexMode = isHexPath;
     repaint();
 }
 
-void HexGrid::pathModeChanged(bool isInHexMode)
+void HexGrid::endPath()
 {
-    m_isHexMode = isInHexMode;
+    m_canSelect = false;
+    m_selectedHexes.clear();
+    m_tracerStart.intType = TracerPoint::INVALID;
+    m_hoveringOverPoint.intType = TracerPoint::INVALID;
+    m_hoveringOverHex = nullptr;
+    m_pathDirs.clear();
     repaint();
+}
+
+void HexGrid::storePath(HarmonigonPath* path)
+{
+    m_paths.add(path);
+    m_numPaths++;
+    if (!path->isHexPath)
+    {
+        /* Create tracer for path */
+        Tracer* newTracer = new Tracer(path->tracerStart, path);
+        newTracer->setSize(15, 15);
+        m_tracers.add(newTracer);
+        addAndMakeVisible(newTracer);
+        resized();
+    }
+    repaint();
+}
+
+void HexGrid::resetPathPositions()
+{
+    m_tracers.clear();
+    for (HarmonigonPath* path : m_paths)
+    {
+        path->curIndex = 0;
+        if (!path->isHexPath)
+        {
+            Tracer* newTracer = new Tracer(path->tracerStart, path);
+            newTracer->setSize(15, 15);
+            m_tracers.add(newTracer);
+            addAndMakeVisible(newTracer);
+        }
+    }
+    resized();
 }
 
 void HexGrid::mouseMove(const MouseEvent& e)
@@ -50,7 +102,24 @@ void HexGrid::mouseMove(const MouseEvent& e)
         if (m_isHexMode)
         {
             Hexagon* hex = (Hexagon*)e.eventComponent;
-            if (hex != m_hoveringOverHex)
+            if (m_selectedHexes.size() > 0)
+            {
+                m_hoveringOverHex = nullptr;
+                Array<Hexagon *> moves = getAdjacentHexes();
+                for (Hexagon* move : moves)
+                {
+                    if (move == hex)
+                    {
+                        if (m_hoveringOverHex != nullptr)
+                        {
+                            m_hoveringOverHex->setHovering(false);
+                        }
+                        m_hoveringOverHex = hex;
+                        hex->setHovering(true);
+                    }
+                }
+            }
+            else
             {
                 if (m_hoveringOverHex != nullptr)
                 {
@@ -95,8 +164,11 @@ void HexGrid::mouseExit(const MouseEvent& event)
     {
         if (m_isHexMode)
         {
-            m_hoveringOverHex->setHovering(false);
-            m_hoveringOverHex = nullptr;
+            if (m_hoveringOverHex != nullptr)
+            {
+                m_hoveringOverHex->setHovering(false);
+                m_hoveringOverHex = nullptr;
+            }
         }
         else
         {
@@ -113,8 +185,12 @@ void HexGrid::mouseDown(const MouseEvent& event)
     {
         if (m_isHexMode && m_hoveringOverHex != nullptr)
         {
-            m_selectedHexes.add(m_hoveringOverHex);
-            m_hoveringOverHex->setSelected(true);
+            /* Only add if isn't already selected */
+            if (!m_hoveringOverHex->isSelected())
+            {
+                m_hoveringOverHex->setSelected(m_curPathColour, m_selectedHexes.isEmpty());
+                m_selectedHexes.add(m_hoveringOverHex);
+            }
         }
         else if (!m_isHexMode && m_hoveringOverPoint.intType != TracerPoint::INVALID)
         {
@@ -141,18 +217,26 @@ void HexGrid::mouseDown(const MouseEvent& event)
     }
 }
 
-void HexGrid::moveTracers(int duration)
+void HexGrid::advancePaths(int quarterNoteDuration)
 {
-    if (!m_animator.isAnimating())
+    for (int i = 0; i < m_tracers.size(); i++)
     {
-        m_timerCount++;
-        for (int i = 0; i < m_tracers.size(); i++)
+        Rectangle<int> center = m_tracers[i]->getBounds();
+        m_tracers[i]->advancePath();
+        center.setCentre(getTracerPosition(m_tracers[i]->getPoint()).toInt());
+        m_animator.animateComponent(m_tracers[i], center, 1, quarterNoteDuration - 10, true, 0.3, 0.3);
+        repaint();
+        resized();
+    }
+    for (HarmonigonPath* path : m_paths)
+    {
+        if (path->isHexPath)
         {
-            Rectangle<int> center = m_tracers[i]->getBounds();
-            moveTracerRandom(m_tracers[i]);
-            center.setCentre(getTracerPosition(m_tracers[i]->position).toInt());
-            m_animator.animateComponent(m_tracers[i], center, 1, duration - 10, true, 0.3, 0.3);
-            repaint();
+            path->curIndex++;
+            if (path->curIndex >= path->selectedHexes.size())
+            {
+                path->curIndex = 0;
+            }
         }
     }
 }
@@ -174,11 +258,8 @@ void HexGrid::paint(Graphics& g)
     }
     if (m_tracerStart.intType != TracerPoint::INVALID)
     {
-        g.setColour(Colours::coral);
-        Rectangle<float> circle(0, 0, 10, 10);
+        g.setColour(m_curPathColour);
         Point<float> vert = m_hexArray[m_tracerStart.hexPos.col][m_tracerStart.hexPos.row].getVertex(m_tracerStart.vertex);
-        circle.setCentre(vert);
-        g.drawEllipse(circle, 2);
         TracerPoint curPoint = m_tracerStart;
         Path tracerPath;
         tracerPath.startNewSubPath(vert);
@@ -203,7 +284,25 @@ void HexGrid::paint(Graphics& g)
                     m_hexArray[point.hexPos.col][point.hexPos.row].getVertex(point.vertex)), 4.f);
             }
         }
+    }
 
+    /* Draw completed paths */
+    for (HarmonigonPath* path : m_paths)
+    {
+        if (!path->isHexPath)
+        {
+            g.setColour(path->colour);
+            Point<float> vert = m_hexArray[path->tracerStart.hexPos.col][path->tracerStart.hexPos.row].getVertex(path->tracerStart.vertex);
+            TracerPoint curPoint = path->tracerStart;
+            Path tracerPath;
+            tracerPath.startNewSubPath(vert);
+            for (TracerPoint::Direction dir : path->pathDirs)
+            {
+                curPoint.move(dir);
+                tracerPath.lineTo(m_hexArray[curPoint.hexPos.col][curPoint.hexPos.row].getVertex(curPoint.vertex));
+            }
+            g.strokePath(tracerPath, PathStrokeType(4.0f));
+        }
     }
 }
 
@@ -237,37 +336,43 @@ void HexGrid::resized()
 
     for (int i = 0; i < m_tracers.size(); i++)
     {
-        Point<float> tracerPos = getTracerPosition(m_tracers[i]->position);
+        Point<float> tracerPos = getTracerPosition(m_tracers[i]->getPoint());
         m_tracers[i]->setCentrePosition(tracerPos.toInt());
     }
 }
 
-Array<Hexagon*> HexGrid::getHexPath()
+HarmonigonPath* HexGrid::getPath()
 {
-    return m_selectedHexes;
+    HarmonigonPath* newPath;
+    if (m_isHexMode)
+    {
+        newPath = new HarmonigonPath(m_numPaths, m_curPathColour, m_selectedHexes);
+    }
+    else
+    {
+        newPath = new HarmonigonPath(m_numPaths, m_curPathColour, m_tracerStart, m_pathDirs);
+    }
+    return newPath;
 }
 
-TracerPoint HexGrid::getLinePathOrigin()
+Colour HexGrid::getNextColour()
 {
-    return m_tracerStart;
-}
-
-Array<TracerPoint::Direction> HexGrid::getLinePath()
-{
-    return m_pathDirs;
+    return m_colours[m_numPaths % m_colours.size()];
 }
 
 Array<Hexagon*> HexGrid::getNotesToPlay()
 {
     Array<Hexagon*> notes;
-    for (int i = 0; i < m_tracers.size(); i++)
+    for (HarmonigonPath *path : m_paths)
     {
-        Array <Hexagon*> tracerHex = getNotes(m_tracers[i]);
-        for (int j = 0; j < tracerHex.size(); j++)
+        if (path->isHexPath)
         {
-            notes.add(tracerHex[j]);
+            notes.add(path->selectedHexes[path->curIndex]);
         }
-
+    }
+    for (Tracer* tracer : m_tracers)
+    {
+        notes.addArray(getNotes(tracer));
     }
     return notes;
 }
@@ -279,88 +384,89 @@ Point<float> HexGrid::getTracerPosition(TracerPoint point)
 
 void HexGrid::moveTracerRandom(Tracer *tracer)
 {
-    Array<TracerPoint::Direction> possibleDirs = tracer->position.getMoves();
+    Array<TracerPoint::Direction> possibleDirs = tracer->getPoint().getMoves();
     int index = Random::getSystemRandom().nextInt(possibleDirs.size());
-    return tracer->position.move(possibleDirs[index]);
+    return tracer->move(possibleDirs[index]);
 }
 
-/* returns array of HexTile structs the tracer is currently touching */
+/* Returns array of HexTile structs the tracer is currently touching */
 Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
 {
     Array <Hexagon*> notes;
     
     /* 8 rows, 15 cols */
+    TracerPoint point = tracer->getPoint();
     
-    switch(tracer->position.intType)
+    switch(point.intType)
     {
         case TracerPoint::LEFT_T:
         {
             /* internal: one left, two right */
-            if (tracer->position.pos.col % 2 == 1)
+            if (point.pos.col % 2 == 1)
             {
-                if (tracer->position.pos.row == 1)
+                if (point.pos.row == 1)
                 {
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][0]);
-                    notes.add(&m_hexArray[tracer->position.pos.col][0]);
+                    notes.add(&m_hexArray[point.pos.col - 1][0]);
+                    notes.add(&m_hexArray[point.pos.col][0]);
                 }
-                else if (tracer->position.pos.col == NUM_COLS)
+                else if (point.pos.col == NUM_COLS)
                 {
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
+                    notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2]);
                 }
-                else if (tracer->position.pos.row == NUM_ROWS * 2 - 1)
+                else if (point.pos.row == NUM_ROWS * 2 - 1)
                 {
                     /* hex row 7 vertex 5 */
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
-                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
+                    notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[point.pos.col][point.pos.row / 2]);
                 }
                 else
                 {
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
-                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
+                    notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2]);
+                    notes.add(&m_hexArray[point.pos.col][point.pos.row / 2]);
                 }
             }
             else
             {
-                notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
-                notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
-                notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
+                notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2 - 1]);
+                notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2]);
+                notes.add(&m_hexArray[point.pos.col][point.pos.row / 2 - 1]);
             }
 
             break;
         }
         case TracerPoint::RIGHT_T:
         {
-            if (tracer->position.pos.col % 2 == 1)
+            if (point.pos.col % 2 == 1)
             {
-                notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
-                notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
-                notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
+                notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2 - 1]);
+                notes.add(&m_hexArray[point.pos.col][point.pos.row / 2 - 1]);
+                notes.add(&m_hexArray[point.pos.col][point.pos.row / 2]);
             }
             else
             {
-                if (tracer->position.pos.col == 0)
+                if (point.pos.col == 0)
                 {
-                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
-                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
+                    notes.add(&m_hexArray[point.pos.col][point.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[point.pos.col][point.pos.row / 2]);
                 }
-                else if (tracer->position.pos.row == 1)
+                else if (point.pos.row == 1)
                 {
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][0]);
-                    notes.add(&m_hexArray[tracer->position.pos.col][0]);
+                    notes.add(&m_hexArray[point.pos.col - 1][0]);
+                    notes.add(&m_hexArray[point.pos.col][0]);
                 }
-                else if (tracer->position.pos.row == NUM_ROWS * 2 - 1)
+                else if (point.pos.row == NUM_ROWS * 2 - 1)
                 {
                     /* hex row 7, odd col */
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
-                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2]);
+                    notes.add(&m_hexArray[point.pos.col][point.pos.row / 2 - 1]);
                 }
                 else
                 {
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2]);
-                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2]);
-                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2]);
+                    notes.add(&m_hexArray[point.pos.col][point.pos.row / 2]);
+                    notes.add(&m_hexArray[point.pos.col][point.pos.row / 2 - 1]);
                 }
             }
             break;
@@ -368,70 +474,70 @@ Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
         case TracerPoint::LEFT_RIGHT:
         {
             /* only one hex */
-            if ( tracer->position.pos.row == 0)
+            if ( point.pos.row == 0)
             {
                 /* top of odd cols */
-                if (tracer->position.vertex == 5)
+                if (point.vertex == 5)
                 {
-                    notes.add(&m_hexArray[tracer->position.pos.col][0]);
+                    notes.add(&m_hexArray[point.pos.col][0]);
                 }
                 else
                 {
                     /* vertex = 0 */
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row]);
+                    notes.add(&m_hexArray[point.pos.col - 1][point.pos.row]);
                 }
             }
-            else if (tracer->position.pos.row / 2 == NUM_ROWS)
+            else if (point.pos.row / 2 == NUM_ROWS)
             {
                 /* hex in row 7 vertex 2 or 3 */
-                if (tracer->position.vertex == 2)
+                if (point.vertex == 2)
                 {
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2 - 1]);
                 }
                 else
                 {
-                    notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[point.pos.col][point.pos.row / 2 - 1]);
                 }
             }
-            else if (tracer->position.pos.row == NUM_ROWS * 2 - 1)
+            else if (point.pos.row == NUM_ROWS * 2 - 1)
             {
                 /* bottom of first and last col */
-                if (tracer->position.pos.col == 0)
+                if (point.pos.col == 0)
                 {
                     /* bottom of col 0 vertex 3 */
-                     notes.add(&m_hexArray[0][tracer->position.pos.row / 2 - 1]);
+                     notes.add(&m_hexArray[0][point.pos.row / 2 - 1]);
                 }
-                else if (tracer->position.pos.col == NUM_COLS)
+                else if (point.pos.col == NUM_COLS)
                 {
                     /* bottom of last col vertex 2 */
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
+                    notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2 - 1]);
                 }
             }
             else
             {
                 /* top of first and last col */
-                if (tracer->position.pos.col == 0)
+                if (point.pos.col == 0)
                 {
                     /* top of col 0 vertex 5 */
                      notes.add(&m_hexArray[0][0]);
                 }
-                else if (tracer->position.pos.col == NUM_COLS)
+                else if (point.pos.col == NUM_COLS)
                 {
                     /* top of last col vertex 0 */
-                    notes.add(&m_hexArray[tracer->position.pos.col - 1][0]);
+                    notes.add(&m_hexArray[point.pos.col - 1][0]);
                 }
             }
             break;
         }
         case TracerPoint::UP_DOWN:
         {
-            if (tracer->position.pos.col == 0)
+            if (point.pos.col == 0)
             {
-                notes.add(&m_hexArray[tracer->position.pos.col][tracer->position.pos.row / 2 - 1]);
+                notes.add(&m_hexArray[point.pos.col][point.pos.row / 2 - 1]);
             }
             else{
                 /* last col vertex 1*/
-                notes.add(&m_hexArray[tracer->position.pos.col - 1][tracer->position.pos.row / 2 - 1]);
+                notes.add(&m_hexArray[point.pos.col - 1][point.pos.row / 2 - 1]);
             }
             break;
         }
@@ -442,6 +548,78 @@ Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
     }
     
     return notes;
+}
+
+Array<Hexagon*> HexGrid::getAdjacentHexes()
+{
+    Array<Hexagon*> hexes;
+    Hexagon* end = m_selectedHexes.getLast();
+    bool isOdd = end->getCol() % 2;
+    if (end->getRow() != 0)
+    {
+        /* Add top hex */
+        hexes.add(&m_hexArray[end->getCol()][end->getRow() - 1]);
+    }
+    if ((end->getRow() != NUM_ROWS - 1 && isOdd) || (end->getRow() != NUM_ROWS - 2 && !isOdd))
+    {
+        /* Add bottom hex */
+        hexes.add(&m_hexArray[end->getCol()][end->getRow() + 1]);
+    }
+    if (end->getCol() != 0)
+    {
+        if ((end->getRow() != 0 && isOdd) || !isOdd)
+        {
+            /* Add top left hex */
+            if (isOdd)
+            {
+                hexes.add(&m_hexArray[end->getCol() - 1][end->getRow() - 1]);
+            }
+            else
+            {
+                hexes.add(&m_hexArray[end->getCol() - 1][end->getRow()]);
+            }
+        }
+        if ((end->getRow() != NUM_ROWS - 1 && isOdd) || !isOdd)
+        {
+            /* Add bottom left hex */
+            if (isOdd)
+            {
+                hexes.add(&m_hexArray[end->getCol() - 1][end->getRow()]);
+            }
+            else
+            {
+                hexes.add(&m_hexArray[end->getCol() - 1][end->getRow() + 1]);
+            }
+        }
+    }
+    if (end->getCol() != NUM_COLS - 1)
+    {
+        if ((end->getRow() != 0 && isOdd) || !isOdd)
+        {
+            /* Add top right hex */
+            if (isOdd)
+            {
+                hexes.add(&m_hexArray[end->getCol() + 1][end->getRow() - 1]);
+            }
+            else
+            {
+                hexes.add(&m_hexArray[end->getCol() + 1][end->getRow()]);
+            }
+        }
+        if ((end->getRow() != NUM_ROWS - 1 && isOdd) || !isOdd)
+        {
+            /* Add bottom right hex */
+            if (isOdd)
+            {
+                hexes.add(&m_hexArray[end->getCol() + 1][end->getRow()]);
+            }
+            else
+            {
+                hexes.add(&m_hexArray[end->getCol() + 1][end->getRow() + 1]);
+            }
+        }
+    }
+    return hexes;
 }
 
 /* Returns the closest TracerPoint to any point relative to the grid */

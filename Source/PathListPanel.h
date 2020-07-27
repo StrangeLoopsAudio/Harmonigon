@@ -25,9 +25,10 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-    void addPath(PathListItem* p);
+    void addPath(HarmonigonPath* path);
     int getNumPaths();
 private:
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PathListPanel)
     OwnedArray <PathListItem> m_pathListItems;
 };

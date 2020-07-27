@@ -15,8 +15,6 @@
 //==============================================================================
 PathListPanel::PathListPanel()
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
     setSize(300, 700);
 }
 
@@ -44,13 +42,14 @@ void PathListPanel::resized()
     Rectangle<int> b = getLocalBounds();
     for(int i = 0; i < m_pathListItems.size(); i++){
         m_pathListItems[i]->setBounds(b.removeFromTop(PATH_LIST_ITEM_HEIGHT));
-        addAndMakeVisible(m_pathListItems[i]);
     }
 }
 
-void PathListPanel::addPath(PathListItem* p)
+void PathListPanel::addPath(HarmonigonPath* path)
 {
-    m_pathListItems.add(p);
+    PathListItem* newItem = new PathListItem(path);
+    m_pathListItems.add(newItem);
+    addAndMakeVisible(newItem);
     resized();
 }
 

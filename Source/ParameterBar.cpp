@@ -42,6 +42,10 @@ ParameterBar::ParameterBar()
     comboScaleType.setSelectedItemIndex(0, true);
     addAndMakeVisible(comboScaleType);
 
+    buttonPlayStop.setButtonText("Play");
+    buttonPlayStop.setColour(TextButton::buttonColourId, Colours::green);
+    addAndMakeVisible(buttonPlayStop);
+
     buttonAddPath.setButtonText("Add Path +");
     addAndMakeVisible(buttonAddPath);
 
@@ -74,6 +78,8 @@ void ParameterBar::resized()
     sliderBpm.setBounds(top.removeFromLeft(BPM_WIDTH));
     comboKey.setBounds(top.removeFromLeft(KEY_WIDTH));
     comboScaleType.setBounds(top.removeFromLeft(SCALE_TYPE_WIDTH));
+    buttonPlayStop.changeWidthToFitText();
+    buttonPlayStop.setBounds(top.removeFromLeft(buttonPlayStop.getWidth()));
     buttonAddPath.changeWidthToFitText();
     buttonAddPath.setBounds(top.removeFromRight(buttonAddPath.getWidth()));
     buttonPathMode.changeWidthToFitText();

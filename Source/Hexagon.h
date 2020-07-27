@@ -39,7 +39,8 @@ public:
     void pulse(); /* Flash a note when it's played */
     NoteUtils::HexTile getTile();
 
-    void setSelected(bool isSelected);
+    void setSelected(Colour colour, bool isFirst);
+    void endSelected();
     void setHovering(bool isHovering);
     bool isSelected();
     
@@ -50,10 +51,12 @@ private:
     Point<float> m_center;
     NoteUtils::HexTile m_tile;
     Colour m_curColour;
+    Colour m_pathColour;
     int m_timerCount;
     int m_row, m_col;
     bool m_isHovering = false;
     bool m_isSelected = false;
+    bool m_isFirst = false; /* First in path */
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Hexagon)
 };
