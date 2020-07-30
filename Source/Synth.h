@@ -12,6 +12,9 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+#define PATH_NOTES_CHANNEL 1
+#define FREE_PLAY_CHANNEL 2
+
 struct SineWaveSound : public SynthesiserSound
 {
     SineWaveSound() {}
