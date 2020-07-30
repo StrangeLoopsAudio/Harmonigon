@@ -32,11 +32,17 @@ public:
     void mouseMove(const MouseEvent& event) override;
     void mouseExit(const MouseEvent& event) override;
     void mouseDown(const MouseEvent& event) override;
+    void mouseUp(const MouseEvent& event) override;
 
     HarmonigonPath*  getPath();
 
     Array<Hexagon*> getNotesToPlay();
+    Array<Hexagon*> getFreePlayNotes();
     void advancePaths(int quarterNoteDuration);
+
+    void setSelectionType(bool isHex);
+    std::function<void()> onButtonPressed;
+    std::function<void()> onButtonReleased;
 
     void startNewPath(bool isHexPath);
     void endPath();
@@ -57,7 +63,7 @@ private:
 
     void             moveTracerRandom(Tracer *tracer);
     Point<float>     getTracerPosition(TracerPoint point);
-    Array <Hexagon*> getNotes(Tracer *tracer);
+    Array <Hexagon*> getNotes(TracerPoint point);
     TracerPoint      getNearestVert(Point<int> pos);
     Array<Hexagon*>  getAdjacentHexes();
     Colour           getNextColour();

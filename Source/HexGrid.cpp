@@ -156,26 +156,42 @@ void HexGrid::mouseMove(const MouseEvent& e)
 
         repaint();
     }
+    else
+    {
+        if (m_isHexMode)
+        {
+            Hexagon* hex = (Hexagon*)e.eventComponent;
+            if (m_hoveringOverHex != nullptr)
+            {
+                m_hoveringOverHex->setHovering(false);
+            }
+            m_hoveringOverHex = hex;
+            hex->setHovering(true);
+        }
+        else
+        {
+            TracerPoint nearestPoint = getNearestVert(getLocalPoint(e.eventComponent, e.getMouseDownPosition()));
+            m_hoveringOverPoint = nearestPoint;
+            repaint();
+        }
+    }
 }
 
 void HexGrid::mouseExit(const MouseEvent& event)
 {
-    if (m_canSelect)
+    if (m_isHexMode)
     {
-        if (m_isHexMode)
+        if (m_hoveringOverHex != nullptr)
         {
-            if (m_hoveringOverHex != nullptr)
-            {
-                m_hoveringOverHex->setHovering(false);
-                m_hoveringOverHex = nullptr;
-            }
+            m_hoveringOverHex->setHovering(false);
+            m_hoveringOverHex = nullptr;
         }
-        else
-        {
-            /* Move offscreen if mouse is off of grid */
-            m_hoveringOverPoint.intType = TracerPoint::INVALID;
-            repaint();
-        }
+    }
+    else
+    {
+        /* Move offscreen if mouse is off of grid */
+        m_hoveringOverPoint.intType = TracerPoint::INVALID;
+        repaint();
     }
 }
 
@@ -215,6 +231,31 @@ void HexGrid::mouseDown(const MouseEvent& event)
         }
         repaint();
     }
+    else
+    {
+        /* If hovering over chord or hex, trigger callback in parent */
+        if (m_hoveringOverHex != nullptr || m_hoveringOverPoint.intType != TracerPoint::INVALID)
+        {
+            onButtonPressed();
+        }
+    }
+}
+
+void HexGrid::mouseUp(const MouseEvent& event)
+{
+    if (!m_canSelect)
+    {
+        if (m_hoveringOverHex != nullptr || m_hoveringOverPoint.intType != TracerPoint::INVALID)
+        {
+            /* Stop current note of chord */
+            onButtonReleased();
+        }
+    }
+}
+
+void HexGrid::setSelectionType(bool isHex)
+{
+    m_isHexMode = isHex;
 }
 
 void HexGrid::advancePaths(int quarterNoteDuration)
@@ -372,7 +413,21 @@ Array<Hexagon*> HexGrid::getNotesToPlay()
     }
     for (Tracer* tracer : m_tracers)
     {
-        notes.addArray(getNotes(tracer));
+        notes.addArray(getNotes(tracer->getPoint()));
+    }
+    return notes;
+}
+
+Array<Hexagon*> HexGrid::getFreePlayNotes()
+{
+    Array<Hexagon*> notes;
+    if (m_isHexMode && m_hoveringOverHex != nullptr)
+    {
+        notes.add(m_hoveringOverHex);
+    }
+    else if (!m_isHexMode && m_hoveringOverPoint.intType != TracerPoint::INVALID)
+    {
+        notes.addArray(getNotes(m_hoveringOverPoint));
     }
     return notes;
 }
@@ -390,12 +445,11 @@ void HexGrid::moveTracerRandom(Tracer *tracer)
 }
 
 /* Returns array of HexTile structs the tracer is currently touching */
-Array <Hexagon*> HexGrid::getNotes(Tracer *tracer)
+Array <Hexagon*> HexGrid::getNotes(TracerPoint point)
 {
     Array <Hexagon*> notes;
     
     /* 8 rows, 15 cols */
-    TracerPoint point = tracer->getPoint();
     
     switch(point.intType)
     {

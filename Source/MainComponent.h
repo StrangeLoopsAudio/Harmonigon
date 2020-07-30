@@ -43,12 +43,16 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
 
+
 private:
+    void onHexButtonPressed(); /* Triggered by hex grid when note or chord is played */
+    void onHexButtonReleased(); /* Triggered by hex grid when note or chord is released */
+
     double m_quarterNoteDuration;
     NoteUtils::ScaleType m_curScaleType;
     NoteUtils::Key m_curKey;
     bool m_isAddingPath = false;
-    bool m_isInHexPathMode = true;
+    bool m_isInHexMode = true;
     bool m_isPlaying = false;
 
     ParameterBar m_paramBar;
@@ -57,6 +61,4 @@ private:
 
     Synthesiser m_synth;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
-
-
 };

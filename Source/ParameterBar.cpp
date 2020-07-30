@@ -14,6 +14,7 @@
 #define BPM_WIDTH 250
 #define KEY_WIDTH 100
 #define SCALE_TYPE_WIDTH 80
+#define BUTTON_PADDING_WIDTH 10
 
 //==============================================================================
 ParameterBar::ParameterBar()
@@ -42,14 +43,14 @@ ParameterBar::ParameterBar()
     comboScaleType.setSelectedItemIndex(0, true);
     addAndMakeVisible(comboScaleType);
 
-    buttonPlayStop.setButtonText("Play");
+    buttonPlayStop.setButtonText("Play Paths");
     buttonPlayStop.setColour(TextButton::buttonColourId, Colours::green);
     addAndMakeVisible(buttonPlayStop);
 
     buttonAddPath.setButtonText("Add Path +");
     addAndMakeVisible(buttonAddPath);
 
-    buttonPathMode.setButtonText("Hex Path Mode");
+    buttonPathMode.setButtonText("Hex Mode");
     addAndMakeVisible(buttonPathMode);
 }
 
@@ -76,10 +77,14 @@ void ParameterBar::resized()
     /* Top half */
     Rectangle<int> top = b.removeFromTop(getHeight() / 2);
     sliderBpm.setBounds(top.removeFromLeft(BPM_WIDTH));
+    top.removeFromLeft(BUTTON_PADDING_WIDTH);
     comboKey.setBounds(top.removeFromLeft(KEY_WIDTH));
+    top.removeFromLeft(BUTTON_PADDING_WIDTH);
     comboScaleType.setBounds(top.removeFromLeft(SCALE_TYPE_WIDTH));
+    top.removeFromLeft(BUTTON_PADDING_WIDTH);
     buttonPlayStop.changeWidthToFitText();
     buttonPlayStop.setBounds(top.removeFromLeft(buttonPlayStop.getWidth()));
+    top.removeFromLeft(BUTTON_PADDING_WIDTH);
     buttonAddPath.changeWidthToFitText();
     buttonAddPath.setBounds(top.removeFromRight(buttonAddPath.getWidth()));
     buttonPathMode.changeWidthToFitText();
