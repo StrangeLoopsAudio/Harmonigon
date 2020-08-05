@@ -49,6 +49,31 @@ MainComponent::MainComponent()
     {
         m_synth.addVoice(new SineWaveVoice());
     }
+
+    m_grid.onButtonPressed = [this]() { onHexButtonPressed(); };
+    m_grid.onButtonReleased = [this]() { onHexButtonReleased(); };
+}
+
+void MainComponent::onHexButtonPressed()
+{
+    Array<Hexagon*> hexes = m_grid.getFreePlayNotes();
+    for (Hexagon* hex : hexes)
+    {
+        NoteUtils::HexTile note = hex->getTile();
+        m_synth.noteOn(FREE_PLAY_CHANNEL, NoteUtils::tileToMidiNote(note), 1);
+        hex->pulse();
+    }
+}
+
+void MainComponent::onHexButtonReleased()
+{
+    Array<Hexagon*> hexes = m_grid.getFreePlayNotes();
+    for (Hexagon* hex : hexes)
+    {
+        NoteUtils::HexTile note = hex->getTile();
+        m_synth.noteOff(FREE_PLAY_CHANNEL, NoteUtils::tileToMidiNote(note), 1, true);
+        hex->pulse();
+    }
 }
 
 void MainComponent::sliderDragEnded(Slider* slider)
@@ -72,13 +97,17 @@ void MainComponent::buttonClicked(Button* button)
         {
             m_paramBar.buttonAddPath.setButtonText("Add Path +");
             m_paramBar.buttonPathMode.setEnabled(true);
-            if (m_isInHexPathMode)
+            if (m_isInHexMode)
             {
                 HarmonigonPath* path = m_grid.getPath();
                 if (path->selectedHexes.size() > 0)
                 {
                     m_pathListPanel.addPath(path);
                     m_grid.storePath(path);
+                }
+                else
+                {
+                    free(path);
                 }
             }
             else
@@ -89,12 +118,16 @@ void MainComponent::buttonClicked(Button* button)
                     m_pathListPanel.addPath(path);
                     m_grid.storePath(path);
                 }
+                else
+                {
+                    free(path);
+                }
             }
             m_grid.endPath();
         }
         else
         {
-            m_grid.startNewPath(m_isInHexPathMode);
+            m_grid.startNewPath(m_isInHexMode);
             m_paramBar.buttonAddPath.setButtonText("Done Drawing Path :)");
             m_paramBar.buttonPathMode.setEnabled(false);
         }
@@ -103,15 +136,16 @@ void MainComponent::buttonClicked(Button* button)
     }
     else if (button == &m_paramBar.buttonPathMode)
     {
-        if (m_isInHexPathMode)
+        if (m_isInHexMode)
         {
-            m_paramBar.buttonPathMode.setButtonText("Line Path Mode");
+            m_paramBar.buttonPathMode.setButtonText("Chord Mode");
         }
         else
         {
-            m_paramBar.buttonPathMode.setButtonText("Hex Path Mode");
+            m_paramBar.buttonPathMode.setButtonText("Hex Mode");
         }
-        m_isInHexPathMode = !m_isInHexPathMode;
+        m_isInHexMode = !m_isInHexMode;
+        m_grid.setSelectionType(m_isInHexMode);
         m_paramBar.resized();
     }
     else if (button == &m_paramBar.buttonPlayStop)
@@ -119,14 +153,14 @@ void MainComponent::buttonClicked(Button* button)
         if (m_isPlaying)
         {
             stopTimer();
-            m_synth.allNotesOff(1, true);
-            m_paramBar.buttonPlayStop.setButtonText("Play");
+            m_synth.allNotesOff(PATH_NOTES_CHANNEL, true);
+            m_paramBar.buttonPlayStop.setButtonText("Play Paths");
             m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::green);
             m_grid.resetPathPositions();
         }
         else
         {
-            m_paramBar.buttonPlayStop.setButtonText("Stop");
+            m_paramBar.buttonPlayStop.setButtonText("Stop Paths");
             m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::red);
             startTimer(m_quarterNoteDuration);
         }
@@ -140,13 +174,13 @@ void MainComponent::timerCallback()
     if (m_isPlaying)
     {
         Array<Hexagon *> hexes = m_grid.getNotesToPlay();
-        m_synth.allNotesOff(1, true);
+        m_synth.allNotesOff(PATH_NOTES_CHANNEL, true);
         for (Hexagon * hex : hexes)
         {
             NoteUtils::HexTile note = hex->getTile();
             //if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
             {
-                m_synth.noteOn(1, NoteUtils::tileToMidiNote(note), 1);
+                m_synth.noteOn(PATH_NOTES_CHANNEL, NoteUtils::tileToMidiNote(note), 1);
                 hex->pulse();
             }
         }
