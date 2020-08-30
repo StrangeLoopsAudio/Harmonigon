@@ -99,8 +99,8 @@ void MainComponent::buttonClicked(Button* button)
             m_paramBar.buttonPathMode.setEnabled(true);
             if (m_isInHexMode)
             {
-                HarmonigonPath* path = m_grid.getPath();
-                if (path->selectedHexes.size() > 0)
+                HarmonigonPath* path = m_grid.createPath();
+                if (path->hexPath.size() > 0)
                 {
                     m_pathListPanel.addPath(path);
                     m_grid.storePath(path);
@@ -112,8 +112,9 @@ void MainComponent::buttonClicked(Button* button)
             }
             else
             {
-                HarmonigonPath* path = m_grid.getPath();
-                if (path->tracerStart.intType != TracerPoint::INVALID && path->pathDirs.size() > 0)
+                HarmonigonPath* path = m_grid.createPath();
+                if (path->tracerLinePath.size() > 0)
+//                    path->tracerStart.intType != TracerPoint::INVALID && path->pathDirs.size() > 0)
                 {
                     m_pathListPanel.addPath(path);
                     m_grid.storePath(path);

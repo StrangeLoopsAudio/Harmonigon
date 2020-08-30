@@ -34,7 +34,7 @@ public:
     void mouseDown(const MouseEvent& event) override;
     void mouseUp(const MouseEvent& event) override;
 
-    HarmonigonPath*  getPath();
+    HarmonigonPath*  createPath();
 
     Array<Hexagon*> getNotesToPlay();
     Array<Hexagon*> getFreePlayNotes();
@@ -77,11 +77,14 @@ private:
     bool m_canSelect = false;
     TracerPoint m_hoveringOverPoint;
     Hexagon* m_hoveringOverHex = nullptr;
-    TracerPoint m_tracerStart;
+//    TracerPoint m_tracerStart;
+    Array<TracerPoint*> m_tracerLinePath;
     Array<TracerPoint::Direction> m_pathDirs;
     Array<Hexagon*> m_selectedHexes;
     Colour m_curPathColour;
-
+    int m_numTracerPoints = 0;
+    bool m_pathStarted = false;
+    
     int m_numPaths = 0;
     Array<Colour> m_colours;
     OwnedArray<HarmonigonPath> m_paths; /* Completed paths */

@@ -33,16 +33,26 @@ void Tracer::move(TracerPoint::Direction dir)
 
 void Tracer::advancePath()
 {
-    if (m_path->curIndex >= m_path->pathDirs.size())
-    {
-        m_path->curIndex = 0;
-        m_position = m_path->tracerStart;
-    }
-    else
-    {
-        m_position.move(m_path->pathDirs[m_path->curIndex]);
-        m_path->curIndex++;
-    }
+//    if (m_path->curIndex >= m_path->tracerLinePath.size())
+//    {
+//        m_path->curIndex = 0;
+//        m_position = *m_path->tracerLinePath[0];
+//    }
+//    else
+//    {
+//        m_position.move(m_path->tracerLinePath[m_path->curIndex]);
+//        m_path->curIndex++;
+//    }
+        if (m_path->curIndex >= m_path->tracerLinePath.size())
+        {
+            m_position = *(m_path->tracerLinePath[0]);
+            m_path->curIndex = 0;
+        }
+        else
+        {
+            m_position = *(m_path->tracerLinePath[m_path->curIndex + 1]);
+            m_path->curIndex++;
+        }
 }
 
 void Tracer::paint (Graphics& g)
