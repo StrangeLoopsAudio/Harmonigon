@@ -64,19 +64,31 @@ void HexGrid::endPath()
     m_hoveringOverPoint.intType = TracerPoint::INVALID;
     m_hoveringOverHex = nullptr;
     m_pathDirs.clear();
+//    DBG("clear, tracer size = " << m_tracerLinePath.size());
+    
     m_tracerLinePath.clear();
+//    DBG("clear, tracer size = " << m_tracerLinePath.size());
     repaint();
 }
 
 void HexGrid::storePath(HarmonigonPath* path)
 {
+    DBG("store path size = " << path->tracerLinePath.size());
+    Array<TracerPoint*> tracerLinePathCopy;
+    for (int i = 0; i < path->tracerLinePath.size(); i++)
+    {
+        TracerPoint* pointCopy = new TracerPoint(path->tracerLinePath[i]->pos.row, path->tracerLinePath[i]->pos.col, path->tracerLinePath[i]->vertex, false);
+        tracerLinePathCopy.add(pointCopy);
+    }
+    path->tracerLinePath = tracerLinePathCopy;
     m_paths.add(path);
     m_numPaths++;
     if (!path->isHexPath)
     {
         /* Create tracer for path */
-        Tracer* newTracer = new Tracer(path->tracerStart, path);
+        Tracer* newTracer = new Tracer(*path->tracerLinePath[0], path);
         newTracer->setSize(15, 15);
+        DBG("tracer added storePath");
         m_tracers.add(newTracer);
         addAndMakeVisible(newTracer);
         resized();
@@ -94,6 +106,7 @@ void HexGrid::resetPathPositions()
         {
             Tracer* newTracer = new Tracer(*path->tracerLinePath[0], path);
             newTracer->setSize(15, 15);
+            DBG("tracer added reset");
             m_tracers.add(newTracer);
             addAndMakeVisible(newTracer);
         }
@@ -331,7 +344,6 @@ void HexGrid::paint(Graphics& g)
             g.setColour(Colours::aqua);
             TracerPoint end = *m_tracerLinePath.getLast();
             /* m_tracerStart.getPathEnd(m_pathDirs); */
-            DBG("paint");
             Array<TracerPoint> possibleMoves = HarmonigonPath::getValidNextMoves(m_tracerLinePath);
             for (TracerPoint point : possibleMoves)
             {
@@ -349,15 +361,20 @@ void HexGrid::paint(Graphics& g)
         if (!path->isHexPath)
         {
             g.setColour(path->colour);
-            Point<float> vert = m_hexArray[path->tracerStart.hexPos.col][path->tracerStart.hexPos.row].getVertex(path->tracerStart.vertex);
-            TracerPoint curPoint = path->tracerStart;
+            Point<float> vert = m_hexArray[path->tracerLinePath[0]->hexPos.col][path->tracerLinePath[0]->hexPos.row].getVertex(path->tracerLinePath[0]->vertex);
+            TracerPoint curPoint = *path->tracerLinePath[0];
             Path tracerPath;
             tracerPath.startNewSubPath(vert);
+            DBG("paint, path size = " << path->tracerLinePath.size());
             for (int i = 0; i < path->tracerLinePath.size(); i++)
             {
                 curPoint = *path->tracerLinePath[i];
+                DBG("");
+                DBG("curPoint row = " << curPoint.hexPos.col);
+                DBG("curPoint row = " << curPoint.hexPos.row);
                 tracerPath.lineTo(m_hexArray[curPoint.hexPos.col][curPoint.hexPos.row].getVertex(curPoint.vertex));
             }
+            DBG("");
             g.strokePath(tracerPath, PathStrokeType(4.0f));
         }
     }
@@ -466,7 +483,7 @@ Array <Hexagon*> HexGrid::getNotes(TracerPoint point)
     Array <Hexagon*> notes;
     
     /* 8 rows, 15 cols */
-    
+    DBG("getNotes intType = " << point.intType);
     switch(point.intType)
     {
         case TracerPoint::LEFT_T:

@@ -12,7 +12,7 @@
 
 Array<TracerPoint> HarmonigonPath::getValidNextMoves(Array<TracerPoint*> tracerLinePath)
 {
-    DBG("path size = " << tracerLinePath.size());
+//    DBG("path size = " << tracerLinePath.size());
     Array<TracerPoint::Direction> allMoves = tracerLinePath.getLast()->getMoves();
     Array<TracerPoint> validPoints;
 //    Array<TracerPoint> allPoints; // all points in tracerLinePath parameter
@@ -52,7 +52,7 @@ Array<TracerPoint> HarmonigonPath::getValidNextMoves(Array<TracerPoint*> tracerL
             if (*pointInPath == newPoint)
             {
 //                allMoves.remove(i);
-                DBG("repeat found");
+//                DBG("repeat found");
                 repeatPointFound = true;
 //                allPoints.remove(<#int indexToRemove#>);
             }
@@ -62,13 +62,13 @@ Array<TracerPoint> HarmonigonPath::getValidNextMoves(Array<TracerPoint*> tracerL
             validPoints.add(newPoint);
         }
     }
-    DBG("Valid Points: ");
-    for(TracerPoint point : validPoints)
-    {
-        DBG("line row = " << point.pos.row);
-        DBG("line col = " << point.pos.col);
-
-    }
-    DBG(" ");
+//    DBG("Valid Points: ");
+//    for(TracerPoint point : validPoints)
+//    {
+//        DBG("line row = " << point.pos.row);
+//        DBG("line col = " << point.pos.col);
+//
+//    }
+//    DBG(" ");
     return validPoints;
 }

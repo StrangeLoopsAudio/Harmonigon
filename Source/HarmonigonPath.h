@@ -27,7 +27,7 @@ public:
     bool isHexPath; // Boolean for if path is hex or line path
     Array<TracerPoint *> tracerLinePath;
     Array<Hexagon*> hexPath;
-    TracerPoint tracerStart;
+//    TracerPoint tracerStart;
 
     static Array<TracerPoint> getValidNextMoves(Array<TracerPoint*> tracerLinePath);
 };

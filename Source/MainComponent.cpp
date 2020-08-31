@@ -175,6 +175,7 @@ void MainComponent::timerCallback()
     if (m_isPlaying)
     {
         Array<Hexagon *> hexes = m_grid.getNotesToPlay();
+        DBG("main comp tcb, hexes size = " << hexes.size());
         m_synth.allNotesOff(PATH_NOTES_CHANNEL, true);
         for (Hexagon * hex : hexes)
         {

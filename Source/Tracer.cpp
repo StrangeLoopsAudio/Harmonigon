@@ -43,7 +43,7 @@ void Tracer::advancePath()
 //        m_position.move(m_path->tracerLinePath[m_path->curIndex]);
 //        m_path->curIndex++;
 //    }
-        if (m_path->curIndex >= m_path->tracerLinePath.size())
+        if (m_path->curIndex >= m_path->tracerLinePath.size() - 1)
         {
             m_position = *(m_path->tracerLinePath[0]);
             m_path->curIndex = 0;
