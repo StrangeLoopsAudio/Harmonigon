@@ -40,8 +40,8 @@ MainComponent::MainComponent()
     m_paramBar.comboScaleType.addListener(this);
     m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
     addAndMakeVisible(m_paramBar);
-    m_quarterNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
-
+    m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000 / 4;
+    
     addAndMakeVisible(m_pathListPanel);
 
     m_synth.addSound(new SineWaveSound());
@@ -81,10 +81,10 @@ void MainComponent::sliderDragEnded(Slider* slider)
     if (slider == &m_paramBar.sliderBpm)
     {
         stopTimer();
-        m_quarterNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
+        m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
         if (m_isPlaying)
         {
-            startTimer(m_quarterNoteDuration);
+            startTimer(m_sixteenthNoteDuration);
         }
     }
 }
@@ -163,7 +163,7 @@ void MainComponent::buttonClicked(Button* button)
         {
             m_paramBar.buttonPlayStop.setButtonText("Stop Paths");
             m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::red);
-            startTimer(m_quarterNoteDuration);
+            startTimer(m_sixteenthNoteDuration);
         }
         m_isPlaying = !m_isPlaying;
         m_paramBar.resized();
@@ -175,7 +175,6 @@ void MainComponent::timerCallback()
     if (m_isPlaying)
     {
         Array<Hexagon *> hexes = m_grid.getNotesToPlay();
-        DBG("main comp tcb, hexes size = " << hexes.size());
         m_synth.allNotesOff(PATH_NOTES_CHANNEL, true);
         for (Hexagon * hex : hexes)
         {
@@ -186,7 +185,7 @@ void MainComponent::timerCallback()
                 hex->pulse();
             }
         }
-        m_grid.advancePaths(m_quarterNoteDuration);
+        m_grid.advancePaths(m_sixteenthNoteDuration);
     }
 }
 

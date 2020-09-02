@@ -290,6 +290,16 @@ void HexGrid::advancePaths(int quarterNoteDuration)
     {
         Rectangle<int> center = m_tracers[i]->getBounds();
         m_tracers[i]->advancePath();
+//        if (m_path->curIndex >= m_path->tracerLinePath.size() - 1)
+//        {
+//           m_position = *(m_path->tracerLinePath[0]);
+//           m_path->curIndex = 0;
+//        }
+//        else
+//        {
+//           m_position = *(m_path->tracerLinePath[m_path->curIndex + 1]);
+//           m_path->curIndex++;
+//        }
         center.setCentre(getTracerPosition(m_tracers[i]->getPoint()).toInt());
         m_animator.animateComponent(m_tracers[i], center, 1, quarterNoteDuration - 10, true, 0.3, 0.3);
         repaint();
@@ -365,16 +375,16 @@ void HexGrid::paint(Graphics& g)
             TracerPoint curPoint = *path->tracerLinePath[0];
             Path tracerPath;
             tracerPath.startNewSubPath(vert);
-            DBG("paint, path size = " << path->tracerLinePath.size());
+//            DBG("paint, path size = " << path->tracerLinePath.size());
             for (int i = 0; i < path->tracerLinePath.size(); i++)
             {
                 curPoint = *path->tracerLinePath[i];
-                DBG("");
-                DBG("curPoint row = " << curPoint.hexPos.col);
-                DBG("curPoint row = " << curPoint.hexPos.row);
+//                DBG("");
+//                DBG("curPoint row = " << curPoint.hexPos.col);
+//                DBG("curPoint row = " << curPoint.hexPos.row);
                 tracerPath.lineTo(m_hexArray[curPoint.hexPos.col][curPoint.hexPos.row].getVertex(curPoint.vertex));
             }
-            DBG("");
+//            DBG("");
             g.strokePath(tracerPath, PathStrokeType(4.0f));
         }
     }

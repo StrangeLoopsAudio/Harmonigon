@@ -48,7 +48,7 @@ private:
     void onHexButtonPressed(); /* Triggered by hex grid when note or chord is played */
     void onHexButtonReleased(); /* Triggered by hex grid when note or chord is released */
 
-    double m_quarterNoteDuration;
+    double m_sixteenthNoteDuration;
     NoteUtils::ScaleType m_curScaleType;
     NoteUtils::Key m_curKey;
     bool m_isAddingPath = false;

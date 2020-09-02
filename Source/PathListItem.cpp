@@ -107,3 +107,8 @@ void PathListItem::resized()
     stepIntervalTypeLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
     loopLengthLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
 }
+
+void PathListItem::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
+{
+    
+}
