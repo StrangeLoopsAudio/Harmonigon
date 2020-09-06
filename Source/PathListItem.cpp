@@ -58,6 +58,8 @@ PathListItem::PathListItem(HarmonigonPath* path): m_path(path)
 
     loopLengthLabel.setText("Loop Length", dontSendNotification);
     addAndMakeVisible(loopLengthLabel);
+    
+    stepIntervalType.addListener(this);
 }
 
 PathListItem::~PathListItem()
@@ -110,5 +112,10 @@ void PathListItem::resized()
 
 void PathListItem::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
 {
-    
+    if (comboBoxThatHasChanged == &stepIntervalType)
+    {
+        // 1/4 = 0, 1/8 = 1, 1/16 = 2
+        noteType = (int)(comboBoxThatHasChanged->getSelectedId() - 1);
+
+    }
 }

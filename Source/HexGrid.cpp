@@ -73,7 +73,6 @@ void HexGrid::endPath()
 
 void HexGrid::storePath(HarmonigonPath* path)
 {
-    DBG("store path size = " << path->tracerLinePath.size());
     Array<TracerPoint*> tracerLinePathCopy;
     for (int i = 0; i < path->tracerLinePath.size(); i++)
     {
@@ -88,7 +87,6 @@ void HexGrid::storePath(HarmonigonPath* path)
         /* Create tracer for path */
         Tracer* newTracer = new Tracer(*path->tracerLinePath[0], path);
         newTracer->setSize(15, 15);
-        DBG("tracer added storePath");
         m_tracers.add(newTracer);
         addAndMakeVisible(newTracer);
         resized();
@@ -106,7 +104,6 @@ void HexGrid::resetPathPositions()
         {
             Tracer* newTracer = new Tracer(*path->tracerLinePath[0], path);
             newTracer->setSize(15, 15);
-            DBG("tracer added reset");
             m_tracers.add(newTracer);
             addAndMakeVisible(newTracer);
         }
@@ -155,7 +152,6 @@ void HexGrid::mouseMove(const MouseEvent& e)
             {
                 m_hoveringOverPoint.intType = TracerPoint::INVALID;
 //                TracerPoint endPath = *m_tracerLinePath.getLast();
-                DBG("mouse move");
                 Array<TracerPoint> moves = HarmonigonPath::getValidNextMoves(m_tracerLinePath);
                 for (TracerPoint point : moves)
                 {
@@ -240,7 +236,6 @@ void HexGrid::mouseDown(const MouseEvent& event)
             else
             {
 //                TracerPoint pathEnd = *m_tracerLinePath.getLast(); // null pointer
-                DBG("mouse down");
                 Array<TracerPoint> moves = HarmonigonPath::getValidNextMoves(m_tracerLinePath);
                 for (TracerPoint point : moves)
                 {
@@ -284,24 +279,24 @@ void HexGrid::setSelectionType(bool isHex)
     m_isHexMode = isHex;
 }
 
-void HexGrid::advancePaths(int quarterNoteDuration)
+void HexGrid::advancePaths(int sixteenthNoteDuration)
 {
     for (int i = 0; i < m_tracers.size(); i++)
     {
         Rectangle<int> center = m_tracers[i]->getBounds();
-        m_tracers[i]->advancePath();
-//        if (m_path->curIndex >= m_path->tracerLinePath.size() - 1)
-//        {
-//           m_position = *(m_path->tracerLinePath[0]);
-//           m_path->curIndex = 0;
-//        }
-//        else
-//        {
-//           m_position = *(m_path->tracerLinePath[m_path->curIndex + 1]);
-//           m_path->curIndex++;
-//        }
+        //        m_tracers[i]->advancePath();
+        if (m_tracers[i]->getPath()->curIndex >= m_tracers[i]->getPath()->tracerLinePath.size() - 1)
+        {
+            m_tracers[i]->setPosition(*(m_tracers[i]->getPath()->tracerLinePath[0]));
+            m_tracers[i]->getPath()->curIndex = 0;
+        }
+        else
+        {
+            m_tracers[i]->setPosition(*(m_tracers[i]->getPath()->tracerLinePath[m_tracers[i]->getPath()->curIndex + 1]));
+            m_tracers[i]->getPath()->curIndex++;
+        }
         center.setCentre(getTracerPosition(m_tracers[i]->getPoint()).toInt());
-        m_animator.animateComponent(m_tracers[i], center, 1, quarterNoteDuration - 10, true, 0.3, 0.3);
+        m_animator.animateComponent(m_tracers[i], center, 1, sixteenthNoteDuration - 10, true, 0.3, 0.3);
         repaint();
         resized();
     }
@@ -493,7 +488,6 @@ Array <Hexagon*> HexGrid::getNotes(TracerPoint point)
     Array <Hexagon*> notes;
     
     /* 8 rows, 15 cols */
-    DBG("getNotes intType = " << point.intType);
     switch(point.intType)
     {
         case TracerPoint::LEFT_T:

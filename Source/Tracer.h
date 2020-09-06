@@ -28,6 +28,9 @@ public:
 
     TracerPoint getPoint();
     void move(TracerPoint::Direction dir);
+    HarmonigonPath* getPath();
+    TracerPoint getPosition();
+    void setPosition(TracerPoint newPosition);
 //    void advancePath();
 
 private:

@@ -17,9 +17,9 @@ class HarmonigonPath
 {
 public:
     HarmonigonPath();
-    HarmonigonPath(int id, Colour colour, Array<Hexagon*> hexagons) : id(id), colour(colour), hexPath(hexagons) { };
+    HarmonigonPath(int id, Colour colour, Array<Hexagon*> hexagons) : id(id), colour(colour), isHexPath(true), hexPath(hexagons) { };
     
-    HarmonigonPath(int id, Colour colour, Array<TracerPoint*> tracerLinePath) : id(id), colour(colour), tracerLinePath(tracerLinePath) { };
+    HarmonigonPath(int id, Colour colour, Array<TracerPoint*> tracerLinePath) : id(id), colour(colour), isHexPath(false), tracerLinePath(tracerLinePath) { };
     
     int id;
     int curIndex = 0;
@@ -30,4 +30,6 @@ public:
 //    TracerPoint tracerStart;
 
     static Array<TracerPoint> getValidNextMoves(Array<TracerPoint*> tracerLinePath);
+    Array <TracerPoint*> getTracerLinePath();
+    Array <Hexagon*> getHexPath();
 };

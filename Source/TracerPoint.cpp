@@ -234,7 +234,6 @@ void TracerPoint::positionChanged()
 
 Array<TracerPoint::Direction> TracerPoint::getMoves()
 {
-    DBG(this->intType);
     Array<Direction> moves;
     switch (intType)
     {

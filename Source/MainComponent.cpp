@@ -40,7 +40,7 @@ MainComponent::MainComponent()
     m_paramBar.comboScaleType.addListener(this);
     m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
     addAndMakeVisible(m_paramBar);
-    m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000 / 4;
+    m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000; // 4;
     
     addAndMakeVisible(m_pathListPanel);
 
@@ -242,4 +242,5 @@ void MainComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
     {
         m_curScaleType = (NoteUtils::ScaleType)(comboBoxThatHasChanged->getSelectedId() - 1);
     }
+    
 }

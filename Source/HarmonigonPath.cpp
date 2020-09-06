@@ -51,24 +51,25 @@ Array<TracerPoint> HarmonigonPath::getValidNextMoves(Array<TracerPoint*> tracerL
         {
             if (*pointInPath == newPoint)
             {
-//                allMoves.remove(i);
-//                DBG("repeat found");
                 repeatPointFound = true;
-//                allPoints.remove(<#int indexToRemove#>);
             }
         }
+        
         if(!repeatPointFound)
         {
             validPoints.add(newPoint);
         }
     }
-//    DBG("Valid Points: ");
-//    for(TracerPoint point : validPoints)
-//    {
-//        DBG("line row = " << point.pos.row);
-//        DBG("line col = " << point.pos.col);
-//
-//    }
-//    DBG(" ");
+    
     return validPoints;
+}
+
+Array <TracerPoint*> HarmonigonPath::getTracerLinePath()
+{
+    return tracerLinePath;
+}
+
+Array <Hexagon*> HarmonigonPath::getHexPath()
+{
+    return hexPath;
 }

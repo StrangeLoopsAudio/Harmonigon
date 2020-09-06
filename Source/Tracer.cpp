@@ -57,3 +57,17 @@ void Tracer::resized()
 {
 }
 
+HarmonigonPath* Tracer::getPath()
+{
+    return m_path;
+}
+
+TracerPoint Tracer::getPosition()
+{
+    return m_position;
+}
+
+void Tracer::setPosition(TracerPoint newPosition)
+{
+    m_position = newPosition;
+}

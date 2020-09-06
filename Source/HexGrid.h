@@ -38,7 +38,7 @@ public:
 
     Array<Hexagon*> getNotesToPlay();
     Array<Hexagon*> getFreePlayNotes();
-    void advancePaths(int quarterNoteDuration);
+    void advancePaths(int sixteenthNoteDuration);
 
     void setSelectionType(bool isHex);
     std::function<void()> onButtonPressed;
