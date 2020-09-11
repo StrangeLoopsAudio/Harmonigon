@@ -40,7 +40,7 @@ MainComponent::MainComponent()
     m_paramBar.comboScaleType.addListener(this);
     m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
     addAndMakeVisible(m_paramBar);
-    m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000; // 4;
+    m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000 / 4;
     
     addAndMakeVisible(m_pathListPanel);
 
@@ -81,7 +81,7 @@ void MainComponent::sliderDragEnded(Slider* slider)
     if (slider == &m_paramBar.sliderBpm)
     {
         stopTimer();
-        m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
+        m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000 / 4;
         if (m_isPlaying)
         {
             startTimer(m_sixteenthNoteDuration);
@@ -114,7 +114,6 @@ void MainComponent::buttonClicked(Button* button)
             {
                 HarmonigonPath* path = m_grid.createPath();
                 if (path->tracerLinePath.size() > 0)
-//                    path->tracerStart.intType != TracerPoint::INVALID && path->pathDirs.size() > 0)
                 {
                     m_pathListPanel.addPath(path);
                     m_grid.storePath(path);

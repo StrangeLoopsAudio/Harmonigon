@@ -38,6 +38,7 @@ public:
 
     Array<Hexagon*> getNotesToPlay();
     Array<Hexagon*> getFreePlayNotes();
+//    OwnedArray<HarmonigonPath> getPaths();
     void advancePaths(int sixteenthNoteDuration);
 
     void setSelectionType(bool isHex);
@@ -48,7 +49,8 @@ public:
     void endPath();
     void storePath(HarmonigonPath* path);
     void resetPathPositions();
-
+    void playNotes();
+    
 private:
 
     /* Tracer owning rules */

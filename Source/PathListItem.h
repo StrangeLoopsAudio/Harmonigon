@@ -45,6 +45,6 @@ public:
 private:
     HarmonigonPath* m_path;
     OtherLookAndFeel otherLookAndFeel;
-    int noteType;
+//    int noteType;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PathListItem)
 };
