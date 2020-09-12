@@ -179,7 +179,7 @@ void MainComponent::timerCallback()
         for (Hexagon * hex : hexes)
         {
             NoteUtils::HexTile note = hex->getTile();
-            //if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
+//            if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
             {
                 m_synth.noteOn(PATH_NOTES_CHANNEL, NoteUtils::tileToMidiNote(note), 1);
                 hex->pulse();
