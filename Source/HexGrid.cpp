@@ -852,7 +852,11 @@ TracerPoint HexGrid::getNearestVert(Point<int> pos)
     return TracerPoint(linePosition.row, linePosition.col, vertex, false);
 }
 
-void playNotes()
+void HexGrid::resetNoteIncrementCounts()
 {
-    
+    for(HarmonigonPath* path : m_paths)
+    {
+        path->noteIncrementCount = 0;
+    }
 }
+

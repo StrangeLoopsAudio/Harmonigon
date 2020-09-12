@@ -50,7 +50,7 @@ public:
     void storePath(HarmonigonPath* path);
     void resetPathPositions();
     void playNotes();
-    
+    void resetNoteIncrementCounts();
 private:
 
     /* Tracer owning rules */
