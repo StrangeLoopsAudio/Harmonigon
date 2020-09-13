@@ -46,6 +46,7 @@ HexGrid::HexGrid()
 void HexGrid::startNewPath(bool isHexPath)
 {
     m_canSelect = true;
+    m_pathStarted = true;
     m_curPathColour = getNextColour();
     m_isHexMode = isHexPath;
     repaint();
@@ -54,22 +55,30 @@ void HexGrid::startNewPath(bool isHexPath)
 void HexGrid::endPath()
 {
     m_canSelect = false;
+    m_pathStarted = false;
     m_selectedHexes.clear();
-    m_tracerStart.intType = TracerPoint::INVALID;
     m_hoveringOverPoint.intType = TracerPoint::INVALID;
     m_hoveringOverHex = nullptr;
-    m_pathDirs.clear();
+    
+    m_tracerLinePath.clear();
     repaint();
 }
 
 void HexGrid::storePath(HarmonigonPath* path)
 {
+    Array<TracerPoint*> tracerLinePathCopy;
+    for (int i = 0; i < path->tracerLinePath.size(); i++)
+    {
+        TracerPoint* pointCopy = new TracerPoint(path->tracerLinePath[i]->pos.row, path->tracerLinePath[i]->pos.col, path->tracerLinePath[i]->vertex, false);
+        tracerLinePathCopy.add(pointCopy);
+    }
+    path->tracerLinePath = tracerLinePathCopy;
     m_paths.add(path);
     m_numPaths++;
     if (!path->isHexPath)
     {
         /* Create tracer for path */
-        Tracer* newTracer = new Tracer(path->tracerStart, path);
+        Tracer* newTracer = new Tracer(*path->tracerLinePath[0], path);
         newTracer->setSize(15, 15);
         m_tracers.add(newTracer);
         addAndMakeVisible(newTracer);
@@ -86,7 +95,7 @@ void HexGrid::resetPathPositions()
         path->curIndex = 0;
         if (!path->isHexPath)
         {
-            Tracer* newTracer = new Tracer(path->tracerStart, path);
+            Tracer* newTracer = new Tracer(*path->tracerLinePath[0], path);
             newTracer->setSize(15, 15);
             m_tracers.add(newTracer);
             addAndMakeVisible(newTracer);
@@ -132,16 +141,13 @@ void HexGrid::mouseMove(const MouseEvent& e)
         else
         {
             TracerPoint nearestPoint = getNearestVert(getLocalPoint(e.eventComponent, e.getMouseDownPosition()));
-            if (m_tracerStart.intType != TracerPoint::INVALID)
+            if (m_tracerLinePath.size() > 0)
             {
                 m_hoveringOverPoint.intType = TracerPoint::INVALID;
-                TracerPoint endPath = m_tracerStart.getPathEnd(m_pathDirs);
-                Array<TracerPoint::Direction> moves = m_tracerStart.getValidNextMoves(m_pathDirs);
-                for (TracerPoint::Direction dir : moves)
+                Array<TracerPoint> moves = HarmonigonPath::getValidNextMoves(m_tracerLinePath);
+                for (TracerPoint point : moves)
                 {
-                    TracerPoint nextVertOption = endPath;
-                    nextVertOption.move(dir);
-                    if (nearestPoint == nextVertOption)
+                    if (nearestPoint == point)
                     {
                         m_hoveringOverPoint = nearestPoint;
                     }
@@ -210,21 +216,21 @@ void HexGrid::mouseDown(const MouseEvent& event)
         }
         else if (!m_isHexMode && m_hoveringOverPoint.intType != TracerPoint::INVALID)
         {
-            if (m_tracerStart.intType == TracerPoint::INVALID)
+            if (m_tracerLinePath.size() == 0)
             {
-                m_tracerStart = m_hoveringOverPoint;
+
+                TracerPoint* hoveringCopy = new TracerPoint(m_hoveringOverPoint.pos.row, m_hoveringOverPoint.pos.col, m_hoveringOverPoint.vertex, false);
+                m_tracerLinePath.add(hoveringCopy);
             }
             else
             {
-                TracerPoint pathEnd = m_tracerStart.getPathEnd(m_pathDirs);
-                Array<TracerPoint::Direction> moves = m_tracerStart.getValidNextMoves(m_pathDirs);
-                for (TracerPoint::Direction dir : moves)
+                Array<TracerPoint> moves = HarmonigonPath::getValidNextMoves(m_tracerLinePath);
+                for (TracerPoint point : moves)
                 {
-                    TracerPoint nextVertOption = pathEnd;
-                    nextVertOption.move(dir);
-                    if (m_hoveringOverPoint == nextVertOption)
+                    if (m_hoveringOverPoint == point)
                     {
-                        m_pathDirs.add(dir);
+                        TracerPoint* newPoint = new TracerPoint(point.pos.row, point.pos.col, point.vertex, false);
+                        m_tracerLinePath.add(newPoint);
                     }
                 }
             }
@@ -258,27 +264,40 @@ void HexGrid::setSelectionType(bool isHex)
     m_isHexMode = isHex;
 }
 
-void HexGrid::advancePaths(int quarterNoteDuration)
+void HexGrid::advancePaths(int sixteenthNoteDuration)
 {
     for (int i = 0; i < m_tracers.size(); i++)
     {
-        Rectangle<int> center = m_tracers[i]->getBounds();
-        m_tracers[i]->advancePath();
-        center.setCentre(getTracerPosition(m_tracers[i]->getPoint()).toInt());
-        m_animator.animateComponent(m_tracers[i], center, 1, quarterNoteDuration - 10, true, 0.3, 0.3);
-        repaint();
-        resized();
+        if(m_tracers[i]->getPath()->notesPlaying)
+        {
+            Rectangle<int> center = m_tracers[i]->getBounds();
+            if (m_tracers[i]->getPath()->curIndex >= m_tracers[i]->getPath()->tracerLinePath.size() - 1)
+            {
+                m_tracers[i]->setPosition(*(m_tracers[i]->getPath()->tracerLinePath[0]));
+                m_tracers[i]->getPath()->curIndex = 0;
+            }
+            else
+            {
+                m_tracers[i]->setPosition(*(m_tracers[i]->getPath()->tracerLinePath[m_tracers[i]->getPath()->curIndex + 1]));
+                m_tracers[i]->getPath()->curIndex++;
+            }
+            center.setCentre(getTracerPosition(m_tracers[i]->getPoint()).toInt());
+            m_animator.animateComponent(m_tracers[i], center, 1, sixteenthNoteDuration - 10, true, 0.3, 0.3);
+            repaint();
+            resized();
+        }
     }
     for (HarmonigonPath* path : m_paths)
     {
-        if (path->isHexPath)
+        if (path->isHexPath && path->notesPlaying)
         {
             path->curIndex++;
-            if (path->curIndex >= path->selectedHexes.size())
+            if (path->curIndex >= path->hexPath.size())
             {
                 path->curIndex = 0;
             }
         }
+        path->notesPlaying = false;
     }
 }
 
@@ -297,16 +316,16 @@ void HexGrid::paint(Graphics& g)
         circle.setCentre(vert);
         g.drawEllipse(circle, 2);
     }
-    if (m_tracerStart.intType != TracerPoint::INVALID)
+    if (m_tracerLinePath.size() > 0)
     {
         g.setColour(m_curPathColour);
-        Point<float> vert = m_hexArray[m_tracerStart.hexPos.col][m_tracerStart.hexPos.row].getVertex(m_tracerStart.vertex);
-        TracerPoint curPoint = m_tracerStart;
+        Point<float> vert = m_hexArray[m_tracerLinePath[0]->hexPos.col][m_tracerLinePath[0]->hexPos.row].getVertex(m_tracerLinePath[0]->vertex);
+        TracerPoint curPoint = *m_tracerLinePath[0];
         Path tracerPath;
         tracerPath.startNewSubPath(vert);
-        for (TracerPoint::Direction dir : m_pathDirs)
+        for (TracerPoint* point : m_tracerLinePath)
         {
-            curPoint.move(dir);
+            curPoint = *point;
             tracerPath.lineTo(m_hexArray[curPoint.hexPos.col][curPoint.hexPos.row].getVertex(curPoint.vertex));
         }
         g.strokePath(tracerPath, PathStrokeType(4.0f));
@@ -315,14 +334,12 @@ void HexGrid::paint(Graphics& g)
         {
             /* Draw possible next moves */
             g.setColour(Colours::aqua);
-            TracerPoint end = m_tracerStart.getPathEnd(m_pathDirs);
-            Array<TracerPoint::Direction> possibleMoves = m_tracerStart.getValidNextMoves(m_pathDirs);
-            for (TracerPoint::Direction dir : possibleMoves)
+            TracerPoint end = *m_tracerLinePath.getLast();
+            Array<TracerPoint> possibleMoves = HarmonigonPath::getValidNextMoves(m_tracerLinePath);
+            for (TracerPoint point : possibleMoves)
             {
-                TracerPoint point = end;
-                point.move(dir);
                 g.drawLine(Line<float>(m_hexArray[end.hexPos.col][end.hexPos.row].getVertex(end.vertex),
-                    m_hexArray[point.hexPos.col][point.hexPos.row].getVertex(point.vertex)), 4.f);
+                                       m_hexArray[point.hexPos.col][point.hexPos.row].getVertex(point.vertex)), 4.f);
             }
         }
     }
@@ -333,13 +350,13 @@ void HexGrid::paint(Graphics& g)
         if (!path->isHexPath)
         {
             g.setColour(path->colour);
-            Point<float> vert = m_hexArray[path->tracerStart.hexPos.col][path->tracerStart.hexPos.row].getVertex(path->tracerStart.vertex);
-            TracerPoint curPoint = path->tracerStart;
+            Point<float> vert = m_hexArray[path->tracerLinePath[0]->hexPos.col][path->tracerLinePath[0]->hexPos.row].getVertex(path->tracerLinePath[0]->vertex);
+            TracerPoint curPoint = *path->tracerLinePath[0];
             Path tracerPath;
             tracerPath.startNewSubPath(vert);
-            for (TracerPoint::Direction dir : path->pathDirs)
+            for (int i = 0; i < path->tracerLinePath.size(); i++)
             {
-                curPoint.move(dir);
+                curPoint = *path->tracerLinePath[i];
                 tracerPath.lineTo(m_hexArray[curPoint.hexPos.col][curPoint.hexPos.row].getVertex(curPoint.vertex));
             }
             g.strokePath(tracerPath, PathStrokeType(4.0f));
@@ -382,7 +399,7 @@ void HexGrid::resized()
     }
 }
 
-HarmonigonPath* HexGrid::getPath()
+HarmonigonPath* HexGrid::createPath()
 {
     HarmonigonPath* newPath;
     if (m_isHexMode)
@@ -391,7 +408,7 @@ HarmonigonPath* HexGrid::getPath()
     }
     else
     {
-        newPath = new HarmonigonPath(m_numPaths, m_curPathColour, m_tracerStart, m_pathDirs);
+        newPath = new HarmonigonPath(m_numPaths, m_curPathColour, m_tracerLinePath);
     }
     return newPath;
 }
@@ -406,15 +423,22 @@ Array<Hexagon*> HexGrid::getNotesToPlay()
     Array<Hexagon*> notes;
     for (HarmonigonPath *path : m_paths)
     {
-        if (path->isHexPath)
+        if(noteIntervalCount % path->noteIncrement == 0)
         {
-            notes.add(path->selectedHexes[path->curIndex]);
+            path->notesPlaying = true;
+            if (path->isHexPath)
+            {
+                notes.add(path->hexPath[path->curIndex]);
+            }
+            else
+            {
+                notes.addArray(getNotes(*path->getCurrentPoint()));
+            }
         }
+
     }
-    for (Tracer* tracer : m_tracers)
-    {
-        notes.addArray(getNotes(tracer->getPoint()));
-    }
+    noteIntervalCount++;
+    if(noteIntervalCount > 16) noteIntervalCount = 1;
     return notes;
 }
 
@@ -450,7 +474,6 @@ Array <Hexagon*> HexGrid::getNotes(TracerPoint point)
     Array <Hexagon*> notes;
     
     /* 8 rows, 15 cols */
-    
     switch(point.intType)
     {
         case TracerPoint::LEFT_T:
@@ -813,8 +836,7 @@ TracerPoint HexGrid::getNearestVert(Point<int> pos)
             vertex = 2;
         }
     }
-
-    //DBG("row: " << linePosition.row << ", col: " << linePosition.col << ", vert: " << vertex);
     
     return TracerPoint(linePosition.row, linePosition.col, vertex, false);
 }
+

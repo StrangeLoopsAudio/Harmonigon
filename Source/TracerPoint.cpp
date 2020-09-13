@@ -232,33 +232,6 @@ void TracerPoint::positionChanged()
     }
 }
 
-Array<TracerPoint::Direction> TracerPoint::getValidNextMoves(Array<Direction> path)
-{
-    Array<Direction> allMoves = getPathEnd(path).getMoves();
-    Array<TracerPoint> allPoints;
-    allPoints.add(*this);
-    TracerPoint point = *this;
-    for (Direction dir : path)
-    {
-        point.move(dir);
-        allPoints.add(point);
-    }
-    /* Point should be at end of path, check if hit any of the same points */
-    for (int i = 0; i < allMoves.size(); i++)
-    {
-        TracerPoint newPoint = point;
-        newPoint.move(allMoves[i]);
-        for (TracerPoint pointInPath : allPoints)
-        {
-            if (pointInPath == newPoint)
-            {
-                allMoves.remove(i);
-            }
-        }
-    }
-    return allMoves;
-}
-
 Array<TracerPoint::Direction> TracerPoint::getMoves()
 {
     Array<Direction> moves;
@@ -298,6 +271,7 @@ Array<TracerPoint::Direction> TracerPoint::getMoves()
     return moves;
 }
 
+/*
 TracerPoint TracerPoint::getPathEnd(Array<Direction> path)
 {
     TracerPoint curPoint = *this;
@@ -307,6 +281,7 @@ TracerPoint TracerPoint::getPathEnd(Array<Direction> path)
     }
     return curPoint;
 }
+*/
 
 void TracerPoint::move(Direction dir)
 {

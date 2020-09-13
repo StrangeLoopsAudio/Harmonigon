@@ -24,7 +24,7 @@ public:
     Font getComboBoxFont(ComboBox &) override;
 };
 
-class PathListItem  : public juce::Component
+class PathListItem  : public juce::Component, ComboBox::Listener
 {
 public:
     PathListItem(HarmonigonPath *path);
@@ -32,6 +32,7 @@ public:
 
     void paint (juce::Graphics&) override;
     void resized() override;
+    void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
 
     ComboBox repeatType;
     ComboBox stepIntervalType;
@@ -43,8 +44,6 @@ public:
     
 private:
     HarmonigonPath* m_path;
-
     OtherLookAndFeel otherLookAndFeel;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PathListItem)
 };

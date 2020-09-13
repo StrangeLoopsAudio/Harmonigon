@@ -58,7 +58,6 @@ public:
     void initLinePos();
     void positionChanged();
     Array<Direction> getMoves();
-    Array<Direction> getValidNextMoves(Array<Direction> path); /* Assuming origin is current tracer */
     TracerPoint getPathEnd(Array<Direction> path); /* Assuming start is the current tracer, return the point at the end of the path */
     void move(Direction dir);
     bool operator==(TracerPoint const& point);

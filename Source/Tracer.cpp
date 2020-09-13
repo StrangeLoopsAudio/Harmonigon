@@ -31,20 +31,6 @@ void Tracer::move(TracerPoint::Direction dir)
     m_position.move(dir);
 }
 
-void Tracer::advancePath()
-{
-    if (m_path->curIndex >= m_path->pathDirs.size())
-    {
-        m_path->curIndex = 0;
-        m_position = m_path->tracerStart;
-    }
-    else
-    {
-        m_position.move(m_path->pathDirs[m_path->curIndex]);
-        m_path->curIndex++;
-    }
-}
-
 void Tracer::paint (Graphics& g)
 {
     g.setColour(m_path->colour);
@@ -57,3 +43,17 @@ void Tracer::resized()
 {
 }
 
+HarmonigonPath* Tracer::getPath()
+{
+    return m_path;
+}
+
+TracerPoint Tracer::getPosition()
+{
+    return m_position;
+}
+
+void Tracer::setPosition(TracerPoint newPosition)
+{
+    m_position = newPosition;
+}

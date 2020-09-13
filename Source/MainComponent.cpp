@@ -40,8 +40,8 @@ MainComponent::MainComponent()
     m_paramBar.comboScaleType.addListener(this);
     m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
     addAndMakeVisible(m_paramBar);
-    m_quarterNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
-
+    m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000 / 4;
+    
     addAndMakeVisible(m_pathListPanel);
 
     m_synth.addSound(new SineWaveSound());
@@ -81,10 +81,10 @@ void MainComponent::sliderDragEnded(Slider* slider)
     if (slider == &m_paramBar.sliderBpm)
     {
         stopTimer();
-        m_quarterNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000;
+        m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000 / 4;
         if (m_isPlaying)
         {
-            startTimer(m_quarterNoteDuration);
+            startTimer(m_sixteenthNoteDuration);
         }
     }
 }
@@ -99,8 +99,8 @@ void MainComponent::buttonClicked(Button* button)
             m_paramBar.buttonPathMode.setEnabled(true);
             if (m_isInHexMode)
             {
-                HarmonigonPath* path = m_grid.getPath();
-                if (path->selectedHexes.size() > 0)
+                HarmonigonPath* path = m_grid.createPath();
+                if (path->hexPath.size() > 0)
                 {
                     m_pathListPanel.addPath(path);
                     m_grid.storePath(path);
@@ -112,8 +112,8 @@ void MainComponent::buttonClicked(Button* button)
             }
             else
             {
-                HarmonigonPath* path = m_grid.getPath();
-                if (path->tracerStart.intType != TracerPoint::INVALID && path->pathDirs.size() > 0)
+                HarmonigonPath* path = m_grid.createPath();
+                if (path->tracerLinePath.size() > 0)
                 {
                     m_pathListPanel.addPath(path);
                     m_grid.storePath(path);
@@ -153,6 +153,7 @@ void MainComponent::buttonClicked(Button* button)
         if (m_isPlaying)
         {
             stopTimer();
+//            m_grid.resetNoteIncrementCounts();
             m_synth.allNotesOff(PATH_NOTES_CHANNEL, true);
             m_paramBar.buttonPlayStop.setButtonText("Play Paths");
             m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::green);
@@ -162,7 +163,7 @@ void MainComponent::buttonClicked(Button* button)
         {
             m_paramBar.buttonPlayStop.setButtonText("Stop Paths");
             m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::red);
-            startTimer(m_quarterNoteDuration);
+            startTimer(m_sixteenthNoteDuration);
         }
         m_isPlaying = !m_isPlaying;
         m_paramBar.resized();
@@ -178,13 +179,13 @@ void MainComponent::timerCallback()
         for (Hexagon * hex : hexes)
         {
             NoteUtils::HexTile note = hex->getTile();
-            //if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
+//            if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
             {
                 m_synth.noteOn(PATH_NOTES_CHANNEL, NoteUtils::tileToMidiNote(note), 1);
                 hex->pulse();
             }
         }
-        m_grid.advancePaths(m_quarterNoteDuration);
+        m_grid.advancePaths(m_sixteenthNoteDuration);
     }
 }
 
@@ -241,4 +242,5 @@ void MainComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
     {
         m_curScaleType = (NoteUtils::ScaleType)(comboBoxThatHasChanged->getSelectedId() - 1);
     }
+    
 }

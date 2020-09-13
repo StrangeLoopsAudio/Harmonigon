@@ -58,6 +58,9 @@ PathListItem::PathListItem(HarmonigonPath* path): m_path(path)
 
     loopLengthLabel.setText("Loop Length", dontSendNotification);
     addAndMakeVisible(loopLengthLabel);
+    
+    stepIntervalType.addListener(this);
+//    noteIncrement = 4; // quarter note
 }
 
 PathListItem::~PathListItem()
@@ -106,4 +109,35 @@ void PathListItem::resized()
     repeatTypeLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
     stepIntervalTypeLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
     loopLengthLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
+}
+
+void PathListItem::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
+{
+    if (comboBoxThatHasChanged == &stepIntervalType)
+    {
+        // 1/4 = 4, 1/8 = 2, 1/16 = 1
+        int noteType = (int)(comboBoxThatHasChanged->getSelectedId() - 1);
+        
+        switch (noteType) {
+            case 0:
+            {
+                m_path->noteIncrement = 4;
+                break;
+            }
+            case 1:
+            {
+                m_path->noteIncrement = 2;
+                break;
+            }
+            case 2:
+            {
+                m_path->noteIncrement = 1;
+                break;
+            }
+            default:
+            {
+                jassert(false);
+            }
+        }
+    }
 }

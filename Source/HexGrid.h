@@ -20,7 +20,7 @@
 
 #define HEX_W_TO_H_RATIO 1.1547005
 
-class HexGrid : public Component, public MouseListener
+class HexGrid : public Component
 {
 public:
     HexGrid();
@@ -34,11 +34,12 @@ public:
     void mouseDown(const MouseEvent& event) override;
     void mouseUp(const MouseEvent& event) override;
 
-    HarmonigonPath*  getPath();
+    HarmonigonPath*  createPath();
 
     Array<Hexagon*> getNotesToPlay();
     Array<Hexagon*> getFreePlayNotes();
-    void advancePaths(int quarterNoteDuration);
+//    OwnedArray<HarmonigonPath> getPaths();
+    void advancePaths(int sixteenthNoteDuration);
 
     void setSelectionType(bool isHex);
     std::function<void()> onButtonPressed;
@@ -48,7 +49,8 @@ public:
     void endPath();
     void storePath(HarmonigonPath* path);
     void resetPathPositions();
-
+    void playNotes();
+//    void resetNoteIncrementCounts();
 private:
 
     /* Tracer owning rules */
@@ -77,15 +79,16 @@ private:
     bool m_canSelect = false;
     TracerPoint m_hoveringOverPoint;
     Hexagon* m_hoveringOverHex = nullptr;
-    TracerPoint m_tracerStart;
-    Array<TracerPoint::Direction> m_pathDirs;
+    Array<TracerPoint*> m_tracerLinePath;
     Array<Hexagon*> m_selectedHexes;
     Colour m_curPathColour;
-
+    int m_numTracerPoints = 0;
+    bool m_pathStarted = false;
+    
     int m_numPaths = 0;
     Array<Colour> m_colours;
     OwnedArray<HarmonigonPath> m_paths; /* Completed paths */
-
+    int noteIntervalCount = 1;
     bool m_isHexMode = true; // Tracer or hex select mode for path making
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HexGrid)

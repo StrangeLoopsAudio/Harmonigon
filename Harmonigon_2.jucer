@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="SExJ4A" name="Harmonigon_2" projectType="guiapp" displaySplashScreen="1"
-              jucerFormatVersion="1" jucerVersion="5.4.4">
+              jucerFormatVersion="1">
   <MAINGROUP id="chvjNi" name="Harmonigon_2">
     <GROUP id="{54EAB013-77EB-B3AA-005B-D52E84D24626}" name="Source">
       <FILE id="PQQZZc" name="HarmonigonPath.cpp" compile="1" resource="0"
