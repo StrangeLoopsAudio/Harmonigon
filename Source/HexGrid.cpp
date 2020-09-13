@@ -57,13 +57,8 @@ void HexGrid::endPath()
     m_canSelect = false;
     m_pathStarted = false;
     m_selectedHexes.clear();
-    /* if(m_tracerLinePath.size() > 0)
-    {
-        m_tracerLinePath[0]->intType = TracerPoint::INVALID;
-    } */
     m_hoveringOverPoint.intType = TracerPoint::INVALID;
     m_hoveringOverHex = nullptr;
-    m_pathDirs.clear();
     
     m_tracerLinePath.clear();
     repaint();
@@ -322,7 +317,6 @@ void HexGrid::paint(Graphics& g)
         g.drawEllipse(circle, 2);
     }
     if (m_tracerLinePath.size() > 0)
-        //m_tracerLinePath[0]->intType != TracerPoint::INVALID)
     {
         g.setColour(m_curPathColour);
         Point<float> vert = m_hexArray[m_tracerLinePath[0]->hexPos.col][m_tracerLinePath[0]->hexPos.row].getVertex(m_tracerLinePath[0]->vertex);
@@ -426,14 +420,10 @@ Colour HexGrid::getNextColour()
 
 Array<Hexagon*> HexGrid::getNotesToPlay()
 {
-    // counter: 16 16th, 8 8th, 4 4th
-    // add counter to total before getting notes to play
-    // if counter % 16 = 0, play those notes
     Array<Hexagon*> notes;
     for (HarmonigonPath *path : m_paths)
     {
-        path->noteIncrementCount += path->noteIncrement;
-        if(path->noteIncrementCount % 16 == 0)
+        if(noteIntervalCount % path->noteIncrement == 0)
         {
             path->notesPlaying = true;
             if (path->isHexPath)
@@ -445,12 +435,10 @@ Array<Hexagon*> HexGrid::getNotesToPlay()
                 notes.addArray(getNotes(*path->getCurrentPoint()));
             }
         }
-        else
-        {
-//            DBG("noteIncrementCount = " << path->noteIncrementCount);
-        }
-    }
 
+    }
+    noteIntervalCount++;
+    if(noteIntervalCount > 16) noteIntervalCount = 1;
     return notes;
 }
 
@@ -850,13 +838,5 @@ TracerPoint HexGrid::getNearestVert(Point<int> pos)
     }
     
     return TracerPoint(linePosition.row, linePosition.col, vertex, false);
-}
-
-void HexGrid::resetNoteIncrementCounts()
-{
-    for(HarmonigonPath* path : m_paths)
-    {
-        path->noteIncrementCount = 0;
-    }
 }
 

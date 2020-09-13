@@ -115,8 +115,7 @@ void PathListItem::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == &stepIntervalType)
     {
-        // 1/4 = 0, 1/8 = 1, 1/16 = 2
-        m_path->noteIncrementCount = 0;
+        // 1/4 = 4, 1/8 = 2, 1/16 = 1
         int noteType = (int)(comboBoxThatHasChanged->getSelectedId() - 1);
         
         switch (noteType) {
@@ -127,12 +126,12 @@ void PathListItem::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
             }
             case 1:
             {
-                m_path->noteIncrement = 8;
+                m_path->noteIncrement = 2;
                 break;
             }
             case 2:
             {
-                m_path->noteIncrement = 16;
+                m_path->noteIncrement = 1;
                 break;
             }
             default:

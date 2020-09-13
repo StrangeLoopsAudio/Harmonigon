@@ -153,7 +153,7 @@ void MainComponent::buttonClicked(Button* button)
         if (m_isPlaying)
         {
             stopTimer();
-            m_grid.resetNoteIncrementCounts();
+//            m_grid.resetNoteIncrementCounts();
             m_synth.allNotesOff(PATH_NOTES_CHANNEL, true);
             m_paramBar.buttonPlayStop.setButtonText("Play Paths");
             m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::green);

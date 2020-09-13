@@ -53,5 +53,6 @@ Array <Hexagon*> HarmonigonPath::getHexPath()
 
 TracerPoint* HarmonigonPath::getCurrentPoint()
 {
+    jassert(!isHexPath);
     return tracerLinePath[curIndex];
 }

@@ -50,7 +50,7 @@ public:
     void storePath(HarmonigonPath* path);
     void resetPathPositions();
     void playNotes();
-    void resetNoteIncrementCounts();
+//    void resetNoteIncrementCounts();
 private:
 
     /* Tracer owning rules */
@@ -79,9 +79,7 @@ private:
     bool m_canSelect = false;
     TracerPoint m_hoveringOverPoint;
     Hexagon* m_hoveringOverHex = nullptr;
-//    TracerPoint m_tracerStart;
     Array<TracerPoint*> m_tracerLinePath;
-    Array<TracerPoint::Direction> m_pathDirs;
     Array<Hexagon*> m_selectedHexes;
     Colour m_curPathColour;
     int m_numTracerPoints = 0;
@@ -90,7 +88,7 @@ private:
     int m_numPaths = 0;
     Array<Colour> m_colours;
     OwnedArray<HarmonigonPath> m_paths; /* Completed paths */
-
+    int noteIntervalCount = 1;
     bool m_isHexMode = true; // Tracer or hex select mode for path making
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HexGrid)
