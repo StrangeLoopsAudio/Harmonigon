@@ -40,20 +40,27 @@ void PathListPanel::paint (juce::Graphics& g)
 void PathListPanel::resized()
 {
     Rectangle<int> b = getLocalBounds();
-    for(int i = 0; i < m_pathListItems.size(); i++){
-        m_pathListItems[i]->setBounds(b.removeFromTop(PATH_LIST_ITEM_HEIGHT));
+    for(int i = 0; i < pathListItems.size(); i++){
+        pathListItems[i]->setBounds(b.removeFromTop(PATH_LIST_ITEM_HEIGHT));
+        b.removeFromTop(1);
     }
 }
 
 void PathListPanel::addPath(HarmonigonPath* path)
 {
     PathListItem* newItem = new PathListItem(path);
-    m_pathListItems.add(newItem);
+    pathListItems.add(newItem);
     addAndMakeVisible(newItem);
+    resized();
+}
+
+void PathListPanel::deletePathListItem(PathListItem* pathListItem)
+{
+    pathListItems.removeObject(pathListItem);
     resized();
 }
 
 int PathListPanel::getNumPaths()
 {
-    return m_pathListItems.size();
+    return pathListItems.size();
 }

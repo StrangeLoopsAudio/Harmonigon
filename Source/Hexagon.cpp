@@ -89,7 +89,7 @@ void Hexagon::paint (Graphics& g)
 Point<float> Hexagon::getVertex(int index) {
     jassert(index >= 0 && index < 6);
     int a = (getHeight() / 2);
-    
+
     /* Top right vertex is index 0, clockwise increasing */
     switch (index) {
     case 0:
@@ -132,7 +132,7 @@ void Hexagon::pulse()
     if (!isTimerRunning())
     {
         m_timerCount = 0;
-        startTimer(20);
+        startTimer(5); //20
     }
 }
 
@@ -196,4 +196,11 @@ void Hexagon::resized()
 {
     m_center = Point<float>(getX() + (getWidth() / 2), getY() + (getHeight() / 2));
     m_sideLength = getWidth() / 2;
+}
+
+void Hexagon::clearColor()
+{
+    m_isSelected = false;
+    m_isHovering = false;
+    m_isFirst = false;
 }

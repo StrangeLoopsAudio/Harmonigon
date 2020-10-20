@@ -37,8 +37,9 @@ public:
     HarmonigonPath*  createPath();
 
     Array<Hexagon*> getNotesToPlay();
+    Array<Hexagon*> getNotesToTurnOff();
     Array<Hexagon*> getFreePlayNotes();
-//    OwnedArray<HarmonigonPath> getPaths();
+    Array <Hexagon*> getNotes(TracerPoint point);
     void advancePaths(int sixteenthNoteDuration);
 
     void setSelectionType(bool isHex);
@@ -46,11 +47,12 @@ public:
     std::function<void()> onButtonReleased;
 
     void startNewPath(bool isHexPath);
+    void deletePath(HarmonigonPath* path);
     void endPath();
     void storePath(HarmonigonPath* path);
     void resetPathPositions();
     void playNotes();
-//    void resetNoteIncrementCounts();
+
 private:
 
     /* Tracer owning rules */
@@ -65,11 +67,10 @@ private:
 
     void             moveTracerRandom(Tracer *tracer);
     Point<float>     getTracerPosition(TracerPoint point);
-    Array <Hexagon*> getNotes(TracerPoint point);
     TracerPoint      getNearestVert(Point<int> pos);
     Array<Hexagon*>  getAdjacentHexes();
     Colour           getNextColour();
-    
+
     Hexagon m_hexArray[NUM_COLS][NUM_ROWS];
     OwnedArray<Tracer> m_tracers;
     ComponentAnimator m_animator;
@@ -84,9 +85,10 @@ private:
     Colour m_curPathColour;
     int m_numTracerPoints = 0;
     bool m_pathStarted = false;
-    
+
     int m_numPaths = 0;
     Array<Colour> m_colours;
+    Array<Colour> m_activeColours;
     OwnedArray<HarmonigonPath> m_paths; /* Completed paths */
     int noteIntervalCount = 1;
     bool m_isHexMode = true; // Tracer or hex select mode for path making

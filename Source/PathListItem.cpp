@@ -14,7 +14,7 @@
 //==============================================================================
 OtherLookAndFeel::OtherLookAndFeel()
 {
-    
+
 }
 
 juce::Font OtherLookAndFeel::getComboBoxFont(ComboBox &)
@@ -58,8 +58,13 @@ PathListItem::PathListItem(HarmonigonPath* path): m_path(path)
 
     loopLengthLabel.setText("Loop Length", dontSendNotification);
     addAndMakeVisible(loopLengthLabel);
-    
+
+    buttonDeletePath.setButtonText("Delete");
+    addAndMakeVisible(buttonDeletePath);
+
     stepIntervalType.addListener(this);
+//    buttonDeletePath.addListener(this->getParentComponent());
+
 //    noteIncrement = 4; // quarter note
 }
 
@@ -73,10 +78,11 @@ void PathListItem::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
     g.setColour (juce::Colours::grey);
+//    g.setColour (m_path->colour);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 
     g.setColour (juce::Colours::white);
-    
+
     /* Dividers */
     g.drawLine(getWidth() / 3, 0, getWidth() / 3, getHeight());
     g.drawLine(0, getHeight() / 2, getWidth() / 3, getHeight() / 2);
@@ -85,7 +91,7 @@ void PathListItem::paint (juce::Graphics& g)
 
     /* Color square */
     g.setColour(m_path->colour);
-    Rectangle<float> colorSquare(0, 0, 10, 10);
+    Rectangle<float> colorSquare(0, 0, 15, 15);
     colorSquare.setCentre(name.getPosition().translated(15, name.getHeight() / 2).toFloat());
     g.fillRoundedRectangle(colorSquare, 3.f);
 
@@ -97,15 +103,18 @@ void PathListItem::resized()
     int panelHeightThird = b.getHeight() / 3;
     int panelWidthThird = b.getWidth() / 3;
 
+//    b.removeFromRight(1);
     Rectangle<int> optionBoxes = b.removeFromRight(panelWidthThird);
     Rectangle<int> labelOptions = b.removeFromRight(panelWidthThird);
-    
+
+    optionBoxes.removeFromTop(1);
     repeatType.setBounds(optionBoxes.removeFromTop(panelHeightThird));
     stepIntervalType.setBounds(optionBoxes.removeFromTop(panelHeightThird));
     loopLength.setBounds(optionBoxes.removeFromTop(panelHeightThird));
-    
+
     name.setBounds(b.removeFromTop(b.getHeight() / 2));
-    
+    buttonDeletePath.setBounds(b.removeFromTop(b.getHeight()));
+
     repeatTypeLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
     stepIntervalTypeLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
     loopLengthLabel.setBounds(labelOptions.removeFromTop(panelHeightThird));
@@ -117,7 +126,7 @@ void PathListItem::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
     {
         // 1/4 = 4, 1/8 = 2, 1/16 = 1
         int noteType = (int)(comboBoxThatHasChanged->getSelectedId() - 1);
-        
+
         switch (noteType) {
             case 0:
             {
@@ -140,4 +149,9 @@ void PathListItem::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
             }
         }
     }
+}
+
+HarmonigonPath* PathListItem::getPath()
+{
+    return m_path;
 }

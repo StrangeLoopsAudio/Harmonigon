@@ -31,13 +31,13 @@ Array<TracerPoint> HarmonigonPath::getValidNextMoves(Array<TracerPoint*> tracerL
                 repeatPointFound = true;
             }
         }
-        
+
         if(!repeatPointFound)
         {
             validPoints.add(newPoint);
         }
     }
-    
+
     return validPoints;
 }
 

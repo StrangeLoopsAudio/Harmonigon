@@ -89,5 +89,5 @@ void ParameterBar::resized()
     buttonAddPath.setBounds(top.removeFromRight(buttonAddPath.getWidth()));
     buttonPathMode.changeWidthToFitText();
     buttonPathMode.setBounds(top.removeFromRight(buttonPathMode.getWidth()));
-    
+
 }

@@ -13,7 +13,7 @@
 #include <JuceHeader.h>
 #include "HarmonigonPath.h"
 #include "Hexagon.h"
-
+#include "HexGrid.h"
 //==============================================================================
 /*
 */
@@ -33,6 +33,7 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+    HarmonigonPath* getPath();
 
     ComboBox repeatType;
     ComboBox stepIntervalType;
@@ -41,7 +42,9 @@ public:
     Label repeatTypeLabel;
     Label stepIntervalTypeLabel;
     Label loopLengthLabel;
-    
+    TextButton buttonDeletePath;
+    bool buttonListenerAdded = false;
+
 private:
     HarmonigonPath* m_path;
     OtherLookAndFeel otherLookAndFeel;

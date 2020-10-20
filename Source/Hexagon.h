@@ -43,7 +43,8 @@ public:
     void endSelected();
     void setHovering(bool isHovering);
     bool isSelected();
-    
+    void clearColor();
+
 private:
     int m_noteNum; // MIDI note number
     Path m_hexPath;

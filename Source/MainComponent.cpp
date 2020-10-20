@@ -41,7 +41,7 @@ MainComponent::MainComponent()
     m_curScaleType = (NoteUtils::ScaleType)(m_paramBar.comboScaleType.getSelectedId() - 1);
     addAndMakeVisible(m_paramBar);
     m_sixteenthNoteDuration = (1 / m_paramBar.sliderBpm.getValue()) * 60 * 1000 / 4;
-    
+
     addAndMakeVisible(m_pathListPanel);
 
     m_synth.addSound(new SineWaveSound());
@@ -52,6 +52,7 @@ MainComponent::MainComponent()
 
     m_grid.onButtonPressed = [this]() { onHexButtonPressed(); };
     m_grid.onButtonReleased = [this]() { onHexButtonReleased(); };
+
 }
 
 void MainComponent::onHexButtonPressed()
@@ -124,6 +125,7 @@ void MainComponent::buttonClicked(Button* button)
                 }
             }
             m_grid.endPath();
+            checkButtonListeners();
         }
         else
         {
@@ -153,7 +155,6 @@ void MainComponent::buttonClicked(Button* button)
         if (m_isPlaying)
         {
             stopTimer();
-//            m_grid.resetNoteIncrementCounts();
             m_synth.allNotesOff(PATH_NOTES_CHANNEL, true);
             m_paramBar.buttonPlayStop.setButtonText("Play Paths");
             m_paramBar.buttonPlayStop.setColour(TextButton::buttonColourId, Colours::green);
@@ -168,15 +169,45 @@ void MainComponent::buttonClicked(Button* button)
         m_isPlaying = !m_isPlaying;
         m_paramBar.resized();
     }
+    else
+    {
+        for(PathListItem* item : m_pathListPanel.pathListItems)
+        {
+            if(button == &item->buttonDeletePath)
+            {
+                    bool deletePath = AlertWindow::showOkCancelBox(juce::AlertWindow::QuestionIcon, "Are you sure you want to delete this path?", "", "Yes", "No", this, nullptr);
+                    if(deletePath)
+                    {
+                        HarmonigonPath* path = ((PathListItem*)button->getParentComponent())->getPath();
+                        if (m_isPlaying)
+                        {
+//                            turnOffDeletedNotes(path);
+                            m_synth.allNotesOff(PATH_NOTES_CHANNEL, false);
+                            m_grid.resetPathPositions();
+                        }
+                        m_grid.deletePath(path);
+                        m_pathListPanel.deletePathListItem((PathListItem*)button->getParentComponent());
+                    }
+            }
+        }
+    }
 }
 
 void MainComponent::timerCallback()
 {
     if (m_isPlaying)
     {
-        Array<Hexagon *> hexes = m_grid.getNotesToPlay();
-        m_synth.allNotesOff(PATH_NOTES_CHANNEL, true);
-        for (Hexagon * hex : hexes)
+        Array<Hexagon *> hexesToTurnOff = m_grid.getNotesToTurnOff();
+        for (Hexagon * hex : hexesToTurnOff)
+        {
+            NoteUtils::HexTile note = hex->getTile();
+            {
+                m_synth.noteOff(PATH_NOTES_CHANNEL, NoteUtils::tileToMidiNote(note), 1, true);
+            }
+        }
+
+        Array<Hexagon *> hexesToTurnOn = m_grid.getNotesToPlay();
+        for (Hexagon * hex : hexesToTurnOn)
         {
             NoteUtils::HexTile note = hex->getTile();
 //            if (NoteUtils::isNoteInKey(note.key, m_curKey, m_curScaleType))
@@ -187,6 +218,7 @@ void MainComponent::timerCallback()
         }
         m_grid.advancePaths(m_sixteenthNoteDuration);
     }
+
 }
 
 MainComponent::~MainComponent()
@@ -242,5 +274,45 @@ void MainComponent::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
     {
         m_curScaleType = (NoteUtils::ScaleType)(comboBoxThatHasChanged->getSelectedId() - 1);
     }
-    
+
+}
+
+void MainComponent::checkButtonListeners()
+{
+    for(PathListItem* item : m_pathListPanel.pathListItems)
+    {
+        if(!item->buttonListenerAdded)
+        {
+            item->buttonDeletePath.addListener(this);
+            item->buttonListenerAdded = true;
+        }
+    }
+}
+
+void MainComponent::turnOffDeletedNotes(HarmonigonPath* path)
+{
+    Array<Hexagon *> hexesToTurnOff;
+    if (path->isHexPath)
+    {
+        if (path->curIndex < path->hexPath.size() - 1)
+        {
+            hexesToTurnOff.add(path->hexPath[path->curIndex + 1]);
+        }
+        else
+        {
+            hexesToTurnOff.add(path->hexPath[0]);
+        }
+    }
+    else
+    {
+        hexesToTurnOff.addArray(m_grid.getNotes(*path->tracerLinePath[path->curIndex]));
+    }
+
+    for (Hexagon* hex : hexesToTurnOff)
+    {
+        NoteUtils::HexTile note = hex->getTile();
+        DBG(NoteUtils::keyToString(note.key));
+        DBG(m_synth.getNumSounds());
+        m_synth.noteOff(PATH_NOTES_CHANNEL, NoteUtils::tileToMidiNote(note), 1, false);
+    }
 }

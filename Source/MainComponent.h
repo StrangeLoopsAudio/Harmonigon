@@ -47,6 +47,8 @@ public:
 private:
     void onHexButtonPressed(); /* Triggered by hex grid when note or chord is played */
     void onHexButtonReleased(); /* Triggered by hex grid when note or chord is released */
+    void checkButtonListeners();
+    void turnOffDeletedNotes(HarmonigonPath* path);
 
     double m_sixteenthNoteDuration;
     NoteUtils::ScaleType m_curScaleType;
