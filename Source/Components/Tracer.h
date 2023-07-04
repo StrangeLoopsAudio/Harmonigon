@@ -10,10 +10,12 @@
 
 #pragma once
 
-#include <JuceHeader.h>
+#include <juce_gui_basics/juce_gui_basics.h>
 #include "Hexagon.h"
 #include "TracerPoint.h"
 #include "HarmonigonPath.h"
+
+using namespace juce;
 
 //==============================================================================
 

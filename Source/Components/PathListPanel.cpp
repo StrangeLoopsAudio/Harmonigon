@@ -8,7 +8,6 @@
   ==============================================================================
 */
 
-#include <JuceHeader.h>
 #include "PathListPanel.h"
 
 #define PATH_LIST_ITEM_HEIGHT 100

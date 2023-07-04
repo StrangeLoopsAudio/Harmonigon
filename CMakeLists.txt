@@ -42,7 +42,7 @@ option(JUCE_ENABLE_MODULE_SOURCE_GROUPS "Show all module sources in IDE projects
 add_subdirectory(external/JUCE)
 
 # Check the readme at `docs/CMake API.md` in the JUCE repo for full config
-juce_add_plugin(Harmonigon
+juce_add_gui_app(Harmonigon
     # VERSION ...                               # Set this if the plugin version is different to the project version
     # ICON_BIG Source/Resources/logo.png                              # ICON_* arguments specify a path to an image file to use as an icon for the Standalone
     # ICON_SMALL Source/Resources/logo.png
@@ -117,11 +117,11 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/Source PREFIX "" FILES
 # Setup our binary data as a target
 set(BINARY_RESOURCES "")
 
-juce_add_binary_data(Assets SOURCES ${BINARY_RESOURCES})
+#juce_add_binary_data(Assets SOURCES ${BINARY_RESOURCES})
 
 # Required for Linux happiness:
 # See https://forum.juce.com/t/loading-pytorch-model-using-binarydata/39997/2
-set_target_properties(Assets PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+#set_target_properties(Assets PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
 # Clean up folder organization on Xcode.
 # It tucks the Plugin varieties into a "Targets" folder and generate an Xcode Scheme manually
@@ -139,7 +139,7 @@ foreach(target ${FORMATS} "All")
             XCODE_GENERATE_SCHEME ON)
     endif()
 endforeach()
-set_target_properties(Assets PROPERTIES FOLDER "Targets")
+#set_target_properties(Assets PROPERTIES FOLDER "Targets")
 
 # We'll need to link to these from our plugin as well as our tests
 set(JUCE_DEPENDENCIES
@@ -157,7 +157,7 @@ target_compile_definitions(Harmonigon
 
 target_link_libraries(Harmonigon
     PRIVATE
-    Assets
+    #Assets
     ${JUCE_DEPENDENCIES}
     PUBLIC
     juce::juce_recommended_config_flags

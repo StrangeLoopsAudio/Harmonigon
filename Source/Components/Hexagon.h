@@ -10,10 +10,12 @@
 
 #pragma once
 
-#include <JuceHeader.h>
-#include "NoteUtils.h"
+#include <juce_gui_basics/juce_gui_basics.h>
+#include "../Utils/NoteUtils.h"
 
 #define Point juce::Point
+
+using namespace juce;
 
 //==============================================================================
 /*

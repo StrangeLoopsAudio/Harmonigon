@@ -9,9 +9,12 @@
 */
 
 #pragma once
-#include <JuceHeader.h>
+
+#include <juce_gui_basics/juce_gui_basics.h>
 #include "TracerPoint.h"
 #include "Hexagon.h"
+
+using namespace juce;
 
 class HarmonigonPath
 {

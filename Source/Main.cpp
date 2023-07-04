@@ -8,8 +8,8 @@
   ==============================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "MainComponent.h"
+#include <juce_gui_basics/juce_gui_basics.h>
+#include "Components/MainComponent.h"
 
 //==============================================================================
 class Harmonigon_2Application  : public JUCEApplication
@@ -18,8 +18,8 @@ public:
     //==============================================================================
     Harmonigon_2Application() {}
 
-    const String getApplicationName() override       { return ProjectInfo::projectName; }
-    const String getApplicationVersion() override    { return ProjectInfo::versionString; }
+    const String getApplicationName() override       { return "Harmonigon"; }
+    const String getApplicationVersion() override    { return "0.0.1"; /* TODO grab from VERSION*/ }
     bool moreThanOneInstanceAllowed() override       { return true; }
 
     //==============================================================================

@@ -10,8 +10,10 @@
 
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "NoteUtils.h"
+#include <juce_gui_basics/juce_gui_basics.h>
+#include "../Utils/NoteUtils.h"
+
+using namespace juce;
 
 //==============================================================================
 /*

@@ -8,7 +8,6 @@
   ==============================================================================
 */
 
-#include <JuceHeader.h>
 #include "HexGrid.h"
 
 #define PADDING 15

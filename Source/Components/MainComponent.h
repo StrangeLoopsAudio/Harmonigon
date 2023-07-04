@@ -11,8 +11,11 @@
 #include "ParameterBar.h"
 #include "PathListPanel.h"
 #include "HexGrid.h"
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "Synth.h"
+#include <juce_gui_basics/juce_gui_basics.h>
+#include <juce_audio_utils/juce_audio_utils.h>
+#include "DSP/Synth.h"
+
+using namespace juce;
 
 //==============================================================================
 /*

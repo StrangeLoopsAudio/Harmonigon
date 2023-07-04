@@ -10,8 +10,9 @@
 
 #pragma once
 #include <tuple>
-#include <JuceHeader.h>
+#include <juce_gui_basics/juce_gui_basics.h>
 using namespace std;
+using namespace juce;
 
 #define NUM_ROWS 8
 #define NUM_COLS 15

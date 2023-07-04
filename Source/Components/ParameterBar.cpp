@@ -8,7 +8,6 @@
   ==============================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterBar.h"
 
 #define BPM_WIDTH 250

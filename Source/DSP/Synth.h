@@ -10,7 +10,9 @@
 
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <juce_dsp/juce_dsp.h>
+
+using namespace juce;
 
 #define PATH_NOTES_CHANNEL 1
 #define FREE_PLAY_CHANNEL 2
