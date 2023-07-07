@@ -1,6 +1,6 @@
 {
-  "title": "gRainbow",
-  "icon": "gBow.icns",
+  "title": "Harmonigon",
+  //"icon": "gBow.icns",
   "background": "background.png",
   "window": {
     "position": {
@@ -14,11 +14,7 @@
   },
   "format": "UDZO",
   "contents": [
-    { "x": 250, "y": 200, "type": "file", "path": "dmg/gRainbow.app" },
+    { "x": 250, "y": 200, "type": "file", "path": "dmg/Harmonigon.app" },
     { "x": 480, "y": 200, "type": "link", "path": "/Applications" },
-    { "x": 250, "y": 300, "type": "file", "path": "dmg/gRainbow.component" },
-    { "x": 480, "y": 300, "type": "link", "path": "/Library/Audio/Plug-Ins/Components" },
-    { "x": 250, "y": 405, "type": "file", "path": "dmg/gRainbow.vst3" },
-    { "x": 480, "y": 405, "type": "link", "path": "/Library/Audio/Plug-Ins/VST3" }
   ]
 }
