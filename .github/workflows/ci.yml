@@ -96,7 +96,7 @@ jobs:
       run: |
         VERSION=$(cat VERSION)
         echo "ARTIFACTS_PATH=${{ env.BUILD_DIR }}/${{ env.PROJECT_NAME }}_artefacts/${{ env.BUILD_TYPE }}" >> $GITHUB_ENV
-        echo "STANDALONE_PATH=${{ env.PROJECT_NAME }}_artefacts/${{ env.BUILD_TYPE }}/Standalone/${{ env.PROJECT_NAME }}.app" >> $GITHUB_ENV
+        echo "STANDALONE_PATH=${{ env.PROJECT_NAME }}_artefacts/${{ env.BUILD_TYPE }}/${{ env.PROJECT_NAME }}.app" >> $GITHUB_ENV
         echo "PRODUCT_NAME=${{ env.PROJECT_NAME }}-$VERSION-${{ matrix.name }}" >> $GITHUB_ENV
 
     - name: ccache
@@ -142,7 +142,7 @@ jobs:
         
         # Run appdmg to create the .dmg
         cd packaging && appdmg dmg.json ${{ env.PRODUCT_NAME}}.dmg
-        codesign -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" --timestamp -i com.StrangeLoops.gRainbow --force ${{ env.PRODUCT_NAME }}.dmg
+        codesign -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" --timestamp -i com.StrangeLoops.Harmonigon --force ${{ env.PRODUCT_NAME }}.dmg
         xcrun notarytool submit ${{ env.PRODUCT_NAME }}.dmg --apple-id ${{ secrets.NOTARIZATION_USERNAME }} --password ${{ secrets.NOTARIZATION_PASSWORD }} --team-id ${{ secrets.TEAM_ID }} --wait
         xcrun stapler staple ${{ env.PRODUCT_NAME }}.dmg
 

@@ -20,14 +20,15 @@ OutputBaseFilename={#PluginName}-{#Version}-Windows
 AppCopyright=Copyright (C) {#Year} {#Publisher}
 AppPublisher={#Publisher}
 AppVersion={#Version}
+DefaultDirName="{commonpf64}\{#Publisher}\{#PluginName}\{#PluginName}.exe"
 DisableDirPage=yes
 LicenseFile="..\LICENSE"
 UninstallFilesDir="{commonappdata}\{#PluginName}\uninstall"
 
 ; MSVC adds a .ilk when building the plugin. Let's not include that.
 [Files]
-Source: "..\Builds\gRainbow_artefacts\Release\Standalone\{#PluginName}.exe"; DestDir: "{commonpf64}\{#Publisher}\{#PluginName}"; Flags: ignoreversion; Components: standalone
+Source: "..\Builds\Harmonigon_artefacts\Release\{#PluginName}.exe"; DestDir: "{commonpf64}\{#Publisher}\{#PluginName}"; Flags: ignoreversion; Components: standalone
 
 [Icons]
-Name: "{autoprograms}\Harmonigon"; Filename: "{commonpf64}\{#Publisher}\{#PluginName}\gRainbow.exe"; Components: standalone 
-Name: "{autoprograms}\Uninstall Harmonigon"; Filename: "{uninstallexe}"
+Name: "{autoprograms}\gRainbow"; Filename: "{commonpf64}\{#Publisher}\{#PluginName}\gRainbow.exe"; Components: standalone 
+Name: "{autoprograms}\Uninstall gRainbow"; Filename: "{uninstallexe}"
