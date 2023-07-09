@@ -1,6 +1,6 @@
 {
   "title": "Harmonigon",
-  //"icon": "gBow.icns",
+  "icon": "harmonigon.icns",
   "background": "background.png",
   "window": {
     "position": {
@@ -14,7 +14,7 @@
   },
   "format": "UDZO",
   "contents": [
-    { "x": 250, "y": 200, "type": "file", "path": "dmg/Harmonigon.app" },
-    { "x": 480, "y": 200, "type": "link", "path": "/Applications" }
+    { "x": 250, "y": 300, "type": "file", "path": "dmg/Harmonigon.app" },
+    { "x": 480, "y": 300, "type": "link", "path": "/Applications" }
   ]
 }
