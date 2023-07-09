@@ -15,6 +15,6 @@
   "format": "UDZO",
   "contents": [
     { "x": 250, "y": 200, "type": "file", "path": "dmg/Harmonigon.app" },
-    { "x": 480, "y": 200, "type": "link", "path": "/Applications" },
+    { "x": 480, "y": 200, "type": "link", "path": "/Applications" }
   ]
 }
