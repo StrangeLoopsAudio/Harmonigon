@@ -30,5 +30,5 @@ UninstallFilesDir="{commonappdata}\{#PluginName}\uninstall"
 Source: "..\Builds\Harmonigon_artefacts\Release\{#PluginName}.exe"; DestDir: "{commonpf64}\{#Publisher}\{#PluginName}"; Flags: ignoreversion; Components: standalone
 
 [Icons]
-Name: "{autoprograms}\gRainbow"; Filename: "{commonpf64}\{#Publisher}\{#PluginName}\Harmonigon.exe"; Components: standalone 
+Name: "{autoprograms}\Harmonigon"; Filename: "{commonpf64}\{#Publisher}\{#PluginName}\Harmonigon.exe"; Components: standalone 
 Name: "{autoprograms}\Uninstall Harmonigon"; Filename: "{uninstallexe}"

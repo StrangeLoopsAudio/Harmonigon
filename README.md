@@ -6,7 +6,7 @@ Create repeating paths with the notes and intersections (chords) on the harmonic
 
 ![Harmonigon](Source/Resources/harmonigon.png)
 
-Is anything important missing or needed? Open an [Issue](github.com/bboettcher3/gRainbow/issues) and let us know!
+Is anything important missing or needed? Open an [Issue](github.com/StrangeLoopsAudio/Harmonigon/issues) and let us know!
 
 If you'd like to donate to support the developers with the occasional coffee, you can set that up here: 
 
